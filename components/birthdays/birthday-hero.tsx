@@ -20,7 +20,12 @@ function BirthdayHero() {
           </p>
           <PillButton href="#lead-form">לשריון תאריך</PillButton>
         </div>
-        <Photo className="h-80" label="[יום הולדת בבלונה]" />
+        <Photo
+          src="/assets/ball-motion.png"
+          alt="כדור באולינג בתנועה"
+          fit="contain"
+          className="h-80"
+        />
       </div>
     </section>
   )

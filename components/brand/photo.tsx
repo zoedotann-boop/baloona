@@ -1,17 +1,52 @@
+import Image from "next/image"
 import { Camera } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
 interface PhotoProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Optional caption shown under the camera glyph. */
+  /** When set, renders this image instead of the placeholder. */
+  src?: string
+  alt?: string
+  /** How the image fills the frame. */
+  fit?: "cover" | "contain"
+  /** Caption shown under the camera glyph (placeholder mode only). */
   label?: string
 }
 
 /**
- * Placeholder for a real photo — a soft pink panel with a dotted texture and a
- * camera glyph. Swap for <Image> once real assets are available.
+ * A rounded image frame. With `src` it renders the image; otherwise it shows a
+ * soft pink placeholder with a dotted texture and a camera glyph.
  */
-function Photo({ label, className, ...props }: PhotoProps) {
+function Photo({
+  src,
+  alt = "",
+  fit = "cover",
+  label,
+  className,
+  ...props
+}: PhotoProps) {
+  if (src) {
+    return (
+      <div
+        className={cn(
+          "relative w-full overflow-hidden rounded-[26px] bg-secondary",
+          className
+        )}
+        {...props}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className={cn(
+            fit === "contain" ? "object-contain p-6" : "object-cover"
+          )}
+        />
+      </div>
+    )
+  }
+
   return (
     <div
       className={cn(
