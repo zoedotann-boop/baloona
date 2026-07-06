@@ -20,6 +20,36 @@ export const BALOONA = {
   ],
 }
 
+// Default greeting prefilled when a visitor opens WhatsApp from the site.
+export const WHATSAPP_MESSAGE = "היי הגעתי אליכם דרך האתר..."
+
+/** WhatsApp chat link with the site's default prefilled message. */
+export function whatsappLink(message: string = WHATSAPP_MESSAGE): string {
+  return `https://wa.me/${BALOONA.whatsapp}?text=${encodeURIComponent(message)}`
+}
+
+/** Waze navigation link to the venue. */
+export function wazeLink(): string {
+  return `https://waze.com/ul?q=${encodeURIComponent(BALOONA.address)}&navigate=yes`
+}
+
+/** Generic maps navigation link to the venue. */
+export function mapsLink(): string {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    BALOONA.address
+  )}`
+}
+
+/** `tel:` link built from the venue phone number. */
+export function telLink(): string {
+  return `tel:${BALOONA.phone.replace(/[^0-9+]/g, "")}`
+}
+
+/** `mailto:` link to the venue email. */
+export function mailLink(): string {
+  return `mailto:${BALOONA.email}`
+}
+
 // ---- Menu ----------------------------------------------------------------
 export interface MenuItem {
   name: string
@@ -154,10 +184,30 @@ export const CONTACT_METHODS = [
     image: "/assets/contact/whatsapp.png",
     label: "וואטסאפ",
     sub: "תשובה מהירה",
+    href: whatsappLink(),
+    external: true,
   },
-  { image: "/assets/contact/phone.png", label: "טלפון", sub: BALOONA.phone },
-  { image: "/assets/contact/email.png", label: "אימייל", sub: BALOONA.email },
-  { image: "/assets/contact/navigation.png", label: "ניווט", sub: "קרית אונו" },
+  {
+    image: "/assets/contact/phone.png",
+    label: "טלפון",
+    sub: BALOONA.phone,
+    href: telLink(),
+    external: false,
+  },
+  {
+    image: "/assets/contact/email.png",
+    label: "אימייל",
+    sub: BALOONA.email,
+    href: mailLink(),
+    external: false,
+  },
+  {
+    image: "/assets/contact/navigation.png",
+    label: "ניווט",
+    sub: "קרית אונו",
+    href: wazeLink(),
+    external: true,
+  },
 ] as const
 
 export const CONTACT_SUBJECTS = [

@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 
 import { Icon } from "@/components/brand/icon"
 import { SectionEyebrow } from "@/components/brand/section-eyebrow"
@@ -7,15 +8,15 @@ import { BALOONA, CONTACT_METHODS } from "@/lib/site-content"
 
 /** Contact block: quick methods + opening hours + a message form. */
 function ContactSection() {
+  const t = useTranslations("contact")
+
   return (
     <section id="contact" className="px-5 py-16 md:px-9">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10">
-          <SectionEyebrow>
-            משאירים לנו הודעה — נחזור אליכם תוך שעה בימי הפעילות
-          </SectionEyebrow>
+          <SectionEyebrow>{t("eyebrow")}</SectionEyebrow>
           <h2 className="mt-1 font-heading text-[40px] font-black text-brand-brown">
-            צרו קשר
+            {t("title")}
           </h2>
         </div>
 
@@ -23,10 +24,13 @@ function ContactSection() {
           <div>
             <div className="mb-6 grid grid-cols-2 gap-4 rounded-[22px] border border-[#f3d3d9] bg-[#fbede0] p-5">
               {CONTACT_METHODS.map((c) => (
-                <button
+                <a
                   key={c.label}
-                  type="button"
-                  className="flex flex-col items-center text-center transition active:scale-[.98]"
+                  href={c.href}
+                  {...(c.external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                  className="flex flex-col items-center text-center transition hover:opacity-80 active:scale-[.98]"
                 >
                   <Image
                     src={c.image}
@@ -41,7 +45,7 @@ function ContactSection() {
                   <div className="mt-0.5 text-[12px] text-brand-muted">
                     {c.sub}
                   </div>
-                </button>
+                </a>
               ))}
             </div>
 

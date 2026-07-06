@@ -96,10 +96,26 @@ function SiteFooter() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-6 text-[11px] text-[#5e818c]">
-          <a href="#" className="underline hover:text-primary">
-            הצהרת נגישות
-          </a>
+        <div className="flex flex-col gap-3 pt-6 text-[11px] text-[#5e818c] sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link
+              href="/accessibility"
+              className="underline hover:text-primary"
+            >
+              הצהרת נגישות
+            </Link>
+            <span>
+              עוצב ופותח ע״י{" "}
+              <a
+                href="https://zoedotan.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold underline hover:text-primary"
+              >
+                Zoe Dotan
+              </a>
+            </span>
+          </div>
           <span>{t("rights")}</span>
         </div>
       </div>

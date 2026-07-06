@@ -1,11 +1,14 @@
+import { cookies } from "next/headers"
 import { getRequestConfig } from "next-intl/server"
 
-import { defaultLocale } from "./routing"
+import { defaultLocale, isLocale } from "./routing"
 
-// Single-locale setup (no i18n routing). Every request resolves to Hebrew.
-// When more locales are added, resolve `locale` from the request/cookie here.
+// Locale is resolved from the `NEXT_LOCALE` cookie set by the language
+// switcher, falling back to Hebrew for first-time visitors.
 export default getRequestConfig(async () => {
-  const locale = defaultLocale
+  const cookieStore = await cookies()
+  const cookieLocale = cookieStore.get("NEXT_LOCALE")?.value
+  const locale = isLocale(cookieLocale) ? cookieLocale : defaultLocale
 
   return {
     locale,

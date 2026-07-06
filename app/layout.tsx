@@ -26,11 +26,12 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const locale = await getLocale()
+  const dir = locale === "he" ? "rtl" : "ltr"
 
   return (
     <html
       lang={locale}
-      dir="rtl"
+      dir={dir}
       suppressHydrationWarning
       className={cn("antialiased", heebo.variable, rubik.variable)}
     >

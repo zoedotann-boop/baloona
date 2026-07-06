@@ -27,7 +27,7 @@ function BirthdayCta() {
           <p className="mb-7 text-[15px] leading-relaxed text-brand-sky-ink">
             {t("description")}
           </p>
-          <PillButton href="#" variant="soft">
+          <PillButton href="/birthdays" variant="soft">
             {t("cta")} ←
           </PillButton>
         </div>
