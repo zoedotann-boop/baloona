@@ -2,12 +2,12 @@
 
 The real Baloona illustration backgrounds are now in place:
 
-| File                              | Used by                                            |
-| --------------------------------- | -------------------------------------------------- |
-| `hero-bg.png`                     | home hero (`components/home/hero.tsx`)             |
-| `assets/bg-cream-rainbow.png`     | menu teaser section (`components/home/menu-teaser.tsx`) |
-| `assets/bg-cream-castle.png`      | birthday "how it works" section (`birthday-steps.tsx`) |
-| `assets/bg-blue.png`              | birthday hero panel (`birthday-hero.tsx`)         |
+| File                          | Used by                                                 |
+| ----------------------------- | ------------------------------------------------------- |
+| `hero-bg.png`                 | home hero (`components/home/hero.tsx`)                  |
+| `assets/bg-cream-rainbow.png` | menu teaser section (`components/home/menu-teaser.tsx`) |
+| `assets/bg-cream-castle.png`  | birthday "how it works" section (`birthday-steps.tsx`)  |
+| `assets/bg-blue.png`          | birthday hero panel (`birthday-hero.tsx`)               |
 
 Still using placeholders (no real photos yet — drop files in and wire them up):
 
