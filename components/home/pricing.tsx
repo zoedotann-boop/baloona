@@ -10,7 +10,7 @@ function Pricing() {
   const items = t.raw("items") as PriceContent[]
 
   return (
-    <section className="bg-white px-5 py-14 md:px-9">
+    <section id="pricing" className="scroll-mt-20 bg-white px-5 py-14 md:px-9">
       <div className="mx-auto max-w-6xl">
         <SectionEyebrow>{t("eyebrow")}</SectionEyebrow>
         <h2 className="mt-1.5 mb-6 font-heading text-[34px] font-black text-brand-brown">

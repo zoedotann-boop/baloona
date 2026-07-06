@@ -1,25 +1,25 @@
 import { CloudDivider } from "@/components/brand/cloud-divider"
 import { BirthdayCta } from "@/components/home/birthday-cta"
+import { ContactSection } from "@/components/home/contact-section"
 import { Features } from "@/components/home/features"
+import { Gallery } from "@/components/home/gallery"
 import { Hero } from "@/components/home/hero"
+import { MenuTeaser } from "@/components/home/menu-teaser"
 import { Pricing } from "@/components/home/pricing"
 import { Reviews } from "@/components/home/reviews"
-import { SiteFooter } from "@/components/home/site-footer"
-import { SiteHeader } from "@/components/home/site-header"
 
 export default function Page() {
   return (
-    <div className="min-h-svh bg-background">
-      <SiteHeader />
-      <main>
-        <Hero />
-        <CloudDivider />
-        <Features />
-        <Pricing />
-        <BirthdayCta />
-        <Reviews />
-      </main>
-      <SiteFooter />
-    </div>
+    <>
+      <Hero />
+      <CloudDivider />
+      <Features />
+      <Pricing />
+      <MenuTeaser />
+      <BirthdayCta />
+      <Gallery />
+      <Reviews />
+      <ContactSection />
+    </>
   )
 }

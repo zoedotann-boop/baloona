@@ -3,6 +3,8 @@ import { NextIntlClientProvider } from "next-intl"
 import { getLocale } from "next-intl/server"
 
 import "./globals.css"
+import { SiteFooter } from "@/components/home/site-footer"
+import { SiteHeader } from "@/components/home/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
@@ -36,7 +38,13 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           {/* The Cloud & Candy design is light-only; force light so token-based
               text never inverts to white-on-white in dark environments. */}
-          <ThemeProvider forcedTheme="light">{children}</ThemeProvider>
+          <ThemeProvider forcedTheme="light">
+            <div className="flex min-h-svh flex-col bg-background">
+              <SiteHeader />
+              <main className="flex-1">{children}</main>
+              <SiteFooter />
+            </div>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
