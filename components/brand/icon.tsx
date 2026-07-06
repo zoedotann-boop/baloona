@@ -1,5 +1,6 @@
 import {
   ArrowLeft,
+  ArrowUp,
   Building2,
   Cake,
   Camera,
@@ -75,6 +76,7 @@ const ICONS = {
   check: Check,
   camera: Camera,
   "arrow-left": ArrowLeft,
+  "arrow-up": ArrowUp,
   instagram: Instagram,
   facebook: Facebook,
   tiktok: TikTok,

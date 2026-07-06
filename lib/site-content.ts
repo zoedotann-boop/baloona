@@ -83,24 +83,36 @@ export const MENU_DATA: Record<MenuTabId, MenuItem[]> = {
 }
 
 export const MENU_TEASER_TILES = [
-  { icon: "utensils", label: "אוכל חם" },
-  { icon: "coffee", label: "קפה ושתייה" },
-  { icon: "cake", label: "מתוקים" },
-  { icon: "gift", label: "לגדולים" },
-  { icon: "star", label: "המלצות השף" },
-  { icon: "clock", label: "מוגש במקום" },
+  { image: "/assets/menu-teaser/hot-food.png", label: "אוכל חם" },
+  { image: "/assets/menu-teaser/coffee-drinks.png", label: "קפה ושתייה" },
+  { image: "/assets/menu-teaser/sweets.png", label: "מתוקים" },
+  { image: "/assets/menu-teaser/for-adults.png", label: "לגדולים" },
+  { image: "/assets/menu-teaser/chef-recommendations.png", label: "המלצות השף" },
+  { image: "/assets/menu-teaser/served-here.png", label: "מוגש במקום" },
 ] as const
 
 // ---- Birthdays -----------------------------------------------------------
 export const BDAY_STEPS = [
   {
-    icon: "gamepad",
+    image: "/assets/birthday-steps/facilities.png",
     label: "גישה חופשית למתקנים",
     sub: "שעתיים של כיף + חדר פרטי",
   },
-  { icon: "utensils", label: "פיצה וטרופית", sub: "2 משולשי פיצה לכל ילד" },
-  { icon: "coffee", label: "מים ופטל חופשי", sub: "קנקנים לאורך כל האירוע" },
-  { icon: "cake", label: "טקס עוגה", sub: "ע״י צוות המקום" },
+  {
+    image: "/assets/birthday-steps/pizza.png",
+    label: "פיצה וטרופית",
+    sub: "2 משולשי פיצה לכל ילד",
+  },
+  {
+    image: "/assets/birthday-steps/drinks.png",
+    label: "מים ופטל חופשי",
+    sub: "קנקנים לאורך כל האירוע",
+  },
+  {
+    image: "/assets/birthday-steps/cake.png",
+    label: "טקס עוגה",
+    sub: "ע״י צוות המקום",
+  },
 ] as const
 
 export const BDAY_PACKAGE_LINES = [
@@ -135,10 +147,10 @@ export const BDAY_LEAD_FIELDS = [
 
 // ---- Contact -------------------------------------------------------------
 export const CONTACT_METHODS = [
-  { icon: "whatsapp", label: "וואטסאפ", sub: "תשובה מהירה" },
-  { icon: "phone", label: "טלפון", sub: BALOONA.phone },
-  { icon: "mail", label: "אימייל", sub: BALOONA.email },
-  { icon: "pin", label: "ניווט", sub: "קרית אונו" },
+  { image: "/assets/contact/whatsapp.png", label: "וואטסאפ", sub: "תשובה מהירה" },
+  { image: "/assets/contact/phone.png", label: "טלפון", sub: BALOONA.phone },
+  { image: "/assets/contact/email.png", label: "אימייל", sub: BALOONA.email },
+  { image: "/assets/contact/navigation.png", label: "ניווט", sub: "קרית אונו" },
 ] as const
 
 export const CONTACT_SUBJECTS = [
