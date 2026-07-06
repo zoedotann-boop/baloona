@@ -1,41 +1,51 @@
-import { IconTile } from "@/components/brand/icon-tile"
-import { type IconName } from "@/components/brand/icon"
+import Image from "next/image"
+
 import { cn } from "@/lib/utils"
 
 interface StepCardProps extends React.HTMLAttributes<HTMLDivElement> {
   index: number
-  icon: IconName
+  image: string
   title: string
   sub?: string
-  tone?: React.ComponentProps<typeof IconTile>["tone"]
 }
 
-/** Numbered step card with an icon tile — used in "how it works" grids. */
+/** Numbered step card with an illustration — used in "how it works" grids. */
 function StepCard({
   index,
-  icon,
+  image,
   title,
   sub,
-  tone,
   className,
   ...props
 }: StepCardProps) {
   return (
     <div
       className={cn(
-        "relative rounded-[26px] border border-[#f3d3d9] bg-white p-6 shadow-[0_14px_36px_-24px_rgba(90,39,64,0.5)]",
+        "relative flex flex-col items-center rounded-[28px] bg-white px-6 py-8 text-center",
         className
       )}
       {...props}
     >
-      <div className="absolute -top-3 -right-3 flex size-7 items-center justify-center rounded-full bg-primary font-heading text-[12px] font-black text-primary-foreground">
+      <div className="absolute -top-3 -right-3 flex size-8 items-center justify-center rounded-full bg-[#ff7d59] font-heading text-[13px] font-black text-white shadow-[0_10px_18px_-8px_rgba(255,125,89,0.95)]">
         {index}
       </div>
-      <IconTile icon={icon} tone={tone} className="mb-4" />
-      <div className="font-heading text-[15px] font-black text-brand-brown">
+      <div className="mb-5 flex size-20 items-center justify-center rounded-full bg-[#fcecde]">
+        <Image
+          src={image}
+          alt={title}
+          width={48}
+          height={48}
+          className="size-12 object-contain"
+        />
+      </div>
+      <div className="font-heading text-[16px] font-black text-brand-brown">
         {title}
       </div>
-      {sub && <div className="mt-1 text-[12px] text-brand-muted">{sub}</div>}
+      {sub && (
+        <div className="mt-1.5 text-[13px] leading-relaxed text-brand-muted">
+          {sub}
+        </div>
+      )}
     </div>
   )
 }

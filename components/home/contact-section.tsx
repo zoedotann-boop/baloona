@@ -1,10 +1,9 @@
+import Image from "next/image"
+
 import { Icon } from "@/components/brand/icon"
-import { IconTile } from "@/components/brand/icon-tile"
 import { SectionEyebrow } from "@/components/brand/section-eyebrow"
 import { ContactForm } from "@/components/home/contact-form"
 import { BALOONA, CONTACT_METHODS } from "@/lib/site-content"
-
-const METHOD_TONES = ["coral", "sky", "pink", "cream"] as const
 
 /** Contact block: quick methods + opening hours + a message form. */
 function ContactSection() {
@@ -22,17 +21,19 @@ function ContactSection() {
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
           <div>
-            <div className="mb-6 grid grid-cols-2 gap-4">
-              {CONTACT_METHODS.map((c, i) => (
+            <div className="mb-6 grid grid-cols-2 gap-4 rounded-[22px] border border-[#f3d3d9] bg-[#fbede0] p-5">
+              {CONTACT_METHODS.map((c) => (
                 <button
                   key={c.label}
                   type="button"
-                  className="rounded-[22px] border border-[#f3d3d9] bg-white p-5 text-right shadow-[0_14px_36px_-24px_rgba(90,39,64,0.5)] transition active:scale-[.98]"
+                  className="flex flex-col items-center text-center transition active:scale-[.98]"
                 >
-                  <IconTile
-                    icon={c.icon}
-                    tone={METHOD_TONES[i]}
-                    className="mb-3"
+                  <Image
+                    src={c.image}
+                    alt={c.label}
+                    width={48}
+                    height={48}
+                    className="mb-3 size-12 object-contain"
                   />
                   <div className="text-[14px] font-bold text-brand-brown">
                     {c.label}

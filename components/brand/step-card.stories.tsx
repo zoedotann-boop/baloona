@@ -8,10 +8,9 @@ const meta = {
   parameters: { backgrounds: { value: "cream" } },
   args: {
     index: 1,
-    icon: "gamepad",
+    image: "/assets/birthday-steps/facilities.png",
     title: "גישה חופשית למתקנים",
     sub: "שעתיים של כיף + חדר פרטי",
-    tone: "pink",
   },
   render: (args) => (
     <div className="w-[280px] pt-4">

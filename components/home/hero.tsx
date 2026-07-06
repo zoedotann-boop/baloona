@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl"
 import { Logo } from "@/components/brand/logo"
 import { PillButton } from "@/components/brand/pill-button"
 import { StatusBadge } from "@/components/brand/status-badge"
+import { HeroMobileActions } from "@/components/home/hero-mobile-actions"
 
 /**
  * Centered hero — giant wordmark, headline, CTAs and opening hours over the
@@ -14,7 +15,7 @@ function Hero() {
   const site = useTranslations("site")
 
   return (
-    <section className="relative overflow-hidden bg-brand-pink bg-[url('/hero-bg.png')] bg-cover bg-center px-5 py-16 text-center md:px-9 md:py-20">
+    <section className="relative overflow-hidden bg-brand-pink bg-[url('/hero-bg-mobile.png')] bg-cover bg-center px-5 py-16 text-center md:bg-[url('/hero-bg.png')] md:px-9 md:py-20">
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">
         <StatusBadge className="mb-5" variant="pill" label={t("badge")} />
         <Logo size="hero" className="mb-2" />
@@ -38,6 +39,7 @@ function Hero() {
           <span>{t("hours.saturday")}</span>
         </div>
       </div>
+      <HeroMobileActions />
     </section>
   )
 }
