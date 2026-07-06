@@ -35,4 +35,4 @@ function Logo({ className, size, label = "Baloona", ...props }: LogoProps) {
   )
 }
 
-export { Logo, logoVariants }
+export { Logo }

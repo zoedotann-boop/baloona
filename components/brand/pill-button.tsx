@@ -42,11 +42,12 @@ function PillButton({ className, variant, size, ...props }: PillButtonProps) {
     return <a className={classes} {...props} />
   }
 
-  const { href: _href, ...buttonProps } =
-    props as React.ButtonHTMLAttributes<HTMLButtonElement> & {
-      href?: undefined
-    }
-  return <button className={classes} {...buttonProps} />
+  return (
+    <button
+      className={classes}
+      {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+    />
+  )
 }
 
-export { PillButton, pillButtonVariants }
+export { PillButton }

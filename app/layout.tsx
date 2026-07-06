@@ -34,7 +34,9 @@ export default async function RootLayout({
     >
       <body>
         <NextIntlClientProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          {/* The Cloud & Candy design is light-only; force light so token-based
+              text never inverts to white-on-white in dark environments. */}
+          <ThemeProvider forcedTheme="light">{children}</ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
