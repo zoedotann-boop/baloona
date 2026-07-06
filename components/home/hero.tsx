@@ -4,6 +4,7 @@ import { Logo } from "@/components/brand/logo"
 import { PillButton } from "@/components/brand/pill-button"
 import { StatusBadge } from "@/components/brand/status-badge"
 import { HeroMobileActions } from "@/components/home/hero-mobile-actions"
+import { wazeLink, whatsappLink } from "@/lib/site-content"
 
 /**
  * Centered hero — giant wordmark, headline, CTAs and opening hours over the
@@ -26,8 +27,19 @@ function Hero() {
           {t("description")}
         </p>
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <PillButton href="#">{t("waze")}</PillButton>
-          <PillButton href="#" variant="outline">
+          <PillButton
+            href={wazeLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("waze")}
+          </PillButton>
+          <PillButton
+            href={whatsappLink()}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="outline"
+          >
             {site("whatsapp")}
           </PillButton>
         </div>

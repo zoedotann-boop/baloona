@@ -10,7 +10,7 @@ function Features() {
 
   return (
     <section className="bg-white px-5 py-9 md:px-9">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-[22px] sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-6 sm:gap-[22px] lg:grid-cols-4">
         {items.map((item, index) => (
           <FeatureItem
             key={item.title}

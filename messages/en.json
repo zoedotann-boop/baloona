@@ -1,0 +1,118 @@
+{
+  "site": {
+    "brand": "Baloona",
+    "status": "Open now · until 19:00",
+    "whatsapp": "WhatsApp",
+    "langLabel": "EN"
+  },
+  "nav": {
+    "home": "Home",
+    "menu": "Menu",
+    "birthdays": "Birthdays"
+  },
+  "hero": {
+    "badge": "Open now · until 19:00",
+    "title": "Play in a friendly space",
+    "description": "A huge 3-floor indoor playground for kids aged 1–9. Sit back with the little ones and enjoy it too. A café, a private birthday room and a warm, welcoming team.",
+    "waze": "Navigate to us (Waze)",
+    "whatsapp": "WhatsApp",
+    "hours": {
+      "weekday": "Sun–Thu 09:00–19:00",
+      "friday": "Friday 09:00–15:00",
+      "saturday": "Saturday 09:00–19:00"
+    }
+  },
+  "features": {
+    "items": [
+      { "title": "3-floor complex", "description": "Play zones for every age" },
+      { "title": "Homestyle café", "description": "Hot food, coffee and treats" },
+      { "title": "Birthday room", "description": "A private room for parties" },
+      { "title": "Air-conditioned & secured", "description": "Maximum safety" }
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Admission pricing",
+    "title": "Pricing",
+    "popular": "Most popular",
+    "note": "* Admission covers one child and one guardian. Each additional guardian is +20 ₪. Daily entry.",
+    "items": [
+      {
+        "sub": "Midweek",
+        "title": "Sun–Thu",
+        "featured": false,
+        "rows": [
+          { "label": "Up to age 2", "price": "39 ₪" },
+          { "label": "Over age 2", "price": "49 ₪" }
+        ]
+      },
+      {
+        "sub": "Weekend",
+        "title": "Fri–Sat",
+        "featured": true,
+        "rows": [
+          { "label": "Up to age 2", "price": "45 ₪" },
+          { "label": "Over age 2", "price": "55 ₪" }
+        ]
+      },
+      {
+        "sub": "Punch card",
+        "title": "10 entries",
+        "featured": false,
+        "rows": [
+          { "label": "Up to age 2", "price": "350 ₪" },
+          { "label": "Over age 2", "price": "450 ₪" }
+        ]
+      }
+    ]
+  },
+  "birthday": {
+    "eyebrow": "Birthdays",
+    "title": "Celebrate a birthday at Baloona!",
+    "description": "Two hours of fun with free access to the attractions, a private room, pizza for every child and a cake ceremony by our team. From 1,990 ₪ for 25 kids.",
+    "cta": "See all the details"
+  },
+  "gallery": {
+    "title": "The venue in photos"
+  },
+  "contact": {
+    "eyebrow": "Leave us a message — we'll get back to you during opening hours",
+    "title": "Contact us"
+  },
+  "reviews": {
+    "title": "What families say about us",
+    "items": [
+      {
+        "text": "The place is amazing, the kids didn't want to leave! Clean, safe and the staff are simply lovely. We already booked a birthday.",
+        "name": "Michal L.",
+        "init": "M",
+        "ago": "a week ago"
+      },
+      {
+        "text": "Finally a place parents enjoy too. The coffee is great and the kids play safely. Highly recommend!",
+        "name": "Dana C.",
+        "init": "D",
+        "ago": "two weeks ago"
+      },
+      {
+        "text": "We celebrated our son's birthday and everything was perfect — private room, pizza and a cake ceremony. Thank you, Baloona team!",
+        "name": "Yossi A.",
+        "init": "Y",
+        "ago": "a month ago"
+      }
+    ]
+  },
+  "footer": {
+    "tagline": "An indoor playground and birthday venue for kids aged 1–9 in Kiryat Ono.",
+    "contactTitle": "Contact",
+    "address": "37 Shlomo HaMelech St. (Kiryat Ono Mall), Building B, floor -2",
+    "phone": "03-1234567",
+    "email": "hello@baloona.co.il",
+    "hoursTitle": "Opening hours",
+    "hours": {
+      "weekday": "Sun–Thu · 09:00–19:00",
+      "friday": "Friday · 09:00–15:00",
+      "saturday": "Saturday · 09:00–19:00"
+    },
+    "rights": "© 2026 Baloona · All rights reserved"
+  }
+}
