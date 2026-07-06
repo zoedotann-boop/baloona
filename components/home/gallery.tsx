@@ -17,20 +17,9 @@ function Gallery() {
           </a>
         </div>
         <div className="grid auto-rows-[106px] grid-cols-2 gap-3 md:grid-cols-4">
-          <Photo
-            src="/assets/balls/marble.png"
-            alt="כדור באולינג"
-            fit="contain"
-            className="col-span-2 row-span-2 h-full"
-          />
-          {["pink", "orange", "cyan", "teal"].map((ball) => (
-            <Photo
-              key={ball}
-              src={`/assets/balls/${ball}.png`}
-              alt="כדור באולינג"
-              fit="contain"
-              className="h-full"
-            />
+          <Photo className="col-span-2 row-span-2 h-full" />
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Photo key={i} className="h-full" />
           ))}
         </div>
       </div>

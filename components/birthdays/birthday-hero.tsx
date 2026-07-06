@@ -21,9 +21,9 @@ function BirthdayHero() {
           <PillButton href="#lead-form">לשריון תאריך</PillButton>
         </div>
         <Photo
-          src="/assets/ball-motion.png"
-          alt="כדור באולינג בתנועה"
-          fit="contain"
+          src="/assets/bg-blue.png"
+          alt="מתחם בלונה"
+          objectPosition="bottom"
           className="h-80"
         />
       </div>

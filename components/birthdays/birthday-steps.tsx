@@ -6,7 +6,7 @@ const TONES = ["pink", "sky", "cream", "coral"] as const
 /** "How it works" — the four things included in every birthday. */
 function BirthdaySteps() {
   return (
-    <section className="bg-brand-cream px-5 py-16 md:px-9">
+    <section className="bg-brand-sky bg-[url('/assets/bg-cream-castle.png')] bg-cover bg-center px-5 py-16 md:px-9">
       <div className="mx-auto max-w-6xl">
         <h2 className="mb-9 font-heading text-[32px] font-black text-brand-brown">
           מה הלו״ז?

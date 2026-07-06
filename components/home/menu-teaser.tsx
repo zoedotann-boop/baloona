@@ -8,7 +8,7 @@ const TONES = ["pink", "sky", "cream", "coral", "soft", "pink"] as const
 /** Home teaser linking to the full menu, with a grid of category tiles. */
 function MenuTeaser() {
   return (
-    <section className="bg-brand-cream px-5 py-16 md:px-9">
+    <section className="bg-brand-cream bg-[url('/assets/bg-cream-rainbow.png')] bg-cover bg-center px-5 py-16 md:px-9">
       <div className="mx-auto flex max-w-6xl flex-col items-start gap-10 md:flex-row md:items-center md:justify-between">
         <div className="max-w-lg">
           <h2 className="mb-4 font-heading text-[32px] font-black text-brand-brown">

@@ -9,6 +9,8 @@ interface PhotoProps extends React.HTMLAttributes<HTMLDivElement> {
   alt?: string
   /** How the image fills the frame. */
   fit?: "cover" | "contain"
+  /** CSS object-position for the image (e.g. "bottom"). */
+  objectPosition?: string
   /** Caption shown under the camera glyph (placeholder mode only). */
   label?: string
 }
@@ -21,6 +23,7 @@ function Photo({
   src,
   alt = "",
   fit = "cover",
+  objectPosition,
   label,
   className,
   ...props
@@ -39,6 +42,7 @@ function Photo({
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
+          style={objectPosition ? { objectPosition } : undefined}
           className={cn(
             fit === "contain" ? "object-contain p-6" : "object-cover"
           )}
