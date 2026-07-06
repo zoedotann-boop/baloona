@@ -10,7 +10,14 @@ interface StepCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /** Numbered step card with an illustration — used in "how it works" grids. */
-function StepCard({ index, image, title, sub, className, ...props }: StepCardProps) {
+function StepCard({
+  index,
+  image,
+  title,
+  sub,
+  className,
+  ...props
+}: StepCardProps) {
   return (
     <div
       className={cn(

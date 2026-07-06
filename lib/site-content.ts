@@ -87,7 +87,10 @@ export const MENU_TEASER_TILES = [
   { image: "/assets/menu-teaser/coffee-drinks.png", label: "קפה ושתייה" },
   { image: "/assets/menu-teaser/sweets.png", label: "מתוקים" },
   { image: "/assets/menu-teaser/for-adults.png", label: "לגדולים" },
-  { image: "/assets/menu-teaser/chef-recommendations.png", label: "המלצות השף" },
+  {
+    image: "/assets/menu-teaser/chef-recommendations.png",
+    label: "המלצות השף",
+  },
   { image: "/assets/menu-teaser/served-here.png", label: "מוגש במקום" },
 ] as const
 
@@ -147,7 +150,11 @@ export const BDAY_LEAD_FIELDS = [
 
 // ---- Contact -------------------------------------------------------------
 export const CONTACT_METHODS = [
-  { image: "/assets/contact/whatsapp.png", label: "וואטסאפ", sub: "תשובה מהירה" },
+  {
+    image: "/assets/contact/whatsapp.png",
+    label: "וואטסאפ",
+    sub: "תשובה מהירה",
+  },
   { image: "/assets/contact/phone.png", label: "טלפון", sub: BALOONA.phone },
   { image: "/assets/contact/email.png", label: "אימייל", sub: BALOONA.email },
   { image: "/assets/contact/navigation.png", label: "ניווט", sub: "קרית אונו" },
