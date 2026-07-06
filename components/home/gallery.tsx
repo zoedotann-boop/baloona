@@ -26,8 +26,7 @@ function Gallery() {
 
   const close = useCallback(() => setActive(null), [])
   const next = useCallback(
-    () =>
-      setActive((i) => (i === null ? i : (i + 1) % GALLERY_IMAGES.length)),
+    () => setActive((i) => (i === null ? i : (i + 1) % GALLERY_IMAGES.length)),
     []
   )
   const prev = useCallback(
@@ -74,7 +73,8 @@ function Gallery() {
               className={cn(
                 "group relative h-full cursor-zoom-in overflow-hidden rounded-[26px] outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                 index === 0 && "col-span-2 row-span-2",
-                index === GALLERY_IMAGES.length - 1 && "col-span-2 md:col-span-4"
+                index === GALLERY_IMAGES.length - 1 &&
+                  "col-span-2 md:col-span-4"
               )}
             >
               <Photo
@@ -98,7 +98,7 @@ function Gallery() {
             type="button"
             onClick={close}
             aria-label="סגירה"
-            className="absolute top-4 end-4 flex size-11 items-center justify-center rounded-full bg-white/90 text-brand-brown transition hover:bg-white"
+            className="absolute end-4 top-4 flex size-11 items-center justify-center rounded-full bg-white/90 text-brand-brown transition hover:bg-white"
           >
             <X className="size-6" />
           </button>

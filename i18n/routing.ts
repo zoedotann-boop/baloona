@@ -1,6 +1,6 @@
 // Baloona ships Hebrew (default) and English. Keeping the supported list in one
 // place makes it easy to add more languages later.
-export const locales = ["he", "en"] as const
+const locales = ["he", "en"] as const
 
 export type Locale = (typeof locales)[number]
 

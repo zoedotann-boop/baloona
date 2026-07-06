@@ -21,7 +21,7 @@ export const BALOONA = {
 }
 
 // Default greeting prefilled when a visitor opens WhatsApp from the site.
-export const WHATSAPP_MESSAGE = "היי הגעתי אליכם דרך האתר..."
+const WHATSAPP_MESSAGE = "היי הגעתי אליכם דרך האתר..."
 
 /** WhatsApp chat link with the site's default prefilled message. */
 export function whatsappLink(message: string = WHATSAPP_MESSAGE): string {
@@ -31,13 +31,6 @@ export function whatsappLink(message: string = WHATSAPP_MESSAGE): string {
 /** Waze navigation link to the venue. */
 export function wazeLink(): string {
   return `https://waze.com/ul?q=${encodeURIComponent(BALOONA.address)}&navigate=yes`
-}
-
-/** Generic maps navigation link to the venue. */
-export function mapsLink(): string {
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    BALOONA.address
-  )}`
 }
 
 /** `tel:` link built from the venue phone number. */

@@ -27,9 +27,8 @@ function ContactSection() {
                 <a
                   key={c.label}
                   href={c.href}
-                  {...(c.external
-                    ? { target: "_blank", rel: "noopener noreferrer" }
-                    : {})}
+                  target={c.external ? "_blank" : undefined}
+                  rel={c.external ? "noopener noreferrer" : undefined}
                   className="flex flex-col items-center text-center transition hover:opacity-80 active:scale-[.98]"
                 >
                   <Image

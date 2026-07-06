@@ -26,8 +26,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
   const [open, setOpen] = useState(false)
   const [, startTransition] = useTransition()
 
-  const current =
-    LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0]
+  const current = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0]
 
   function select(code: string) {
     setOpen(false)
@@ -63,7 +62,11 @@ function LanguageSwitcher({ className }: { className?: string }) {
             className="absolute end-0 z-50 mt-2 min-w-[132px] overflow-hidden rounded-2xl border border-[#f4dbdf] bg-white py-1 shadow-[0_18px_40px_-18px_rgba(90,52,43,0.4)]"
           >
             {LANGUAGES.map((lang) => (
-              <li key={lang.code} role="option" aria-selected={lang.code === locale}>
+              <li
+                key={lang.code}
+                role="option"
+                aria-selected={lang.code === locale}
+              >
                 <button
                   type="button"
                   onClick={() => select(lang.code)}
