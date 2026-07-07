@@ -1,15 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { Check } from "lucide-react"
+import { Check, Package } from "lucide-react"
 
 import { PillButton } from "@/components/brand/pill-button"
-import { BDAY_LEAD_FIELDS, BDAY_UPGRADES } from "@/lib/site-content"
+import {
+  BDAY_LEAD_CANCELLATION,
+  BDAY_LEAD_DISCLAIMER,
+  BDAY_LEAD_FIELDS,
+  BDAY_LEAD_PACKAGE,
+  BDAY_LEAD_SUBMIT,
+  BDAY_UPGRADES,
+} from "@/lib/site-content"
 import { cn } from "@/lib/utils"
 
 /** Coral lead-capture form for booking a birthday (front-end only). */
 function BirthdayLeadForm() {
   const [selected, setSelected] = useState<string[]>([])
+  const [agreed, setAgreed] = useState(false)
   const toggle = (label: string) =>
     setSelected((prev) =>
       prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
@@ -78,9 +86,54 @@ function BirthdayLeadForm() {
           </div>
         </div>
 
-        <PillButton variant="soft" size="md" className="mt-6 w-full">
-          שליחת בקשה
+        <div className="mt-5 flex items-start justify-between gap-4 rounded-[20px] border border-white/20 bg-white/10 p-5">
+          <div>
+            <div className="font-heading text-[15px] font-black">
+              {BDAY_LEAD_PACKAGE.label}
+            </div>
+            <div className="mt-1 text-[12px] text-brand-cream/70">
+              {BDAY_LEAD_PACKAGE.deposit}
+            </div>
+          </div>
+          <div className="flex flex-none items-center gap-1.5 font-heading text-[18px] font-black">
+            <Package className="size-4" strokeWidth={2.5} />
+            {BDAY_LEAD_PACKAGE.price}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setAgreed((prev) => !prev)}
+          className="mt-4 flex w-full items-start gap-3 rounded-xl p-1 text-right transition hover:bg-white/5"
+          aria-pressed={agreed}
+        >
+          <span
+            className={cn(
+              "mt-0.5 flex size-5 flex-none items-center justify-center rounded-md transition",
+              agreed
+                ? "bg-brand-cream text-primary"
+                : "border border-white/30 bg-white/10"
+            )}
+          >
+            {agreed && <Check className="size-3.5" strokeWidth={3} />}
+          </span>
+          <span className="flex-1 text-[12px] leading-relaxed text-brand-cream/90">
+            {BDAY_LEAD_CANCELLATION}
+          </span>
+        </button>
+
+        <PillButton
+          variant="soft"
+          size="md"
+          className="mt-6 w-full"
+          disabled={!agreed}
+        >
+          {BDAY_LEAD_SUBMIT}
         </PillButton>
+
+        <p className="mt-3 text-center text-[11px] text-brand-cream/60">
+          {BDAY_LEAD_DISCLAIMER}
+        </p>
       </div>
     </section>
   )
