@@ -160,6 +160,20 @@ export const BDAY_RULES = [
   "איסור מוחלט על פיניאטות, תותחי קונפטי וקומקום/מייחם.",
 ]
 
+export const BDAY_LEAD_PACKAGE = {
+  label: "חבילה ל-25 ילדים",
+  price: "1,990",
+  deposit: "מקדמה לשריון: 400 ₪ (תקזז מהסכום הסופי)",
+}
+
+export const BDAY_LEAD_CANCELLATION =
+  "קראתי ואישרתי את תנאי הביטול: ביטול עד 14 יום - לא תוחזר מקדמה. 3-14 ימים - קנס 50%. פחות מ-72 שעות - חיוב מלא."
+
+export const BDAY_LEAD_DISCLAIMER =
+  "שליחת הטופס אינה מהווה אישור לקיום האירוע; אישור סופי נקבע מול הפקידה."
+
+export const BDAY_LEAD_SUBMIT = "שלחו פרטים ונחזור אליכם לתיאום!"
+
 export const BDAY_LEAD_FIELDS = [
   { label: "תאריך אירוע מבוקש", placeholder: "בחרו תאריך" },
   { label: "שמות החוגגים", placeholder: "שם הילד/ה החוגג/ת" },
