@@ -1,14 +1,77 @@
 "$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
 
+# Lifecycle scripts.
 [scripts]
-setup = "bun install"
+setup = "bun install"                                # on workspace create: install deps
 run_mode = "concurrent"
 
 [scripts.run.dev]
-command = "bun run dev --port $CONDUCTOR_PORT"
+command = "bun run dev --port $CONDUCTOR_PORT"        # Run button: Next.js dev server (Turbopack)
 default = true
 icon = "play"
 
 [scripts.run.storybook]
-command = "bun run storybook -- -p $CONDUCTOR_PORT"
+command = "bun run storybook -- -p $CONDUCTOR_PORT"   # Run button: Storybook (component workshop)
 icon = "book"
+
+# Git workflow defaults.
+[git]
+archive_on_merge = true
+
+# Action prompts — encode Baloona's PR & branch conventions for every teammate's agent.
+[prompts]
+rename_branch = "Branch names SHOULD be {type}/{kebab-title} using a Conventional Commit type — e.g. feat/mobile-hero-actions, fix/lightbox-focus-trap. Allowed types: feat, fix, chore, refactor, docs, test, breaking. No username prefix. There is no Jira/ticket system, so no ticket segment."
+
+general = """
+Quality bar for every change:
+- Keep the codebase clean, maintainable, scalable, and easy to understand — this is the primary objective.
+- Research relevant best practices before writing code and actively look for opportunities to simplify. This is Next.js 16 with breaking changes from older versions: read the relevant guide in node_modules/next/dist/docs/ before writing Next.js code, and heed deprecation notices (see AGENTS.md).
+- This is a Hebrew (RTL), single-locale site. All user-facing copy lives in messages/he.json and is read via next-intl (useTranslations / t.raw()) — never hardcode strings in components. Respect the Direction A · Cloud & Candy brand tokens in app/globals.css (--brand-* / bg-brand-*) instead of ad-hoc colors.
+- There is no unit/integration test runner. "Test coverage" here means: add a *.stories.tsx for every new brand primitive or home section (with the NextIntlClientProvider + dir="rtl" preview decorator), and keep the a11y addon clean.
+- Before requesting review or merging, ensure these all pass: `bun run lint`, `bun run typecheck`, `bun run format:check`, `bun run knip`, and `bun run build-storybook`.
+- Verify these are updated when applicable: AGENTS.md, README, and landing-page content (messages/he.json, lib/home-config.ts) and related documentation.
+
+When the work is complete:
+- Update the pull request description so it accurately reflects the current implementation: include all actual changes and remove any outdated information from previous iterations. Treat the PR description as a living document.
+
+Committing & pushing (only when explicitly asked — always ask before pushing to git):
+1. Stage, commit with a Conventional Commits message, and push the feature branch.
+2. If this change added, changed, or removed user-facing behavior AND a PR exists for the branch (`gh pr view --json number`), UPDATE the PR description in the same turn so it matches the working tree: refresh the "User-facing changes" and "How to verify" sections and delete anything no longer true. If no PR exists, skip this step.
+3. When editing a PR body, preserve auto-generated blocks (e.g. CodeRabbit `<!-- … -->`): read the current body with `gh pr view <n> --json body -q .body`, replace only the human-authored part, then `gh pr edit <n> --body-file <file>`.
+"""
+
+create_pr = """
+Create the PR with `gh pr create --base main --body-file <file>`.
+Target the main branch. There is no Jira/ticket system. Title starts with a Conventional Commit type, e.g. 'feat: mobile hero actions' or 'fix: lightbox focus trap'. Types: feat, fix, chore, refactor, docs, test.
+
+The body MUST follow this structure, with USER-FACING CHANGES FIRST:
+
+## What this PR does
+<1–3 sentences; note that user-facing changes are listed first>
+
+## User-facing changes
+### 1. <change> — <what the visitor notices (behavior/appearance, not files)>
+### 2. …
+
+## Developer-facing
+- <tooling / refactor / deps with no user-visible effect — keep short>
+
+## Tests & checks
+- <new/updated *.stories.tsx; confirm lint, typecheck, format:check, knip, and build-storybook pass>
+
+## How to verify (manual QA)
+<optional one-line general rule>
+
+| Where | Do | Expect |
+| --- | --- | --- |
+| <route / screen> | <action> | <observable result> |
+
+## Notes
+- <follow-ups / intentional removals / caveats>
+
+Rules:
+- Lead with user impact, not implementation.
+- EVERY user-facing change has a matching row in the "How to verify" table; call out regression-checks explicitly.
+- QA steps are specific: real routes (e.g. /), the exact control, and the observable result — never "test that it works". This is an RTL Hebrew site — verify layout mirrors correctly where relevant.
+- Keep the description accurate to the current implementation.
+"""
