@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { getLocale } from "next-intl/server"
 
 import "./globals.css"
+import { AnnouncementModal } from "@/components/brand/announcement-modal"
 import { SiteFooter } from "@/components/home/site-footer"
 import { SiteHeader } from "@/components/home/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -45,6 +46,7 @@ export default async function RootLayout({
               <main className="flex-1">{children}</main>
               <SiteFooter />
             </div>
+            <AnnouncementModal />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
