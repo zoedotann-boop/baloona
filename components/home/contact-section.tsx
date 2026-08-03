@@ -1,75 +1,98 @@
-import Image from "next/image"
+import { ChevronLeft } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { Icon } from "@/components/brand/icon"
-import { SectionEyebrow } from "@/components/brand/section-eyebrow"
+import { Reveal } from "@/components/brand/reveal"
 import { ContactForm } from "@/components/home/contact-form"
-import { BALOONA, CONTACT_METHODS } from "@/lib/site-content"
+import {
+  BALOONA,
+  mailLink,
+  telLink,
+  wazeLink,
+  whatsappLink,
+} from "@/lib/site-content"
 
-/** Contact block: quick methods + opening hours + a message form. */
+/** Contact block: readable contact details beside a message form, on lavender. */
 function ContactSection() {
   const t = useTranslations("contact")
 
+  const details = [
+    {
+      label: "וואטסאפ",
+      value: "שלחו לנו הודעה",
+      href: whatsappLink(),
+      external: true,
+    },
+    { label: "טלפון", value: BALOONA.phone, href: telLink(), external: false },
+    {
+      label: "אימייל",
+      value: BALOONA.email,
+      href: mailLink(),
+      external: false,
+    },
+    {
+      label: "כתובת",
+      value: BALOONA.address,
+      href: wazeLink(),
+      external: true,
+    },
+  ]
+
   return (
-    <section id="contact" className="px-5 py-16 md:px-9">
+    <section
+      id="contact"
+      className="bg-accent px-5 py-20 text-white md:px-9 md:py-28"
+    >
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10">
-          <SectionEyebrow>{t("eyebrow")}</SectionEyebrow>
-          <h2 className="mt-1 font-heading text-[40px] font-black text-brand-brown">
+        <Reveal className="mb-12 text-center">
+          <h2 className="font-heading text-[clamp(34px,4.5vw,50px)] font-black">
             {t("title")}
           </h2>
-        </div>
+          <p className="mx-auto mt-4 max-w-xl text-[20px] leading-relaxed text-white/80">
+            {t("eyebrow")}
+          </p>
+        </Reveal>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-          <div>
-            <div className="mb-6 grid grid-cols-2 gap-4 rounded-[22px] border border-[#f3d3d9] bg-[#fbede0] p-5">
-              {CONTACT_METHODS.map((c) => (
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
+          <Reveal>
+            <div className="space-y-2">
+              {details.map((d) => (
                 <a
-                  key={c.label}
-                  href={c.href}
-                  target={c.external ? "_blank" : undefined}
-                  rel={c.external ? "noopener noreferrer" : undefined}
-                  className="flex flex-col items-center text-center transition hover:opacity-80 active:scale-[.98]"
+                  key={d.label}
+                  href={d.href}
+                  target={d.external ? "_blank" : undefined}
+                  rel={d.external ? "noopener noreferrer" : undefined}
+                  className="group -mx-4 flex items-center justify-between gap-4 rounded-2xl px-4 py-3 transition hover:bg-white/10"
                 >
-                  <Image
-                    src={c.image}
-                    alt={c.label}
-                    width={48}
-                    height={48}
-                    className="mb-3 size-12 object-contain"
-                  />
-                  <div className="text-[14px] font-bold text-brand-brown">
-                    {c.label}
-                  </div>
-                  <div className="mt-0.5 text-[12px] text-brand-muted">
-                    {c.sub}
-                  </div>
+                  <span>
+                    <span className="block text-[15px] font-bold text-white/70">
+                      {d.label}
+                    </span>
+                    <span className="block text-[20px] text-white underline decoration-white/40 decoration-2 underline-offset-4">
+                      {d.value}
+                    </span>
+                  </span>
+                  <ChevronLeft className="size-6 shrink-0 text-white/80 transition group-hover:-translate-x-1" />
                 </a>
               ))}
-            </div>
 
-            <div className="rounded-[26px] border border-[#f3d3d9] bg-white p-6 shadow-[0_14px_36px_-24px_rgba(90,39,64,0.5)]">
-              <div className="mb-4 flex items-center gap-2 font-heading text-[13px] font-black text-brand-brown">
-                <Icon name="clock" className="size-4" />
-                שעות פתיחה
-              </div>
-              <div className="text-[13px]">
-                {BALOONA.hours.map((h) => (
-                  <div
-                    key={h.days}
-                    className="flex items-center justify-between border-b border-[#f1dde1] py-2 last:border-0"
-                  >
-                    <span className="font-bold text-[#6b5f60]">{h.days}</span>
-                    <span className="font-black text-brand-brown">
-                      {h.time}
-                    </span>
-                  </div>
-                ))}
+              <div className="px-4 pt-4">
+                <span className="block text-[15px] font-bold text-white/70">
+                  שעות פתיחה
+                </span>
+                <div className="mt-1 space-y-1 text-[20px] text-white">
+                  {BALOONA.hours.map((h) => (
+                    <div key={h.days}>
+                      {h.days} · {h.time}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          </Reveal>
 
-          <ContactForm />
+          <Reveal delay={90}>
+            <ContactForm />
+          </Reveal>
         </div>
       </div>
     </section>

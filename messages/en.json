@@ -12,7 +12,7 @@
   },
   "hero": {
     "badge": "Open now · until 19:00",
-    "title": "Play in a friendly space",
+    "title": "A playground & café — for parents and kids",
     "description": "A huge 3-floor indoor playground for kids aged 1–9. Sit back with the little ones and enjoy it too. A café, a private birthday room and a warm, welcoming team.",
     "waze": "Navigate to us (Waze)",
     "whatsapp": "WhatsApp",
@@ -22,19 +22,43 @@
       "saturday": "Saturday 09:00–19:00"
     }
   },
+  "about": {
+    "title": "One place for the whole family",
+    "body": "We believe you can be a parent and still enjoy a moment to yourself. So we built a big, beautiful space, with an all-day café alongside classes, workshops and birthdays — right next to a huge, well-equipped, secure and clean play area. All under one roof."
+  },
   "features": {
+    "cta": "Come see the venue",
     "items": [
-      { "title": "3-floor complex", "description": "Play zones for every age" },
-      { "title": "Homestyle café", "description": "Hot food, coffee and treats" },
-      { "title": "Birthday room", "description": "A private room for parties" },
-      { "title": "Air-conditioned & secured", "description": "Maximum safety" }
+      {
+        "title": "An inviting play area",
+        "description": "A pleasant, well-designed space for babies, toddlers and kids"
+      },
+      {
+        "title": "A café for parents",
+        "description": "Coffee, sweets and snacks — for you and the kids, all day long"
+      },
+      {
+        "title": "Classes & birthdays",
+        "description": "Developmental classes, workshops, enrichment talks and celebrations"
+      }
     ]
   },
+  "reassurance": {
+    "title": "Don't worry — we've got it all covered!",
+    "body": "Picked the kids up from daycare? Come straight to us. Spend quality time together, enjoy a healthy dinner, and head home for just a warm bath, a story and bed.",
+    "cta": "Come visit"
+  },
   "pricing": {
-    "eyebrow": "Admission pricing",
     "title": "Pricing",
     "popular": "Most popular",
     "note": "* Admission covers one child and one guardian. Each additional guardian is +20 ₪. Daily entry.",
+    "hoursTitle": "Opening hours",
+    "rulesTitle": "Good to know",
+    "rules": [
+      "Admission covers one child and one guardian; each additional guardian is +20 ₪.",
+      "Daily entry — you can come and go throughout the day.",
+      "Children must be supervised by an adult aged 16 or over."
+    ],
     "items": [
       {
         "sub": "Midweek",
@@ -66,20 +90,19 @@
     ]
   },
   "birthday": {
-    "eyebrow": "Birthdays",
     "title": "Celebrate a birthday at Baloona!",
     "description": "Two hours of fun with free access to the attractions, a private room, pizza for every child and a cake ceremony by our team. From 1,990 ₪ for 25 kids.",
     "cta": "See all the details"
   },
   "gallery": {
-    "title": "The venue in photos"
+    "title": "A little peek at the venue"
   },
   "contact": {
     "eyebrow": "Leave us a message — we'll get back to you during opening hours",
     "title": "Contact us"
   },
   "reviews": {
-    "title": "What families say about us",
+    "title": "What parents say",
     "items": [
       {
         "text": "The place is amazing, the kids didn't want to leave! Clean, safe and the staff are simply lovely. We already booked a birthday.",

@@ -5,7 +5,7 @@ import { BirthdayCta } from "./birthday-cta"
 const meta = {
   title: "Home/BirthdayCta",
   component: BirthdayCta,
-  parameters: { layout: "fullscreen", backgrounds: { value: "white" } },
+  parameters: { layout: "fullscreen", backgrounds: { value: "nearwhite" } },
 } satisfies Meta<typeof BirthdayCta>
 
 export default meta

@@ -5,7 +5,7 @@ import { StarRating } from "./star-rating"
 const meta = {
   title: "Brand/StarRating",
   component: StarRating,
-  parameters: { backgrounds: { value: "white" } },
+  parameters: { backgrounds: { value: "nearwhite" } },
   argTypes: {
     rating: { control: { type: "range", min: 0, max: 5, step: 1 } },
   },

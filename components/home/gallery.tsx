@@ -5,7 +5,9 @@ import { useTranslations } from "next-intl"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 
+import { AccentSquare } from "@/components/brand/accent-square"
 import { Photo } from "@/components/brand/photo"
+import { Reveal } from "@/components/brand/reveal"
 import { cn } from "@/lib/utils"
 
 const GALLERY_IMAGES = [
@@ -56,14 +58,19 @@ function Gallery() {
   }, [isOpen, close, next, prev])
 
   return (
-    <section className="bg-white px-5 py-16 md:px-9">
+    <section className="relative overflow-hidden bg-white px-5 py-20 md:px-9 md:py-28">
+      <AccentSquare
+        className="absolute -end-6 top-24 -z-10"
+        color="bg-brand-lavender"
+        rotate={-10}
+      />
       <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-end justify-between">
-          <h2 className="font-heading text-[32px] font-black text-brand-brown">
+        <Reveal className="mb-8 flex items-end justify-between">
+          <h2 className="font-heading text-[clamp(32px,4vw,46px)] font-black text-brand-plum">
             {t("title")}
           </h2>
-        </div>
-        <div className="grid auto-rows-[106px] grid-cols-2 gap-3 md:grid-cols-4">
+        </Reveal>
+        <Reveal className="grid auto-rows-[106px] grid-cols-2 gap-4 md:grid-cols-4">
           {GALLERY_IMAGES.map((src, index) => (
             <button
               key={src}
@@ -83,12 +90,12 @@ function Gallery() {
               />
             </button>
           ))}
-        </div>
+        </Reveal>
       </div>
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-brand-brown/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/80 p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-label="גלריית תמונות"
@@ -98,7 +105,7 @@ function Gallery() {
             type="button"
             onClick={close}
             aria-label="סגירה"
-            className="absolute end-4 top-4 flex size-11 items-center justify-center rounded-full bg-white/90 text-brand-brown transition hover:bg-white"
+            className="absolute end-4 top-4 flex size-11 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white"
           >
             <X className="size-6" />
           </button>
@@ -110,7 +117,7 @@ function Gallery() {
               prev()
             }}
             aria-label="הקודם"
-            className="absolute end-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-brand-brown transition hover:bg-white md:end-6"
+            className="absolute end-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:end-6"
           >
             <ChevronRight className="size-7" />
           </button>
@@ -122,7 +129,7 @@ function Gallery() {
               next()
             }}
             aria-label="הבא"
-            className="absolute start-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-brand-brown transition hover:bg-white md:start-6"
+            className="absolute start-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:start-6"
           >
             <ChevronLeft className="size-7" />
           </button>
@@ -141,7 +148,7 @@ function Gallery() {
             />
           </div>
 
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3.5 py-1 text-[13px] font-bold text-brand-brown">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3.5 py-1 text-[15px] font-bold text-foreground">
             {active + 1} / {GALLERY_IMAGES.length}
           </div>
         </div>

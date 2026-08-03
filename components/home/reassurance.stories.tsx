@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
 
-import { Gallery } from "./gallery"
+import { Reassurance } from "./reassurance"
 
 const meta = {
-  title: "Home/Gallery",
-  component: Gallery,
+  title: "Home/Reassurance",
+  component: Reassurance,
   parameters: { layout: "fullscreen", backgrounds: { value: "nearwhite" } },
-} satisfies Meta<typeof Gallery>
+} satisfies Meta<typeof Reassurance>
 
 export default meta
 type Story = StoryObj<typeof meta>

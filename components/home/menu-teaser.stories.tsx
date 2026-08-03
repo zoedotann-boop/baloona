@@ -5,7 +5,7 @@ import { MenuTeaser } from "./menu-teaser"
 const meta = {
   title: "Home/MenuTeaser",
   component: MenuTeaser,
-  parameters: { layout: "fullscreen", backgrounds: { value: "cream" } },
+  parameters: { layout: "fullscreen", backgrounds: { value: "banana" } },
 } satisfies Meta<typeof MenuTeaser>
 
 export default meta

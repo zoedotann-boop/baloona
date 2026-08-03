@@ -5,7 +5,7 @@ import { Logo } from "./logo"
 const meta = {
   title: "Brand/Logo",
   component: Logo,
-  parameters: { backgrounds: { value: "white" } },
+  parameters: { backgrounds: { value: "nearwhite" } },
   argTypes: {
     size: { control: "inline-radio", options: ["sm", "md", "lg", "hero"] },
   },

@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 
-import { SectionEyebrow } from "@/components/brand/section-eyebrow"
 import { BALOONA, mailLink, telLink } from "@/lib/site-content"
 
 export const metadata: Metadata = {
@@ -53,15 +52,12 @@ export default function AccessibilityPage() {
   return (
     <div className="bg-white">
       {/* Header */}
-      <section className="bg-brand-sky px-5 py-16 text-center md:px-9 md:py-20">
+      <section className="bg-brand-lavender-soft px-5 py-16 text-center md:px-9 md:py-20">
         <div className="mx-auto max-w-3xl">
-          <SectionEyebrow className="text-brand-sky-ink">
-            {BALOONA.name}
-          </SectionEyebrow>
-          <h1 className="mt-3 font-heading text-[clamp(30px,5vw,46px)] leading-[1.08] font-black text-brand-brown">
+          <h1 className="font-heading text-[clamp(34px,5vw,52px)] leading-[1.08] font-black text-brand-plum">
             הצהרת נגישות
           </h1>
-          <p className="mx-auto mt-5 max-w-[520px] text-[15px] leading-relaxed text-brand-sky-ink">
+          <p className="mx-auto mt-5 max-w-[520px] text-[17px] leading-relaxed text-brand-plum">
             אנו מאמינים שכל אחד ואחת צריכים ליהנות מהמתחם ומהאתר שלנו בנוחות
             ובעצמאות. ריכזנו כאן את פעולות הנגישות שביצענו ואת הדרך ליצור איתנו
             קשר.
@@ -74,13 +70,13 @@ export default function AccessibilityPage() {
         <div className="mx-auto flex max-w-3xl flex-col gap-9">
           {SECTIONS.map((section) => (
             <div key={section.title}>
-              <h2 className="mb-3 font-heading text-[22px] font-black text-brand-brown">
+              <h2 className="mb-3 font-heading text-[26px] font-black text-brand-plum">
                 {section.title}
               </h2>
               {section.body?.map((paragraph) => (
                 <p
                   key={paragraph}
-                  className="mb-3 text-[15px] leading-relaxed text-brand-muted last:mb-0"
+                  className="mb-3 text-[17px] leading-relaxed text-muted-foreground last:mb-0"
                 >
                   {paragraph}
                 </p>
@@ -90,7 +86,7 @@ export default function AccessibilityPage() {
                   {section.list.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2.5 text-[15px] leading-relaxed text-brand-muted"
+                      className="flex items-start gap-2.5 text-[17px] leading-relaxed text-muted-foreground"
                     >
                       <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
                       {item}
@@ -102,28 +98,28 @@ export default function AccessibilityPage() {
           ))}
 
           {/* Contact for accessibility issues */}
-          <div className="rounded-[26px] border border-[#f3d3d9] bg-brand-pink-soft p-6 md:p-8">
-            <h2 className="mb-3 font-heading text-[22px] font-black text-brand-brown">
+          <div className="rounded-[26px] border border-border bg-brand-pink-soft p-6 md:p-8">
+            <h2 className="mb-3 font-heading text-[26px] font-black text-brand-plum">
               פנייה בנושא נגישות
             </h2>
-            <p className="text-[15px] leading-relaxed text-brand-muted">
+            <p className="text-[17px] leading-relaxed text-muted-foreground">
               נתקלתם בבעיה או שיש לכם הצעה לשיפור הנגישות? נשמח לשמוע ולטפל בכל
               פנייה בהקדם. ניתן ליצור קשר עם רכז הנגישות שלנו:
             </p>
-            <div className="mt-4 flex flex-col gap-2 text-[15px] font-bold text-brand-brown">
-              <a href={telLink()} className="hover:text-primary">
+            <div className="mt-4 flex flex-col gap-2 text-[17px] font-bold text-foreground">
+              <a href={telLink()} className="hover:text-foreground">
                 טלפון: {BALOONA.phone}
               </a>
-              <a href={mailLink()} className="hover:text-primary">
+              <a href={mailLink()} className="hover:text-foreground">
                 אימייל: {BALOONA.email}
               </a>
-              <span className="font-normal text-brand-muted">
+              <span className="font-normal text-muted-foreground">
                 כתובת: {BALOONA.address}
               </span>
             </div>
           </div>
 
-          <p className="text-[13px] text-brand-muted">
+          <p className="text-[15px] text-muted-foreground">
             הצהרת הנגישות עודכנה לאחרונה ביולי 2026.
           </p>
         </div>

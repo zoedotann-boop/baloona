@@ -5,7 +5,7 @@ import { Features } from "./features"
 const meta = {
   title: "Home/Features",
   component: Features,
-  parameters: { layout: "fullscreen", backgrounds: { value: "white" } },
+  parameters: { layout: "fullscreen", backgrounds: { value: "nearwhite" } },
 } satisfies Meta<typeof Features>
 
 export default meta

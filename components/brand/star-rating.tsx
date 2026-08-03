@@ -15,7 +15,7 @@ function StarRating({
 }: StarRatingProps) {
   return (
     <div
-      className={cn("text-[15px] tracking-[3px] text-brand-yellow", className)}
+      className={cn("text-[17px] tracking-[3px] text-brand-yellow", className)}
       role="img"
       aria-label={`${rating} מתוך ${max} כוכבים`}
       {...props}

@@ -82,7 +82,7 @@ const ICONS = {
   tiktok: TikTok,
 } as const
 
-export type IconName = keyof typeof ICONS
+type IconName = keyof typeof ICONS
 
 function Icon({ name, ...props }: { name: IconName } & LucideProps) {
   const Cmp = ICONS[name]

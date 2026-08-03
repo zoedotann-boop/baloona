@@ -7,6 +7,8 @@ interface FeatureItemProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Petal color of the balloon icon. */
   color?: string
   iconSize?: number
+  /** `row` = icon beside text (compact grid); `stack` = centered column. */
+  layout?: "row" | "stack"
 }
 
 /** Balloon icon + title (+ optional description). Used in the features grid. */
@@ -15,22 +17,41 @@ function FeatureItem({
   description,
   color,
   iconSize,
+  layout = "row",
   className,
   ...props
 }: FeatureItemProps) {
+  const stack = layout === "stack"
+
   return (
     <div
-      className={cn("flex items-start gap-2.5 sm:gap-3.5", className)}
+      className={cn(
+        stack
+          ? "flex flex-col items-center gap-3 text-center"
+          : "flex items-start gap-2.5 sm:gap-3.5",
+        className
+      )}
       {...props}
     >
-      {/* Slightly smaller icon so two items fit per row on mobile. */}
-      <BalloonClusterIcon color={color} size={iconSize ?? 44} />
+      <BalloonClusterIcon color={color} size={iconSize ?? (stack ? 72 : 44)} />
       <div>
-        <div className="text-[13px] font-extrabold text-foreground sm:text-[15px]">
+        <div
+          className={cn(
+            stack
+              ? "font-heading text-[20px] font-black text-brand-plum"
+              : "text-[15px] font-extrabold text-foreground sm:text-[17px]"
+          )}
+        >
           {title}
         </div>
         {description && (
-          <div className="mt-0.5 text-[11px] text-brand-muted sm:mt-1 sm:text-xs">
+          <div
+            className={cn(
+              stack
+                ? "mt-2 text-[17px] leading-relaxed text-brand-ink-soft"
+                : "mt-0.5 text-[13px] text-muted-foreground sm:mt-1 sm:text-sm"
+            )}
+          >
             {description}
           </div>
         )}

@@ -7,7 +7,7 @@ import { FeatureItem } from "./feature-item"
 const meta = {
   title: "Brand/FeatureItem",
   component: FeatureItem,
-  parameters: { backgrounds: { value: "white" } },
+  parameters: { backgrounds: { value: "nearwhite" } },
   args: {
     title: "מתחם 3 קומות",
     description: "אזורי משחק לכל הגילאים",

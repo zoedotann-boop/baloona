@@ -5,7 +5,7 @@ import { Pricing } from "./pricing"
 const meta = {
   title: "Home/Pricing",
   component: Pricing,
-  parameters: { layout: "fullscreen", backgrounds: { value: "white" } },
+  parameters: { layout: "fullscreen", backgrounds: { value: "nearwhite" } },
 } satisfies Meta<typeof Pricing>
 
 export default meta

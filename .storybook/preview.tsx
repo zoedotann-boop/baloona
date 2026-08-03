@@ -8,8 +8,8 @@ import "../app/globals.css"
 // Fonts are loaded via Google Fonts in preview-head.html; map them onto the
 // CSS variables the design tokens expect.
 const fontVars: CSSProperties = {
-  "--font-sans": "'Heebo', sans-serif",
-  "--font-heading": "'Rubik', sans-serif",
+  "--font-sans": "'Assistant', sans-serif",
+  "--font-heading": "'Fredoka', sans-serif",
 } as CSSProperties
 
 const preview: Preview = {
@@ -17,18 +17,18 @@ const preview: Preview = {
     layout: "centered",
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     backgrounds: {
-      default: "cream",
+      default: "nearwhite",
       options: {
-        cream: { name: "Cream", value: "#fffaed" },
-        pink: { name: "Pink", value: "#fbdde0" },
-        white: { name: "White", value: "#ffffff" },
-        blue: { name: "Blue", value: "#bfe0ee" },
+        lavender: { name: "Lavender", value: "#ebe3f5" },
+        pink: { name: "Pink", value: "#fbd3e0" },
+        banana: { name: "Banana", value: "#fde293" },
+        nearwhite: { name: "Near-white", value: "#fdf6f8" },
       },
     },
     a11y: { test: "todo" },
   },
   initialGlobals: {
-    backgrounds: { value: "cream" },
+    backgrounds: { value: "nearwhite" },
   },
   decorators: [
     (Story) => (

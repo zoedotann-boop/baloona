@@ -34,8 +34,8 @@ function HeroMobileActions() {
       {/* Floating action buttons, styled to match the site's soft, rounded look */}
       <div className="fixed bottom-6 left-4 z-50 flex flex-col items-center gap-3">
         {/* "Open now" status chip */}
-        <span className="relative flex size-12 flex-col items-center justify-center rounded-full bg-brand-green font-heading text-[9px] leading-tight font-black text-brand-cream shadow-[0_14px_28px_-10px_rgba(63,174,107,0.75)] ring-4 ring-white/70">
-          <span className="animate-baloona-pulse absolute top-2 size-[6px] rounded-full bg-brand-cream" />
+        <span className="relative flex size-12 flex-col items-center justify-center rounded-full bg-brand-green font-heading text-[11px] leading-tight font-black text-white ring-4 ring-white/70">
+          <span className="animate-baloona-pulse absolute top-2 size-[6px] rounded-full bg-white" />
           <span className="mt-2.5">
             פתוח
             <br />
@@ -49,7 +49,7 @@ function HeroMobileActions() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={site("whatsapp")}
-          className="flex size-14 items-center justify-center rounded-full bg-brand-green text-brand-cream shadow-[0_16px_30px_-10px_rgba(63,174,107,0.8)] ring-4 ring-white/70 transition-transform active:translate-y-px active:scale-95"
+          className="flex size-14 items-center justify-center rounded-full bg-brand-green text-white ring-4 ring-white/70 transition-transform active:translate-y-px active:scale-95"
         >
           <Icon name="whatsapp" className="size-7" />
         </a>
@@ -62,7 +62,7 @@ function HeroMobileActions() {
           aria-hidden={!showTop}
           tabIndex={showTop ? 0 : -1}
           className={cn(
-            "flex size-12 items-center justify-center rounded-full bg-brand-cream text-brand-brown shadow-[0_14px_30px_-12px_rgba(90,52,43,0.5)] ring-4 ring-white/70 transition-all duration-300 active:translate-y-px active:scale-95",
+            "flex size-12 items-center justify-center rounded-full bg-white text-foreground ring-4 ring-white/70 transition-all duration-300 active:translate-y-px active:scale-95",
             showTop
               ? "translate-y-0 scale-100 opacity-100"
               : "pointer-events-none translate-y-2 scale-90 opacity-0"

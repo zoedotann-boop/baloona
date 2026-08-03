@@ -1,63 +1,70 @@
-"use client"
+import { Reveal } from "@/components/brand/reveal"
+import { MENU_DATA, MENU_TABS } from "@/lib/site-content"
 
-import { useState } from "react"
-
-import { MenuItemCard } from "@/components/brand/menu-item-card"
-import { MENU_DATA, MENU_TABS, type MenuTabId } from "@/lib/site-content"
-import { cn } from "@/lib/utils"
-
-/** Menu page board: vertical category tabs + a responsive item grid. */
+/** Menu page: a flat, flowing "docs" view — categories with priced item lines. */
 function MenuBoard() {
-  const [tab, setTab] = useState<MenuTabId>("food")
-
   return (
-    <section className="px-5 py-14 md:px-9">
-      <div className="mx-auto max-w-6xl">
-        <header className="mb-10">
-          <h1 className="font-heading text-[40px] font-black text-brand-brown">
+    <section className="px-5 py-16 md:px-9 md:py-24">
+      <div className="mx-auto max-w-3xl">
+        <header className="mb-8 text-center">
+          <h1 className="font-heading text-[clamp(34px,5vw,50px)] font-black text-brand-plum">
             התפריט שלנו
           </h1>
-          <p className="mt-2 text-[15px] text-[#6b5f60]">
+          <p className="mt-3 text-[18px] leading-relaxed text-brand-ink-soft">
             אוכל טרי, קפה טוב ומתוקים לילדים — הכל במקום.
           </p>
         </header>
 
-        <div className="flex flex-col gap-8 md:flex-row md:items-start">
-          <div className="flex gap-2 overflow-x-auto pb-1 md:w-40 md:flex-none md:flex-col md:overflow-visible md:pb-0">
-            {MENU_TABS.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setTab(t.id)}
-                aria-pressed={tab === t.id}
-                className={cn(
-                  "h-10 rounded-full px-4 text-[13px] font-bold whitespace-nowrap transition md:w-full md:text-right",
-                  tab === t.id
-                    ? "bg-primary text-primary-foreground shadow-[0_10px_24px_-12px_rgba(255,125,89,0.8)]"
-                    : "border border-[#f3d3d9] bg-white text-brand-brown hover:brightness-95"
-                )}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
+        {/* In-page jump nav — plain anchor links, flat pills. */}
+        <nav className="mb-12 flex flex-wrap justify-center gap-2">
+          {MENU_TABS.map((t) => (
+            <a
+              key={t.id}
+              href={`#menu-${t.id}`}
+              className="flex h-9 items-center rounded-full border border-border bg-white px-4 text-[15px] font-bold text-brand-plum transition hover:-translate-y-0.5"
+            >
+              {t.label}
+            </a>
+          ))}
+        </nav>
 
-          <div className="min-w-0 flex-1">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {MENU_DATA[tab].map((item) => (
-                <MenuItemCard
-                  key={item.name}
-                  name={item.name}
-                  price={item.price}
-                  desc={item.desc}
-                />
-              ))}
-            </div>
-            <p className="mt-8 text-[12px] text-brand-muted">
-              * התפריט מתעדכן מעת לעת ועשוי להשתנות לפי עונה ומלאי.
-            </p>
-          </div>
+        <div className="space-y-14">
+          {MENU_TABS.map((t) => (
+            <Reveal
+              key={t.id}
+              as="section"
+              id={`menu-${t.id}`}
+              className="scroll-mt-24"
+            >
+              <h2 className="border-b-2 border-brand-lavender/40 pb-2 font-heading text-[26px] font-black text-brand-plum">
+                {t.label}
+              </h2>
+              <div className="mt-2 divide-y divide-border">
+                {MENU_DATA[t.id].map((item) => (
+                  <div key={item.name} className="py-3.5">
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="font-heading text-[18px] font-bold text-foreground">
+                        {item.name}
+                      </span>
+                      <span className="shrink-0 font-heading text-[17px] font-black text-brand-plum">
+                        {item.price}
+                      </span>
+                    </div>
+                    {item.desc && (
+                      <p className="mt-1 text-[15px] leading-relaxed text-muted-foreground">
+                        {item.desc}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          ))}
         </div>
+
+        <p className="mt-12 text-center text-[14px] text-muted-foreground">
+          * התפריט מתעדכן מעת לעת ועשוי להשתנות לפי עונה ומלאי.
+        </p>
       </div>
     </section>
   )

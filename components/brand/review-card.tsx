@@ -23,7 +23,7 @@ function ReviewCard({
   return (
     <div
       className={cn(
-        "rounded-[26px] bg-brand-cream p-6 shadow-[0_14px_36px_-22px_rgba(90,39,64,0.5)]",
+        "flex h-full flex-col rounded-[26px] bg-brand-cloud p-6",
         className
       )}
       {...props}
@@ -38,14 +38,16 @@ function ReviewCard({
         />
         <StarRating rating={rating} />
       </div>
-      <p className="my-4 text-sm leading-relaxed text-[#4a4042]">“{text}”</p>
-      <div className="flex items-center gap-3 border-t border-[#f1dde1] pt-4">
-        <div className="flex size-10 items-center justify-center rounded-full bg-brand-pink font-heading text-xs font-extrabold text-[#7a3b4f]">
+      <p className="my-4 flex-1 text-base leading-relaxed text-foreground">
+        “{text}”
+      </p>
+      <div className="mt-auto flex items-center gap-3 border-t border-border pt-4">
+        <div className="flex size-10 items-center justify-center rounded-full bg-brand-pink font-heading text-sm font-extrabold text-secondary-foreground">
           {initials}
         </div>
         <div>
-          <div className="text-[13px] font-bold text-foreground">{name}</div>
-          <div className="text-[11px] text-brand-muted">{ago}</div>
+          <div className="text-[15px] font-bold text-foreground">{name}</div>
+          <div className="text-[13px] text-muted-foreground">{ago}</div>
         </div>
       </div>
     </div>

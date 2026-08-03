@@ -54,15 +54,15 @@ function Photo({
   return (
     <div
       className={cn(
-        "flex w-full flex-col items-center justify-center gap-1 overflow-hidden rounded-[26px] bg-secondary text-brand-mauve",
-        "bg-[radial-gradient(var(--brand-mauve)_1px,transparent_1.4px)] bg-[length:12px_12px]",
+        "flex w-full flex-col items-center justify-center gap-1 overflow-hidden rounded-[26px] bg-secondary text-muted-foreground",
+        "bg-[radial-gradient(var(--brand-logo)_1px,transparent_1.4px)] bg-[length:12px_12px]",
         className
       )}
       {...props}
     >
       <Camera className="size-8 opacity-50" />
       {label && (
-        <span className="px-3 text-center text-[11px] font-bold tracking-wide opacity-70">
+        <span className="px-3 text-center text-[13px] font-bold tracking-wide opacity-70">
           {label}
         </span>
       )}

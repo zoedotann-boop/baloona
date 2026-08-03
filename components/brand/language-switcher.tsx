@@ -42,7 +42,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex h-10 items-center gap-1.5 rounded-full bg-[#f7e7ea] px-3.5 text-xs font-extrabold text-[#7a3b4f] transition hover:brightness-95"
+        className="flex h-10 items-center gap-1.5 rounded-full bg-brand-pink-soft px-3.5 text-sm font-extrabold text-secondary-foreground transition hover:brightness-95"
       >
         {current.short} ▾
       </button>
@@ -59,7 +59,7 @@ function LanguageSwitcher({ className }: { className?: string }) {
           />
           <ul
             role="listbox"
-            className="absolute end-0 z-50 mt-2 min-w-[132px] overflow-hidden rounded-2xl border border-[#f4dbdf] bg-white py-1 shadow-[0_18px_40px_-18px_rgba(90,52,43,0.4)]"
+            className="absolute end-0 z-50 mt-2 min-w-[132px] overflow-hidden rounded-2xl border border-border bg-white py-1"
           >
             {LANGUAGES.map((lang) => (
               <li
@@ -71,14 +71,14 @@ function LanguageSwitcher({ className }: { className?: string }) {
                   type="button"
                   onClick={() => select(lang.code)}
                   className={cn(
-                    "flex w-full items-center justify-between px-4 py-2 text-sm transition",
+                    "flex w-full items-center justify-between px-4 py-2 text-base transition",
                     lang.code === locale
-                      ? "bg-brand-pink font-extrabold text-brand-brown"
-                      : "font-bold text-[#6b5f60] hover:bg-brand-pink/40"
+                      ? "bg-brand-pink font-extrabold text-foreground"
+                      : "font-bold text-muted-foreground hover:bg-brand-pink/40"
                   )}
                 >
                   {lang.label}
-                  <span className="text-[11px] opacity-60">{lang.short}</span>
+                  <span className="text-[13px] opacity-60">{lang.short}</span>
                 </button>
               </li>
             ))}

@@ -5,7 +5,7 @@ import { MenuBoard } from "./menu-board"
 const meta = {
   title: "Menu/MenuBoard",
   component: MenuBoard,
-  parameters: { layout: "fullscreen", backgrounds: { value: "pink" } },
+  parameters: { layout: "fullscreen", backgrounds: { value: "lavender" } },
 } satisfies Meta<typeof MenuBoard>
 
 export default meta
