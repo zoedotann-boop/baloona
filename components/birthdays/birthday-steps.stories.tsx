@@ -5,7 +5,7 @@ import { BirthdaySteps } from "./birthday-steps"
 const meta = {
   title: "Birthdays/BirthdaySteps",
   component: BirthdaySteps,
-  parameters: { layout: "fullscreen", backgrounds: { value: "cream" } },
+  parameters: { layout: "fullscreen", backgrounds: { value: "banana" } },
 } satisfies Meta<typeof BirthdaySteps>
 
 export default meta

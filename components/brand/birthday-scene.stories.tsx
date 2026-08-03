@@ -5,9 +5,9 @@ import { BirthdayScene } from "./birthday-scene"
 const meta = {
   title: "Brand/BirthdayScene",
   component: BirthdayScene,
-  parameters: { backgrounds: { value: "blue" } },
+  parameters: { backgrounds: { value: "lavender" } },
   render: () => (
-    <div className="w-[420px] rounded-[32px] bg-brand-sky p-8">
+    <div className="w-[420px] rounded-[32px] bg-brand-lavender-soft p-8">
       <BirthdayScene className="h-[280px]" />
     </div>
   ),

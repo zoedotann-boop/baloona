@@ -7,8 +7,8 @@ import { BalloonClusterIcon } from "./balloon-cluster-icon"
 const meta = {
   title: "Brand/BalloonClusterIcon",
   component: BalloonClusterIcon,
-  parameters: { backgrounds: { value: "white" } },
-  args: { size: 64, color: "var(--brand-coral)" },
+  parameters: { backgrounds: { value: "nearwhite" } },
+  args: { size: 64, color: "var(--brand-rose)" },
 } satisfies Meta<typeof BalloonClusterIcon>
 
 export default meta

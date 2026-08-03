@@ -1,55 +1,91 @@
 import { useTranslations } from "next-intl"
 
-import { Logo } from "@/components/brand/logo"
+import { AccentSquare } from "@/components/brand/accent-square"
 import { PillButton } from "@/components/brand/pill-button"
+import { Photo } from "@/components/brand/photo"
+import { Reveal } from "@/components/brand/reveal"
 import { StatusBadge } from "@/components/brand/status-badge"
 import { HeroMobileActions } from "@/components/home/hero-mobile-actions"
 import { wazeLink, whatsappLink } from "@/lib/site-content"
 
 /**
- * Centered hero — giant wordmark, headline, CTAs and opening hours over the
- * design's candyland illustration (`/public/hero-bg.png`); brand pink shows
- * through as a fallback.
+ * Editorial hero — an eyebrow, a big two-line headline, CTAs and hours on one
+ * side, an asymmetric photo collage with accent squares on the other. Sits on a
+ * soft-pink surface.
  */
 function Hero() {
   const t = useTranslations("hero")
   const site = useTranslations("site")
 
   return (
-    <section className="relative overflow-hidden bg-brand-pink bg-[url('/hero-bg-mobile.png')] bg-cover bg-center px-5 py-16 text-center md:bg-[url('/hero-bg.png')] md:px-9 md:py-20">
-      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">
-        <StatusBadge className="mb-5" variant="pill" label={t("badge")} />
-        <Logo size="hero" className="mb-2" />
-        <h1 className="font-heading text-[clamp(28px,5vw,40px)] leading-[1.08] font-black tracking-[-1px] text-brand-brown">
-          {t("title")}
-        </h1>
-        <p className="mt-5 max-w-[430px] text-[18px] leading-relaxed text-[#6b5f60]">
-          {t("description")}
-        </p>
-        <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-          <PillButton
-            href={wazeLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("waze")}
-          </PillButton>
-          <PillButton
-            href={whatsappLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="outline"
-          >
-            {site("whatsapp")}
-          </PillButton>
-        </div>
-        <div className="mt-7 flex flex-wrap items-center justify-center gap-4 text-[13px] font-semibold text-brand-muted">
-          <span>{t("hours.weekday")}</span>
-          <span className="opacity-40">·</span>
-          <span>{t("hours.friday")}</span>
-          <span className="opacity-40">·</span>
-          <span>{t("hours.saturday")}</span>
-        </div>
+    <section className="relative overflow-hidden bg-brand-pink-soft px-5 py-16 md:px-9 md:py-24">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
+        <Reveal>
+          <StatusBadge className="mb-5" variant="pill" label={t("badge")} />
+          <h1 className="max-w-[12ch] font-heading text-[clamp(36px,6vw,60px)] leading-[1.05] font-black tracking-[-1px] text-brand-plum">
+            {t("title")}
+          </h1>
+          <p className="mt-5 max-w-[460px] text-[19px] leading-[1.9] text-brand-ink-soft md:text-[20px]">
+            {t("description")}
+          </p>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <PillButton
+              href={wazeLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("waze")}
+            </PillButton>
+            <PillButton
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="outline"
+            >
+              {site("whatsapp")}
+            </PillButton>
+          </div>
+          <div className="mt-8 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-white px-5 py-3 text-[15px] font-semibold text-brand-ink-soft">
+            <span>{t("hours.weekday")}</span>
+            <span className="text-brand-rose">·</span>
+            <span>{t("hours.friday")}</span>
+            <span className="text-brand-rose">·</span>
+            <span>{t("hours.saturday")}</span>
+          </div>
+        </Reveal>
+
+        <Reveal delay={120} className="relative">
+          <AccentSquare
+            className="absolute -end-4 -top-5 -z-10"
+            color="bg-brand-lavender"
+            size={110}
+            rotate={-8}
+          />
+          <AccentSquare
+            className="absolute -start-5 -bottom-6 -z-10"
+            color="bg-brand-banana"
+            size={96}
+            rotate={10}
+          />
+          {/* Playful photo mosaic. */}
+          <div className="grid grid-cols-2 gap-3">
+            <Photo
+              src="/assets/gallery/gallery-1.png"
+              alt="מתחם המשחקים של בלונה"
+              className="col-span-2 aspect-[16/10] w-full rounded-[28px]"
+            />
+            <Photo
+              src="/assets/gallery/gallery-2.png"
+              alt="פינת הקפה"
+              className="aspect-square w-full rounded-[24px]"
+            />
+            <Photo
+              src="/assets/gallery/gallery-3.png"
+              alt="ילדים משחקים"
+              className="aspect-square w-full rounded-[24px]"
+            />
+          </div>
+        </Reveal>
       </div>
       <HeroMobileActions />
     </section>

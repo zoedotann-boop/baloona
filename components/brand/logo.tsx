@@ -26,7 +26,7 @@ interface LogoProps
   label?: string
 }
 
-/** Baloona wordmark. Rubik extra-bold in the brand pink. */
+/** Baloona wordmark. Fredoka extra-bold in the brand plum. */
 function Logo({ className, size, label = "Baloona", ...props }: LogoProps) {
   return (
     <span className={cn(logoVariants({ size }), className)} {...props}>

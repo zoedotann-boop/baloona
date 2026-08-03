@@ -27,7 +27,7 @@ export const Outline: Story = {
 
 export const Soft: Story = {
   args: { variant: "soft", children: "לכל הפרטים ←" },
-  parameters: { backgrounds: { value: "blue" } },
+  parameters: { backgrounds: { value: "lavender" } },
 }
 
 export const AsLink: Story = {

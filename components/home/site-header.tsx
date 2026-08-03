@@ -30,7 +30,7 @@ function SiteHeader() {
   }, [menuOpen])
 
   return (
-    <header className="sticky top-0 z-40 flex h-[74px] items-center justify-between gap-6 border-b border-[#f4dbdf] bg-brand-cream px-5 md:px-9">
+    <header className="sticky top-0 z-40 flex h-[74px] items-center justify-between gap-6 border-b border-border bg-brand-cloud px-5 md:px-9">
       <button
         type="button"
         onClick={() => setMenuOpen((v) => !v)}
@@ -59,10 +59,10 @@ function SiteHeader() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex h-10 items-center rounded-full px-[18px] text-sm",
+                "flex h-10 items-center rounded-full px-[18px] text-base",
                 active
                   ? "bg-brand-pink font-extrabold text-foreground"
-                  : "font-bold text-[#6b5f60] hover:bg-brand-pink/40"
+                  : "font-bold text-muted-foreground hover:bg-brand-pink/40"
               )}
             >
               {t(`nav.${item.key}`)}
@@ -82,7 +82,7 @@ function SiteHeader() {
           target="_blank"
           rel="noopener noreferrer"
           size="md"
-          className="hidden h-10 px-[18px] text-[13px] md:inline-flex"
+          className="hidden h-10 px-[18px] text-[15px] md:inline-flex"
         >
           {t("site.whatsapp")}
         </PillButton>
@@ -96,12 +96,12 @@ function SiteHeader() {
             type="button"
             aria-label={t("nav.menu")}
             tabIndex={-1}
-            className="absolute inset-0 cursor-default bg-brand-brown/30 backdrop-blur-[2px]"
+            className="absolute inset-0 cursor-default bg-foreground/30 backdrop-blur-[2px]"
             onClick={() => setMenuOpen(false)}
           />
           <nav
             id="mobile-nav"
-            className="relative flex flex-col gap-1 border-b border-[#f4dbdf] bg-brand-cream px-5 py-4 shadow-[0_20px_40px_-24px_rgba(90,52,43,0.5)]"
+            className="relative flex flex-col gap-1 border-b border-border bg-brand-cloud px-5 py-4"
           >
             {NAV_LINKS.map((item) => {
               const active = pathname === item.href
@@ -112,10 +112,10 @@ function SiteHeader() {
                   aria-current={active ? "page" : undefined}
                   onClick={() => setMenuOpen(false)}
                   className={cn(
-                    "flex h-12 items-center rounded-2xl px-4 text-[15px]",
+                    "flex h-12 items-center rounded-2xl px-4 text-[17px]",
                     active
                       ? "bg-brand-pink font-extrabold text-foreground"
-                      : "font-bold text-[#6b5f60] hover:bg-brand-pink/40"
+                      : "font-bold text-muted-foreground hover:bg-brand-pink/40"
                   )}
                 >
                   {t(`nav.${item.key}`)}

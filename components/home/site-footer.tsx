@@ -2,7 +2,6 @@ import Link from "next/link"
 import { useTranslations } from "next-intl"
 
 import { Icon } from "@/components/brand/icon"
-import { SectionEyebrow } from "@/components/brand/section-eyebrow"
 import { BALOONA } from "@/lib/site-content"
 
 const FOOTER_NAV = [
@@ -21,26 +20,26 @@ function SiteFooter() {
   const site = useTranslations("site")
 
   return (
-    <footer className="bg-brand-cream px-5 py-14 text-brand-sky-ink md:px-9">
+    <footer className="bg-brand-cloud px-5 py-14 text-brand-plum md:px-9">
       <div className="mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 gap-8 border-b border-brand-sky-ink/15 pb-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr_1fr]">
+        <div className="grid grid-cols-1 gap-8 border-b border-brand-plum/15 pb-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr_1fr]">
           <div>
-            <div className="mb-3 font-heading text-2xl font-extrabold text-primary">
+            <div className="mb-3 font-heading text-2xl font-extrabold text-brand-plum">
               {site("brand")}
             </div>
-            <p className="text-[13px] leading-relaxed">{t("tagline")}</p>
+            <p className="text-[15px] leading-relaxed">{t("tagline")}</p>
           </div>
 
           <div>
-            <SectionEyebrow className="mb-3 text-[#9ab0ec]">
+            <div className="mb-3 font-heading text-[15px] font-black text-brand-plum">
               ניווט
-            </SectionEyebrow>
-            <ul className="space-y-1.5 text-[13px]">
+            </div>
+            <ul className="space-y-1.5 text-[15px]">
               {FOOTER_NAV.map((item) => (
                 <li key={item.label}>
                   <Link
                     href={item.href}
-                    className="transition hover:text-primary"
+                    className="transition hover:text-foreground"
                   >
                     {item.label}
                   </Link>
@@ -50,10 +49,10 @@ function SiteFooter() {
           </div>
 
           <div>
-            <SectionEyebrow className="mb-3 text-[#9ab0ec]">
+            <div className="mb-3 font-heading text-[15px] font-black text-brand-plum">
               {t("contactTitle")}
-            </SectionEyebrow>
-            <ul className="space-y-2 text-[13px] leading-relaxed">
+            </div>
+            <ul className="space-y-2 text-[15px] leading-relaxed">
               <li className="flex items-start gap-2">
                 <Icon
                   name="pin"
@@ -73,10 +72,10 @@ function SiteFooter() {
           </div>
 
           <div>
-            <SectionEyebrow className="mb-3 text-[#9ab0ec]">
+            <div className="mb-3 font-heading text-[15px] font-black text-brand-plum">
               {t("hoursTitle")}
-            </SectionEyebrow>
-            <div className="space-y-1 text-[13px]">
+            </div>
+            <div className="space-y-1 text-[15px]">
               <div>{t("hours.weekday")}</div>
               <div>{t("hours.friday")}</div>
               <div>{t("hours.saturday")}</div>
@@ -87,7 +86,7 @@ function SiteFooter() {
                   key={s}
                   href="#"
                   aria-label={s}
-                  className="flex size-9 items-center justify-center rounded-full bg-white text-brand-sky-ink transition hover:text-primary"
+                  className="flex size-9 items-center justify-center rounded-full bg-white text-brand-plum transition hover:text-foreground"
                 >
                   <Icon name={s} className="size-4" />
                 </a>
@@ -96,11 +95,11 @@ function SiteFooter() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 pt-6 text-[11px] text-[#5e818c] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 pt-6 text-[13px] text-brand-plum sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <Link
               href="/accessibility"
-              className="underline hover:text-primary"
+              className="underline hover:text-foreground"
             >
               הצהרת נגישות
             </Link>
@@ -110,7 +109,7 @@ function SiteFooter() {
                 href="https://zoedotan.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-bold underline hover:text-primary"
+                className="font-bold underline hover:text-foreground"
               >
                 Zoe Dotan
               </a>

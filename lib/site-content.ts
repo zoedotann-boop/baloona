@@ -119,26 +119,10 @@ export const MENU_TEASER_TILES = [
 
 // ---- Birthdays -----------------------------------------------------------
 export const BDAY_STEPS = [
-  {
-    image: "/assets/birthday-steps/facilities.png",
-    label: "גישה חופשית למתקנים",
-    sub: "שעתיים של כיף + חדר פרטי",
-  },
-  {
-    image: "/assets/birthday-steps/pizza.png",
-    label: "פיצה וטרופית",
-    sub: "2 משולשי פיצה לכל ילד",
-  },
-  {
-    image: "/assets/birthday-steps/drinks.png",
-    label: "מים ופטל חופשי",
-    sub: "קנקנים לאורך כל האירוע",
-  },
-  {
-    image: "/assets/birthday-steps/cake.png",
-    label: "טקס עוגה",
-    sub: "ע״י צוות המקום",
-  },
+  { label: "גישה חופשית למתקנים", sub: "שעתיים של כיף + חדר פרטי" },
+  { label: "פיצה וטרופית", sub: "2 משולשי פיצה לכל ילד" },
+  { label: "מים ופטל חופשי", sub: "קנקנים לאורך כל האירוע" },
+  { label: "טקס עוגה", sub: "ע״י צוות המקום" },
 ] as const
 
 export const BDAY_PACKAGE_LINES = [
@@ -172,7 +156,17 @@ export const BDAY_LEAD_CANCELLATION =
 export const BDAY_LEAD_DISCLAIMER =
   "שליחת הטופס אינה מהווה אישור לקיום האירוע; אישור סופי נקבע מול הפקידה."
 
-export const BDAY_LEAD_SUBMIT = "שלחו פרטים ונחזור אליכם לתיאום!"
+export const BDAY_LEAD_CONSENT =
+  "אנחנו מתחייבים שקראנו את כל התנאים וההגבלות ומאשרים את כל הכתוב"
+
+export const BDAY_LEAD_SIGN_TITLE = "חתימה דיגיטלית"
+export const BDAY_LEAD_SIGN_HINT = "חתמו כאן עם העכבר או האצבע"
+export const BDAY_LEAD_SIGN_CLEAR = "ניקוי חתימה"
+
+export const BDAY_LEAD_SUBMIT = "שליחת הטופס"
+
+export const BDAY_LEAD_SUCCESS =
+  "הטופס נשלח! נחזור אליכם בהקדם לתיאום האירוע. תודה 🎈"
 
 export const BDAY_LEAD_FIELDS = [
   { label: "תאריך אירוע מבוקש", placeholder: "בחרו תאריך" },
@@ -186,37 +180,6 @@ export const BDAY_LEAD_FIELDS = [
 ] as const
 
 // ---- Contact -------------------------------------------------------------
-export const CONTACT_METHODS = [
-  {
-    image: "/assets/contact/whatsapp.png",
-    label: "וואטסאפ",
-    sub: "תשובה מהירה",
-    href: whatsappLink(),
-    external: true,
-  },
-  {
-    image: "/assets/contact/phone.png",
-    label: "טלפון",
-    sub: BALOONA.phone,
-    href: telLink(),
-    external: false,
-  },
-  {
-    image: "/assets/contact/email.png",
-    label: "אימייל",
-    sub: BALOONA.email,
-    href: mailLink(),
-    external: false,
-  },
-  {
-    image: "/assets/contact/navigation.png",
-    label: "ניווט",
-    sub: "קרית אונו",
-    href: wazeLink(),
-    external: true,
-  },
-] as const
-
 export const CONTACT_SUBJECTS = [
   "בירור כללי",
   "הזמנת ביקור",

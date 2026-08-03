@@ -1,11 +1,14 @@
-import type { PriceRow } from "@/components/brand/price-card"
-
-// Petal colors for the four feature icons, in order (pink, blue, yellow, green).
-export const FEATURE_COLORS = ["#f587bc", "#88bedc", "#f6c744", "#5e9e54"]
+// Petal colors for the three feature icons, in order (lavender, rose, mint).
+export const FEATURE_COLORS = ["#b39ddb", "#dda99e", "#a7e8d0"]
 
 export interface FeatureContent {
   title: string
   description: string
+}
+
+interface PriceRow {
+  label: string
+  price: string
 }
 
 export interface PriceContent {

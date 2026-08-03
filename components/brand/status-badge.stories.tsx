@@ -19,5 +19,5 @@ export const Pill: Story = {}
 
 export const Inline: Story = {
   args: { variant: "inline" },
-  parameters: { backgrounds: { value: "white" } },
+  parameters: { backgrounds: { value: "nearwhite" } },
 }

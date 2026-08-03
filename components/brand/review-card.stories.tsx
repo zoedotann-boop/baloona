@@ -5,7 +5,7 @@ import { ReviewCard } from "./review-card"
 const meta = {
   title: "Brand/ReviewCard",
   component: ReviewCard,
-  parameters: { backgrounds: { value: "blue" } },
+  parameters: { backgrounds: { value: "lavender" } },
   args: {
     text: "המקום מהמם, הילדים לא רצו לצאת! נקי, בטוח והצוות פשוט מקסים.",
     name: "מיכל ל.",

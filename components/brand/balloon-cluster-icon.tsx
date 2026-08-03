@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 
 interface BalloonClusterIconProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Petal color. Defaults to the brand coral. */
+  /** Petal color. Defaults to the brand rose. */
   color?: string
   /** Overall box size in pixels. */
   size?: number
@@ -12,7 +12,7 @@ interface BalloonClusterIconProps extends React.HTMLAttributes<HTMLSpanElement> 
 const PETAL_ANGLES = [0, 60, 120, 180, 240, 300]
 
 function BalloonClusterIcon({
-  color = "var(--brand-coral)",
+  color = "var(--brand-rose)",
   size = 50,
   className,
   style,

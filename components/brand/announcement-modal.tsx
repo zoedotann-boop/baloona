@@ -73,7 +73,7 @@ function AnnouncementModal() {
         type="button"
         aria-label={t("close")}
         tabIndex={-1}
-        className="absolute inset-0 cursor-default bg-brand-brown/40 backdrop-blur-[2px]"
+        className="absolute inset-0 cursor-default bg-foreground/40 backdrop-blur-[2px]"
         onClick={markSeen}
       />
       <div
@@ -81,21 +81,21 @@ function AnnouncementModal() {
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={bodyId}
-        className="relative w-full max-w-md rounded-4xl border border-[#f4dbdf] bg-brand-cream p-7 text-center shadow-[0_30px_60px_-24px_rgba(90,52,43,0.5)]"
+        className="relative w-full max-w-md rounded-4xl border border-border bg-brand-cloud p-7 text-center"
       >
         <button
           ref={closeRef}
           type="button"
           onClick={markSeen}
           aria-label={t("close")}
-          className="absolute end-4 top-4 flex size-9 items-center justify-center rounded-full text-brand-muted transition-colors hover:bg-brand-pink/50 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
+          className="absolute end-4 top-4 flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-brand-pink/50 focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none"
         >
           <X className="size-5" />
         </button>
 
         <h2
           id={titleId}
-          className="font-heading text-2xl font-black tracking-[-0.5px] text-brand-brown"
+          className="font-heading text-2xl font-black tracking-[-0.5px] text-brand-plum"
         >
           {t("title")}
         </h2>
@@ -104,7 +104,7 @@ function AnnouncementModal() {
           {lines.map((line) => (
             <li
               key={line}
-              className="rounded-2xl bg-white/70 px-4 py-3 text-[15px] leading-relaxed font-semibold text-[#6b5f60]"
+              className="rounded-2xl bg-white/70 px-4 py-3 text-[17px] leading-relaxed font-semibold text-muted-foreground"
             >
               {line}
             </li>

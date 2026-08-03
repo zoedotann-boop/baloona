@@ -5,7 +5,7 @@ import { Photo } from "./photo"
 const meta = {
   title: "Brand/Photo",
   component: Photo,
-  parameters: { backgrounds: { value: "white" } },
+  parameters: { backgrounds: { value: "nearwhite" } },
   args: { label: "[תמונת מתחם בלונה]" },
   render: (args) => (
     <div className="w-[420px]">
