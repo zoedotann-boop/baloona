@@ -102,3 +102,7 @@ See `.env.example`.
 - Ensure comprehensive test coverage for all newly introduced functionality, including both happy paths and relevant edge cases. There is no unit-test runner here: coverage means a `*.stories.tsx` for every new brand primitive, home section and admin primitive, with the a11y addon clean.
 - Before review, all of these must pass: `bun run lint`, `bun run typecheck`,
   `bun run format:check`, `bun run knip`, `bun run build-storybook`.
+- `ajv` is a direct dependency on purpose even though nothing imports it: it pins ajv@8
+  as the hoisted copy so `ajv-formats` (pulled in by `@rjsf/validator-ajv8`) can never
+  resolve eslint's ajv@6 and break the production build. Don't remove it — see
+  `knip.jsonc`.
