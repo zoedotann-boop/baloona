@@ -43,6 +43,47 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run knip
 
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    # `next build` is the only check that exercises module resolution in the
+    # client bundle, so it is the one that catches a broken dependency tree.
+    # The env vars below only have to be *present* — nothing is fetched at build
+    # time, since every route is server-rendered on demand.
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci?sslmode=require
+      BETTER_AUTH_SECRET: ci-placeholder-secret-at-least-32-chars
+      BETTER_AUTH_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+
+  storybook:
+    name: Storybook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build-storybook
+
   react-doctor:
     name: React Doctor
     runs-on: ubuntu-latest
