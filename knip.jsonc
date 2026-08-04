@@ -1,0 +1,9 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  // `ajv` is never imported directly — it is declared in package.json only to pin
+  // ajv@8 as the hoisted copy. eslint pulls in ajv@6, and whichever version lands at
+  // the top of node_modules is the one `ajv-formats` (via @rjsf/validator-ajv8)
+  // resolves; when that was ajv@6 the production build failed to resolve
+  // `ajv/dist/compile/codegen`.
+  "ignoreDependencies": ["ajv"]
+}
