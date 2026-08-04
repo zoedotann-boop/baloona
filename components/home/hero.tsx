@@ -6,38 +6,59 @@ import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { StatusBadge } from "@/components/brand/status-badge"
 import { HeroMobileActions } from "@/components/home/hero-mobile-actions"
-import { wazeLink, whatsappLink } from "@/lib/site-content"
+import type { HoursRow } from "@/lib/view-models"
+
+interface HeroProps {
+  badge: string
+  title: string
+  description: string
+  /** Up to three photos: the first spans the mosaic's full width. */
+  images: string[]
+  wazeHref: string
+  whatsappHref: string
+  hours: HoursRow[]
+  isOpen: boolean
+}
 
 /**
  * Editorial hero — an eyebrow, a big two-line headline, CTAs and hours on one
  * side, an asymmetric photo collage with accent squares on the other. Sits on a
  * soft-pink surface.
  */
-function Hero() {
-  const t = useTranslations("hero")
+function Hero({
+  badge,
+  title,
+  description,
+  images,
+  wazeHref,
+  whatsappHref,
+  hours,
+  isOpen,
+}: HeroProps) {
   const site = useTranslations("site")
+  const [lead, ...rest] = images
 
   return (
     <section className="relative overflow-hidden bg-brand-pink-soft px-5 py-16 md:px-9 md:py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
         <Reveal>
-          <StatusBadge className="mb-5" variant="pill" label={t("badge")} />
+          <StatusBadge className="mb-5" variant="pill" label={badge} />
           <h1 className="max-w-[12ch] font-heading text-[clamp(36px,6vw,60px)] leading-[1.05] font-black tracking-[-1px] text-brand-plum">
-            {t("title")}
+            {title}
           </h1>
           <p className="mt-5 max-w-[460px] text-[19px] leading-[1.9] text-brand-ink-soft md:text-[20px]">
-            {t("description")}
+            {description}
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-3">
             <PillButton
-              href={wazeLink()}
+              href={wazeHref}
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t("waze")}
+              {site("waze")}
             </PillButton>
             <PillButton
-              href={whatsappLink()}
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               variant="outline"
@@ -46,11 +67,14 @@ function Hero() {
             </PillButton>
           </div>
           <div className="mt-8 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-white px-5 py-3 text-[15px] font-semibold text-brand-ink-soft">
-            <span>{t("hours.weekday")}</span>
-            <span className="text-brand-rose">·</span>
-            <span>{t("hours.friday")}</span>
-            <span className="text-brand-rose">·</span>
-            <span>{t("hours.saturday")}</span>
+            {hours.map((row, index) => (
+              <span key={row.days} className="flex items-center gap-x-3">
+                {index > 0 && <span className="text-brand-rose">·</span>}
+                <span>
+                  {row.days} {row.time}
+                </span>
+              </span>
+            ))}
           </div>
         </Reveal>
 
@@ -70,24 +94,22 @@ function Hero() {
           {/* Playful photo mosaic. */}
           <div className="grid grid-cols-2 gap-3">
             <Photo
-              src="/assets/gallery/gallery-1.png"
-              alt="מתחם המשחקים של בלונה"
+              src={lead}
+              alt={title}
               className="col-span-2 aspect-[16/10] w-full rounded-[28px]"
             />
-            <Photo
-              src="/assets/gallery/gallery-2.png"
-              alt="פינת הקפה"
-              className="aspect-square w-full rounded-[24px]"
-            />
-            <Photo
-              src="/assets/gallery/gallery-3.png"
-              alt="ילדים משחקים"
-              className="aspect-square w-full rounded-[24px]"
-            />
+            {rest.slice(0, 2).map((src) => (
+              <Photo
+                key={src}
+                src={src}
+                alt=""
+                className="aspect-square w-full rounded-[24px]"
+              />
+            ))}
           </div>
         </Reveal>
       </div>
-      <HeroMobileActions />
+      <HeroMobileActions whatsappHref={whatsappHref} isOpen={isOpen} />
     </section>
   )
 }

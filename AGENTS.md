@@ -40,8 +40,65 @@ This version has breaking changes — APIs, conventions, and file structure may 
   utility in `globals.css` and respects `prefers-reduced-motion`.
 - The site is light-only (`ThemeProvider forcedTheme="light"`); there is no dark variant.
 
+## Architecture
+
+- **Multi-tenant by location.** Every venue is a row in `location` and all content
+  tables cascade from it. Visitors get `/<slug>`; `/` is a branch chooser. Nothing
+  about a venue is hard-coded — opening a branch is `provisionLocation()`, which
+  seeds a full starter site from `lib/db/seed-content.ts`.
+- **Content lives in the database; chrome lives in `messages/*.json`.** Venue copy,
+  prices, menu, reviews and SEO are admin-editable rows. Button labels, aria-labels,
+  weekday names and admin UI strings stay in `messages/he.json` / `en.json` and are
+  read with `useTranslations`. Never hard-code either kind in a component.
+- **Translatable values are `jsonb` `{ he, en }`** (`Localized`) or `{ he: string[] }`
+  (`LocalizedList`). Hebrew is the source language; read through `pickLocale` /
+  `pickLocaleList` so a missing translation falls back to Hebrew.
+- **Pages resolve content; components stay dumb.** Server pages fetch, localize and
+  format (prices via `formatPrice`, hours via `lib/opening-hours.ts`), then pass
+  plain strings down. That is what makes every section storyable without a database.
+- **Reads are per-request.** No cache layer and no `generateStaticParams`: the locale
+  cookie already makes pages dynamic, and going straight to Neon means an admin
+  publish is live immediately.
+- **Prices are integers** (whole shekels) in the database. Currency is added on render.
+- Data access: `lib/db/queries/site.ts` (public) and `lib/db/queries/admin.ts` (editor
+  views). Mutations are server actions under `lib/actions/`, each one validating with
+  zod and re-checking access via `requireLocationAccess`.
+
+## Admin panel
+
+- Routes live under `app/admin/(dashboard)/…`; `app/admin/login` sits outside the
+  group so it stays reachable while signed out.
+- Auth is Better Auth (email + password, sign-up disabled). Roles: `owner` (all
+  branches, can add/delete and manage the team) and `manager` (only branches listed
+  in `location_member`). `lib/admin/access.ts` is the single gate — it is
+  `server-only`, so client components import route constants from `lib/admin/routes.ts`.
+- Each section is one `<SectionForm>`: it holds the whole draft in state, publishes it
+  in one action, and provides the language switch plus the AI translate shortcut
+  through context. Editable lists use `<RowList>`; order is the array order and
+  becomes `sortOrder` on save.
+- Saving a list submits the whole array. `syncCollection` in
+  `lib/actions/admin/shared.ts` turns that snapshot into inserts, updates and deletes.
+- The birthday booking form is editor-defined: `birthday_form_field` rows compile to a
+  JSON Schema (`lib/birthday-form.ts`) rendered by `@rjsf/shadcn`. Answers land in
+  `lead.formData` keyed by field key and render as a label/value list in the inbox.
+
+## Integrations
+
+All optional — a missing key disables one feature instead of breaking the build.
+See `.env.example`.
+
+- **Resend** — emails each new lead to the branch's `leadRecipientEmail`. Failures are
+  recorded on the lead, never surfaced to the visitor.
+- **Cloudflare R2** — image uploads via presigned PUT straight from the browser.
+  `next.config.ts` derives `images.remotePatterns` from `R2_PUBLIC_BASE_URL`.
+- **Gemini** — drafts translations for the "מלא עם AI" buttons. Output is always
+  editable, never published blind.
+- **Google Places** — imports reviews per branch, unpublished, for an editor to approve.
+
 ## Code quality
 
 - Research relevant best practices for the implemented changes (including external sources when beneficial) and look for opportunities to simplify the implementation. The primary objective is to keep the codebase clean, maintainable, scalable, and easy to understand.
 - Where appropriate, evaluate whether the database schema can be simplified or improved to better align with best practices. Proactively suggest schema enhancements that would make the system clearer, more scalable, or easier to maintain.
-- Ensure comprehensive test coverage for all newly introduced functionality, including both happy paths and relevant edge cases.
+- Ensure comprehensive test coverage for all newly introduced functionality, including both happy paths and relevant edge cases. There is no unit-test runner here: coverage means a `*.stories.tsx` for every new brand primitive, home section and admin primitive, with the a11y addon clean.
+- Before review, all of these must pass: `bun run lint`, `bun run typecheck`,
+  `bun run format:check`, `bun run knip`, `bun run build-storybook`.

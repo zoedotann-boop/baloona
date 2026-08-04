@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
 
-import { FEATURE_COLORS } from "@/lib/home-config"
+import { FEATURE_COLORS } from "@/lib/view-models"
 
 import { BalloonClusterIcon } from "./balloon-cluster-icon"
 

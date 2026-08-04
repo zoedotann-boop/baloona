@@ -10,33 +10,33 @@ import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { cn } from "@/lib/utils"
 
-const GALLERY_IMAGES = [
-  "/assets/gallery/gallery-1.png",
-  "/assets/gallery/gallery-2.png",
-  "/assets/gallery/gallery-3.png",
-  "/assets/gallery/gallery-4.png",
-  "/assets/gallery/gallery-5.png",
-  "/assets/gallery/gallery-6.png",
-]
+interface GalleryImage {
+  id: string
+  url: string
+  alt: string
+}
+
+interface GalleryProps {
+  title: string
+  images: GalleryImage[]
+}
 
 /** Photo gallery grid of venue images with a click-to-open lightbox. */
-function Gallery() {
+function Gallery({ title, images }: GalleryProps) {
   const t = useTranslations("gallery")
   // Index of the image shown in the lightbox, or null when it is closed.
   const [active, setActive] = useState<number | null>(null)
   const isOpen = active !== null
+  const total = images.length
 
   const close = useCallback(() => setActive(null), [])
   const next = useCallback(
-    () => setActive((i) => (i === null ? i : (i + 1) % GALLERY_IMAGES.length)),
-    []
+    () => setActive((i) => (i === null ? i : (i + 1) % total)),
+    [total]
   )
   const prev = useCallback(
-    () =>
-      setActive((i) =>
-        i === null ? i : (i - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length
-      ),
-    []
+    () => setActive((i) => (i === null ? i : (i - 1 + total) % total)),
+    [total]
   )
 
   // Keyboard controls + body scroll lock while the lightbox is open.
@@ -57,6 +57,8 @@ function Gallery() {
     }
   }, [isOpen, close, next, prev])
 
+  if (total === 0) return null
+
   return (
     <section className="relative overflow-hidden bg-white px-5 py-20 md:px-9 md:py-28">
       <AccentSquare
@@ -67,25 +69,25 @@ function Gallery() {
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-8 flex items-end justify-between">
           <h2 className="font-heading text-[clamp(32px,4vw,46px)] font-black text-brand-plum">
-            {t("title")}
+            {title}
           </h2>
         </Reveal>
         <Reveal className="grid auto-rows-[106px] grid-cols-2 gap-4 md:grid-cols-4">
-          {GALLERY_IMAGES.map((src, index) => (
+          {images.map((image, index) => (
             <button
-              key={src}
+              key={image.id}
               type="button"
               onClick={() => setActive(index)}
-              aria-label={`הגדלת תמונה ${index + 1}`}
+              aria-label={t("openImage", { index: index + 1 })}
               className={cn(
                 "group relative h-full cursor-zoom-in overflow-hidden rounded-[26px] outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                 index === 0 && "col-span-2 row-span-2",
-                index === GALLERY_IMAGES.length - 1 &&
-                  "col-span-2 md:col-span-4"
+                index === total - 1 && "col-span-2 md:col-span-4"
               )}
             >
               <Photo
-                src={src}
+                src={image.url}
+                alt={image.alt}
                 className="h-full transition-transform duration-300 group-hover:scale-[1.04]"
               />
             </button>
@@ -98,13 +100,13 @@ function Gallery() {
           className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/80 p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
-          aria-label="גלריית תמונות"
+          aria-label={t("dialog")}
           onClick={close}
         >
           <button
             type="button"
             onClick={close}
-            aria-label="סגירה"
+            aria-label={t("close")}
             className="absolute end-4 top-4 flex size-11 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white"
           >
             <X className="size-6" />
@@ -116,7 +118,7 @@ function Gallery() {
               e.stopPropagation()
               prev()
             }}
-            aria-label="הקודם"
+            aria-label={t("previous")}
             className="absolute end-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:end-6"
           >
             <ChevronRight className="size-7" />
@@ -128,7 +130,7 @@ function Gallery() {
               e.stopPropagation()
               next()
             }}
-            aria-label="הבא"
+            aria-label={t("next")}
             className="absolute start-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:start-6"
           >
             <ChevronLeft className="size-7" />
@@ -139,8 +141,10 @@ function Gallery() {
             onClick={(e) => e.stopPropagation()}
           >
             <Image
-              src={GALLERY_IMAGES[active]}
-              alt={`תמונה ${active + 1} מתוך ${GALLERY_IMAGES.length}`}
+              src={images[active].url}
+              alt={
+                images[active].alt || t("imageOf", { index: active + 1, total })
+              }
               fill
               sizes="90vw"
               className="rounded-[26px] object-contain"
@@ -149,7 +153,7 @@ function Gallery() {
           </div>
 
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-3.5 py-1 text-[15px] font-bold text-foreground">
-            {active + 1} / {GALLERY_IMAGES.length}
+            {t("counter", { index: active + 1, total })}
           </div>
         </div>
       )}

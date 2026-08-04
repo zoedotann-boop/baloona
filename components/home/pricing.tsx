@@ -2,14 +2,26 @@ import { useTranslations } from "next-intl"
 
 import { Panel } from "@/components/brand/panel"
 import { Reveal } from "@/components/brand/reveal"
-import { type PriceContent } from "@/lib/home-config"
-import { BALOONA } from "@/lib/site-content"
+import type { HoursRow } from "@/lib/view-models"
+
+interface PriceTierContent {
+  id: string
+  subtitle: string
+  title: string
+  rows: { id: string; label: string; price: string }[]
+}
+
+interface PricingProps {
+  title: string
+  tiers: PriceTierContent[]
+  hours: HoursRow[]
+  rules: string[]
+  note: string
+}
 
 /** Pricing as a single flowing lavender panel — everything visible, docs-like. */
-function Pricing() {
+function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
   const t = useTranslations("pricing")
-  const items = t.raw("items") as PriceContent[]
-  const rules = t.raw("rules") as string[]
 
   return (
     <section
@@ -19,20 +31,20 @@ function Pricing() {
       <Reveal className="mx-auto max-w-3xl">
         <Panel tone="lavender" className="text-center">
           <h2 className="font-heading text-[clamp(32px,4.5vw,46px)] font-black">
-            {t("title")}
+            {title}
           </h2>
 
           {/* Prices — flowing lines, one block per tier */}
           <div className="mt-8 space-y-7">
-            {items.map((item) => (
-              <div key={item.title}>
+            {tiers.map((tier) => (
+              <div key={tier.id}>
                 <div className="font-heading text-[17px] font-bold text-white/85">
-                  {item.sub} · {item.title}
+                  {tier.subtitle} · {tier.title}
                 </div>
                 <div className="mx-auto mt-2 max-w-xs space-y-1.5">
-                  {item.rows.map((row) => (
+                  {tier.rows.map((row) => (
                     <div
-                      key={row.label}
+                      key={row.id}
                       className="flex items-baseline justify-between gap-4 text-[17px] text-white/90"
                     >
                       <span>{row.label}</span>
@@ -52,9 +64,9 @@ function Pricing() {
               {t("hoursTitle")}
             </div>
             <div className="mx-auto mt-2 max-w-xs space-y-1 text-[17px] text-white/90">
-              {BALOONA.hours.map((h) => (
-                <div key={h.days}>
-                  {h.days} · {h.time}
+              {hours.map((row) => (
+                <div key={row.days}>
+                  {row.days} · {row.time}
                 </div>
               ))}
             </div>
@@ -70,7 +82,7 @@ function Pricing() {
                 <li key={rule}>{rule}</li>
               ))}
             </ul>
-            <p className="mt-4 text-[14px] text-white/70">{t("note")}</p>
+            <p className="mt-4 text-[14px] text-white/70">{note}</p>
           </div>
         </Panel>
       </Reveal>

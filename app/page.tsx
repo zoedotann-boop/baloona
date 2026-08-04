@@ -1,25 +1,32 @@
-import { BirthdayCta } from "@/components/home/birthday-cta"
-import { Features } from "@/components/home/features"
-import { Gallery } from "@/components/home/gallery"
-import { Hero } from "@/components/home/hero"
-import { MenuTeaser } from "@/components/home/menu-teaser"
-import { Pricing } from "@/components/home/pricing"
-import { Reassurance } from "@/components/home/reassurance"
-import { Reviews } from "@/components/home/reviews"
-import { VisionPanel } from "@/components/home/vision-panel"
+import { redirect } from "next/navigation"
+import { getLocale } from "next-intl/server"
 
-export default function Page() {
+import { LocationChooser } from "@/components/locations/location-chooser"
+import { listPublishedLocations } from "@/lib/db/queries/site"
+import { pickLocale } from "@/lib/localized"
+
+/**
+ * Branch picker. With a single published branch there is nothing to choose, so
+ * visitors go straight there.
+ */
+export default async function Page() {
+  const [locale, locations] = await Promise.all([
+    getLocale(),
+    listPublishedLocations(),
+  ])
+
+  if (locations.length === 1) redirect(`/${locations[0].slug}`)
+
   return (
-    <>
-      <Hero />
-      <VisionPanel />
-      <Features />
-      <Reassurance />
-      <Pricing />
-      <MenuTeaser />
-      <BirthdayCta />
-      <Gallery />
-      <Reviews />
-    </>
+    <LocationChooser
+      locations={locations.map((location) => ({
+        slug: location.slug,
+        name: pickLocale(location.name, locale),
+        city: pickLocale(location.contact?.city, locale),
+        address: pickLocale(location.contact?.address, locale),
+        description: pickLocale(location.home?.heroDescription, locale),
+        imageUrl: location.home?.heroImages?.[0],
+      }))}
+    />
   )
 }

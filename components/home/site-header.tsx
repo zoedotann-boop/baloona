@@ -10,14 +10,34 @@ import { LanguageSwitcher } from "@/components/brand/language-switcher"
 import { Logo } from "@/components/brand/logo"
 import { PillButton } from "@/components/brand/pill-button"
 import { StatusBadge } from "@/components/brand/status-badge"
-import { NAV_LINKS, whatsappLink } from "@/lib/site-content"
+import type { LocationPaths } from "@/lib/site-links"
 import { cn } from "@/lib/utils"
 
+interface SiteHeaderProps {
+  paths: LocationPaths
+  whatsappHref: string
+  /** Rendered from the venue's real opening hours; omitted when unknown. */
+  statusLabel?: string
+  /** Shown only when more than one branch is published. */
+  showBranchSwitch?: boolean
+}
+
 /** Sticky top bar: wordmark, primary nav, open-now status and CTAs. */
-function SiteHeader() {
+function SiteHeader({
+  paths,
+  whatsappHref,
+  statusLabel,
+  showBranchSwitch = false,
+}: SiteHeaderProps) {
   const t = useTranslations()
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const navItems = [
+    { href: paths.home, label: t("nav.home") },
+    { href: paths.menu, label: t("nav.menu") },
+    { href: paths.birthdays, label: t("nav.birthdays") },
+  ]
 
   // Lock body scroll while the mobile drawer is open.
   useEffect(() => {
@@ -35,7 +55,7 @@ function SiteHeader() {
         type="button"
         onClick={() => setMenuOpen((v) => !v)}
         className="flex flex-col gap-1 md:hidden"
-        aria-label={t("nav.menu")}
+        aria-label={t("nav.toggle")}
         aria-expanded={menuOpen}
         aria-controls="mobile-nav"
       >
@@ -46,12 +66,12 @@ function SiteHeader() {
         )}
       </button>
 
-      <Link href="/" aria-label={t("site.brand")}>
+      <Link href={paths.home} aria-label={t("site.brand")}>
         <Logo size="md" />
       </Link>
 
       <nav className="hidden items-center gap-1.5 md:flex">
-        {NAV_LINKS.map((item) => {
+        {navItems.map((item) => {
           const active = pathname === item.href
           return (
             <Link
@@ -65,20 +85,30 @@ function SiteHeader() {
                   : "font-bold text-muted-foreground hover:bg-brand-pink/40"
               )}
             >
-              {t(`nav.${item.key}`)}
+              {item.label}
             </Link>
           )
         })}
+        {showBranchSwitch && (
+          <Link
+            href="/"
+            className="flex h-10 items-center rounded-full px-[18px] text-base font-bold text-muted-foreground hover:bg-brand-pink/40"
+          >
+            {t("nav.allBranches")}
+          </Link>
+        )}
       </nav>
 
       <div className="flex items-center gap-3.5">
-        <StatusBadge
-          className="hidden lg:inline-flex"
-          variant="inline"
-          label={t("site.status")}
-        />
+        {statusLabel && (
+          <StatusBadge
+            className="hidden lg:inline-flex"
+            variant="inline"
+            label={statusLabel}
+          />
+        )}
         <PillButton
-          href={whatsappLink()}
+          href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           size="md"
@@ -94,7 +124,7 @@ function SiteHeader() {
         <div className="fixed inset-0 top-[74px] z-30 md:hidden">
           <button
             type="button"
-            aria-label={t("nav.menu")}
+            aria-label={t("announcement.close")}
             tabIndex={-1}
             className="absolute inset-0 cursor-default bg-foreground/30 backdrop-blur-[2px]"
             onClick={() => setMenuOpen(false)}
@@ -103,7 +133,7 @@ function SiteHeader() {
             id="mobile-nav"
             className="relative flex flex-col gap-1 border-b border-border bg-brand-cloud px-5 py-4"
           >
-            {NAV_LINKS.map((item) => {
+            {navItems.map((item) => {
               const active = pathname === item.href
               return (
                 <Link
@@ -118,12 +148,21 @@ function SiteHeader() {
                       : "font-bold text-muted-foreground hover:bg-brand-pink/40"
                   )}
                 >
-                  {t(`nav.${item.key}`)}
+                  {item.label}
                 </Link>
               )
             })}
+            {showBranchSwitch && (
+              <Link
+                href="/"
+                onClick={() => setMenuOpen(false)}
+                className="flex h-12 items-center rounded-2xl px-4 text-[17px] font-bold text-muted-foreground hover:bg-brand-pink/40"
+              >
+                {t("nav.allBranches")}
+              </Link>
+            )}
             <PillButton
-              href={whatsappLink()}
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               size="md"

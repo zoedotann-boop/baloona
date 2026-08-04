@@ -1,21 +1,35 @@
-import { useTranslations } from "next-intl"
+import { Fragment } from "react"
 
 import { Panel } from "@/components/brand/panel"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { ReviewCard } from "@/components/brand/review-card"
-import { type ReviewContent } from "@/lib/home-config"
 
-const REVIEW_PHOTOS = [
-  "/assets/gallery/gallery-4.png",
-  "/assets/gallery/gallery-5.png",
-  "/assets/gallery/gallery-6.png",
-]
+interface ReviewContent {
+  id: string
+  text: string
+  name: string
+  initials: string
+  ago: string
+  rating: number
+}
 
-/** Testimonials — a playful editorial masonry of quotes, photos and blocks. */
-function Reviews() {
-  const t = useTranslations("reviews")
-  const items = t.raw("items") as ReviewContent[]
+interface ReviewsProps {
+  title: string
+  items: ReviewContent[]
+  /** Venue photos woven between the quotes to break up the masonry. */
+  photos: { url: string; alt: string }[]
+}
+
+const PHOTO_ASPECTS = ["aspect-[3/4]", "aspect-square"]
+
+/**
+ * Testimonials — a playful editorial masonry of quotes, photos and color
+ * blocks. Every child is a direct child of the columns container so the
+ * `break-inside-avoid` rule applies to each tile.
+ */
+function Reviews({ title, items, photos }: ReviewsProps) {
+  if (items.length === 0) return null
 
   return (
     <section className="px-5 py-20 md:px-9 md:py-28">
@@ -25,56 +39,38 @@ function Reviews() {
           className="flex min-h-[180px] items-center justify-center text-center"
         >
           <h2 className="font-heading text-[clamp(28px,3vw,38px)] font-black">
-            {t("title")}
+            {title}
           </h2>
         </Panel>
 
-        <Photo
-          src={REVIEW_PHOTOS[0]}
-          alt="רגעים מהמתחם"
-          className="aspect-[3/4] w-full border border-border"
-        />
-
-        <ReviewCard
-          className="border border-border"
-          text={items[0].text}
-          name={items[0].name}
-          initials={items[0].init}
-          ago={items[0].ago}
-        />
-
-        <div
-          aria-hidden="true"
-          className="h-40 rounded-[26px] bg-brand-banana"
-        />
-
-        <ReviewCard
-          className="border border-border"
-          text={items[1].text}
-          name={items[1].name}
-          initials={items[1].init}
-          ago={items[1].ago}
-        />
-
-        <Photo
-          src={REVIEW_PHOTOS[1]}
-          alt="חוגגים אצלנו"
-          className="aspect-square w-full border border-border"
-        />
-
-        <ReviewCard
-          className="border border-border"
-          text={items[2].text}
-          name={items[2].name}
-          initials={items[2].init}
-          ago={items[2].ago}
-        />
-
-        <Photo
-          src={REVIEW_PHOTOS[2]}
-          alt="בריכת הכדורים"
-          className="aspect-[3/4] w-full border border-border"
-        />
+        {items.map((review, index) => {
+          const photo = photos[index % photos.length]
+          return (
+            <Fragment key={review.id}>
+              {photo && (
+                <Photo
+                  src={photo.url}
+                  alt={photo.alt}
+                  className={`${PHOTO_ASPECTS[index % PHOTO_ASPECTS.length]} w-full border border-border`}
+                />
+              )}
+              <ReviewCard
+                className="border border-border"
+                text={review.text}
+                name={review.name}
+                initials={review.initials}
+                ago={review.ago}
+                rating={review.rating}
+              />
+              {index === 0 && (
+                <div
+                  aria-hidden="true"
+                  className="h-40 rounded-[26px] bg-brand-banana"
+                />
+              )}
+            </Fragment>
+          )
+        })}
 
         <div aria-hidden="true" className="h-32 rounded-[26px] bg-brand-mint" />
       </Reveal>
