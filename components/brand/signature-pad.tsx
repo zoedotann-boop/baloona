@@ -5,8 +5,12 @@ import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 interface SignaturePadProps {
-  /** Fired whenever the pad gains its first stroke or is cleared. */
-  onChange?: (hasSignature: boolean) => void
+  /**
+   * Receives the signature as a PNG data URL after each stroke, or `null` when
+   * the pad is empty. The image itself is what gets stored with the lead, so
+   * the pad hands back the picture rather than just "signed / not signed".
+   */
+  onChange?: (dataUrl: string | null) => void
   /** Hint shown behind an empty pad. */
   hint?: string
   clearLabel?: string
@@ -15,8 +19,8 @@ interface SignaturePadProps {
 
 /**
  * Dependency-free digital signature pad. Draws on a `<canvas>` via pointer
- * events (mouse + touch), exposes whether it has ink via `onChange`, and offers
- * a clear button. Sized for its container; redraws crisply on high-DPR screens.
+ * events (mouse + touch) and offers a clear button. Sized for its container;
+ * redraws crisply on high-DPR screens.
  */
 function SignaturePad({
   onChange,
@@ -66,14 +70,14 @@ function SignaturePad({
     const { x, y } = point(e)
     ctx.lineTo(x, y)
     ctx.stroke()
-    if (!hasInk) {
-      setHasInk(true)
-      onChange?.(true)
-    }
+    if (!hasInk) setHasInk(true)
   }
 
   const handleUp = () => {
+    if (!drawing.current) return
     drawing.current = false
+    const canvas = canvasRef.current
+    if (canvas && hasInk) onChange?.(canvas.toDataURL("image/png"))
   }
 
   const clear = () => {
@@ -82,7 +86,7 @@ function SignaturePad({
     if (!canvas || !ctx) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     setHasInk(false)
-    onChange?.(false)
+    onChange?.(null)
   }
 
   return (

@@ -2,6 +2,15 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* The birthday booking form is rendered by @rjsf/shadcn, whose widgets ship
+   pre-built with Tailwind classes. Tailwind skips node_modules by default, so
+   opt that package in explicitly or the form renders unstyled.
+
+   This names the compiled `.js` files rather than the directory: pointing
+   `@source` at a folder makes Tailwind auto-detect its contents, which walks
+   into a symlinked node_modules tree and stalls the dev build. */
+@source "../node_modules/@rjsf/shadcn/lib/**/*.js";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

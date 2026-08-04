@@ -1,24 +1,31 @@
+import { useTranslations } from "next-intl"
+
 import { AccentSquare } from "@/components/brand/accent-square"
 import { PillButton } from "@/components/brand/pill-button"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 
+interface BirthdayHeroProps {
+  title: string
+  description: string
+  imageUrl?: string
+}
+
 /** Birthdays page hero. */
-function BirthdayHero() {
+function BirthdayHero({ title, description, imageUrl }: BirthdayHeroProps) {
+  const t = useTranslations("birthdays")
+
   return (
     <section className="px-5 py-20 md:px-9 md:py-28">
       <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
         <Reveal>
           <h1 className="mb-5 font-heading text-[clamp(38px,5vw,56px)] leading-tight font-black text-brand-plum">
-            חוגגים יום הולדת
-            <br />
-            בבלונה!
+            {title}
           </h1>
           <p className="mb-7 text-[19px] leading-[1.9] text-brand-ink-soft">
-            שעתיים של כיף עם גישה חופשית למתקנים, חדר פרטי, פיצה לכל ילד וטקס
-            עוגה ע״י צוות המקום.
+            {description}
           </p>
-          <PillButton href="#lead-form">לשריון תאריך</PillButton>
+          <PillButton href="#lead-form">{t("bookCta")}</PillButton>
         </Reveal>
         <Reveal delay={120} className="relative">
           <AccentSquare
@@ -32,8 +39,8 @@ function BirthdayHero() {
             rotate={10}
           />
           <Photo
-            src="/assets/birthday-hero.png"
-            alt="מתחם בלונה"
+            src={imageUrl}
+            alt={title}
             objectPosition="bottom"
             className="h-80"
           />

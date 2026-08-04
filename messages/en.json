@@ -1,141 +1,493 @@
 {
   "site": {
     "brand": "Baloona",
-    "status": "Open now · until 19:00",
     "whatsapp": "WhatsApp",
-    "langLabel": "EN"
+    "waze": "Navigate to us (Waze)"
+  },
+  "status": {
+    "open": "Open now · until {time}",
+    "closed": "Closed · opens at {time}",
+    "closedOnDay": "Closed · opens {day} at {time}",
+    "openShort": "Open now",
+    "closedShort": "Closed"
+  },
+  "weekdays": {
+    "short": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
+    "long": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ]
   },
   "nav": {
     "home": "Home",
     "menu": "Menu",
-    "birthdays": "Birthdays"
+    "birthdays": "Birthdays",
+    "toggle": "Navigation menu",
+    "allBranches": "All branches"
   },
-  "hero": {
-    "badge": "Open now · until 19:00",
-    "title": "A playground & café — for parents and kids",
-    "description": "A huge 3-floor indoor playground for kids aged 1–9. Sit back with the little ones and enjoy it too. A café, a private birthday room and a warm, welcoming team.",
-    "waze": "Navigate to us (Waze)",
-    "whatsapp": "WhatsApp",
-    "hours": {
-      "weekday": "Sun–Thu 09:00–19:00",
-      "friday": "Friday 09:00–15:00",
-      "saturday": "Saturday 09:00–19:00"
-    }
+  "locations": {
+    "title": "Where shall we meet?",
+    "subtitle": "Pick the branch nearest you — each one has its own opening hours, menu and pricing.",
+    "enter": "Visit this branch",
+    "empty": "No branches are open right now. See you soon!"
   },
-  "about": {
-    "title": "One place for the whole family",
-    "body": "We believe you can be a parent and still enjoy a moment to yourself. So we built a big, beautiful space, with an all-day café alongside classes, workshops and birthdays — right next to a huge, well-equipped, secure and clean play area. All under one roof."
+  "announcement": {
+    "close": "Close",
+    "cta": "Got it, thanks"
   },
-  "features": {
-    "cta": "Come see the venue",
-    "items": [
-      {
-        "title": "An inviting play area",
-        "description": "A pleasant, well-designed space for babies, toddlers and kids"
-      },
-      {
-        "title": "A café for parents",
-        "description": "Coffee, sweets and snacks — for you and the kids, all day long"
-      },
-      {
-        "title": "Classes & birthdays",
-        "description": "Developmental classes, workshops, enrichment talks and celebrations"
-      }
-    ]
-  },
-  "reassurance": {
-    "title": "Don't worry — we've got it all covered!",
-    "body": "Picked the kids up from daycare? Come straight to us. Spend quality time together, enjoy a healthy dinner, and head home for just a warm bath, a story and bed.",
-    "cta": "Come visit"
+  "hours": {
+    "title": "Opening hours",
+    "closed": "Closed"
   },
   "pricing": {
-    "title": "Pricing",
-    "popular": "Most popular",
-    "note": "* Admission covers one child and one guardian. Each additional guardian is +20 ₪. Daily entry.",
     "hoursTitle": "Opening hours",
-    "rulesTitle": "Good to know",
-    "rules": [
-      "Admission covers one child and one guardian; each additional guardian is +20 ₪.",
-      "Daily entry — you can come and go throughout the day.",
-      "Children must be supervised by an adult aged 16 or over."
-    ],
-    "items": [
-      {
-        "sub": "Midweek",
-        "title": "Sun–Thu",
-        "featured": false,
-        "rows": [
-          { "label": "Up to age 2", "price": "39 ₪" },
-          { "label": "Over age 2", "price": "49 ₪" }
-        ]
-      },
-      {
-        "sub": "Weekend",
-        "title": "Fri–Sat",
-        "featured": true,
-        "rows": [
-          { "label": "Up to age 2", "price": "45 ₪" },
-          { "label": "Over age 2", "price": "55 ₪" }
-        ]
-      },
-      {
-        "sub": "Punch card",
-        "title": "10 entries",
-        "featured": false,
-        "rows": [
-          { "label": "Up to age 2", "price": "350 ₪" },
-          { "label": "Over age 2", "price": "450 ₪" }
-        ]
-      }
-    ]
-  },
-  "birthday": {
-    "title": "Celebrate a birthday at Baloona!",
-    "description": "Two hours of fun with free access to the attractions, a private room, pizza for every child and a cake ceremony by our team. From 1,990 ₪ for 25 kids.",
-    "cta": "See all the details"
+    "rulesTitle": "Good to know"
   },
   "gallery": {
-    "title": "A little peek at the venue"
+    "openImage": "Enlarge image {index}",
+    "dialog": "Photo gallery",
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "counter": "{index} / {total}",
+    "imageOf": "Image {index} of {total}"
   },
   "contact": {
-    "eyebrow": "Leave us a message — we'll get back to you during opening hours",
-    "title": "Contact us"
-  },
-  "reviews": {
-    "title": "What parents say",
-    "items": [
-      {
-        "text": "The place is amazing, the kids didn't want to leave! Clean, safe and the staff are simply lovely. We already booked a birthday.",
-        "name": "Michal L.",
-        "init": "M",
-        "ago": "a week ago"
-      },
-      {
-        "text": "Finally a place parents enjoy too. The coffee is great and the kids play safely. Highly recommend!",
-        "name": "Dana C.",
-        "init": "D",
-        "ago": "two weeks ago"
-      },
-      {
-        "text": "We celebrated our son's birthday and everything was perfect — private room, pizza and a cake ceremony. Thank you, Baloona team!",
-        "name": "Yossi A.",
-        "init": "Y",
-        "ago": "a month ago"
-      }
-    ]
+    "formTitle": "Send us a message",
+    "namePlaceholder": "Full name",
+    "phonePlaceholder": "050-0000000",
+    "messagePlaceholder": "Tell us what you'd like to know…",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "success": "Message sent! We'll get back to you shortly. Thank you 🎈",
+    "error": "Something went wrong. Please try again or message us on WhatsApp.",
+    "whatsappLabel": "WhatsApp",
+    "whatsappValue": "Send us a message",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Address"
   },
   "footer": {
-    "tagline": "An indoor playground and birthday venue for kids aged 1–9 in Kiryat Ono.",
+    "navTitle": "Navigation",
     "contactTitle": "Contact",
-    "address": "37 Shlomo HaMelech St. (Kiryat Ono Mall), Building B, floor -2",
-    "phone": "03-1234567",
-    "email": "hello@baloona.co.il",
     "hoursTitle": "Opening hours",
-    "hours": {
-      "weekday": "Sun–Thu · 09:00–19:00",
-      "friday": "Friday · 09:00–15:00",
-      "saturday": "Saturday · 09:00–19:00"
+    "pricingLink": "Pricing",
+    "contactLink": "Contact us",
+    "accessibility": "Accessibility statement",
+    "credit": "Designed & built by",
+    "rights": "© {year} Baloona · All rights reserved"
+  },
+  "birthdays": {
+    "bookCta": "Reserve a date",
+    "packageSubtitle": "For {count} children · {price} per extra child",
+    "packageSummary": "Package for {count} children",
+    "submit": "Submit the form",
+    "sending": "Sending…",
+    "error": "Something went wrong. Please try again or give us a call.",
+    "clearSignature": "Clear signature",
+    "signatureRequired": "A signature is required before submitting",
+    "consentRequired": "Please accept the terms before submitting"
+  },
+  "mobile": {
+    "backToTop": "Back to top"
+  },
+  "accessibility": {
+    "title": "Accessibility statement",
+    "intro": "We believe everyone should be able to enjoy our venue and our website comfortably and independently. Here is what we have done, and how to reach us.",
+    "sections": [
+      {
+        "title": "Our commitment to accessibility",
+        "body": [
+          "Baloona is committed to serving all of our guests equally and to improving the service we give guests with disabilities. We invest significant effort and resources in making both the website and the venue accessible, in the belief that everyone deserves equality, dignity, comfort and independence."
+        ]
+      },
+      {
+        "title": "Website accessibility",
+        "body": [
+          "This website was made accessible in line with the Israeli Equal Rights for Persons with Disabilities Regulations (Service Accessibility Adjustments), 2013, and the Israeli standard (IS 5568) based on WCAG 2.1 level AA.",
+          "The site is built for the common browsers and for mobile use, and supports keyboard navigation and screen readers."
+        ]
+      },
+      {
+        "title": "Accessibility features on the site",
+        "list": [
+          "Valid semantic structure that assistive technologies can navigate.",
+          "Sufficient color contrast between text and background.",
+          "Alternative text for meaningful images.",
+          "Full keyboard navigation with a clear focus indicator.",
+          "Responsive layout for narrow screens and mobile devices."
+        ]
+      },
+      {
+        "title": "Accessibility at the venue",
+        "list": [
+          "Step-free access at the entrance.",
+          "Accessible toilets on site.",
+          "A friendly team happy to help with anything you need."
+        ]
+      },
+      {
+        "title": "Exclusions and limitations",
+        "body": [
+          "We make every effort to keep the site accessible and to update it regularly. Even so, some sections or content may not yet be fully accessible. We continue to improve accessibility as part of our commitment to making the site usable by everyone."
+        ]
+      }
+    ],
+    "contactTitle": "Report an accessibility issue",
+    "contactBody": "Ran into a problem, or have a suggestion for improving accessibility? We would love to hear from you and will handle every request promptly. Contact our accessibility coordinator:",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Address"
+  },
+  "admin": {
+    "brand": "Baloona admin",
+    "signIn": {
+      "title": "Sign in",
+      "subtitle": "This area is for the Baloona team only.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "pending": "Signing in…",
+      "error": "That email or password is wrong."
     },
-    "rights": "© 2026 Baloona · All rights reserved"
+    "nav": {
+      "general": "General settings",
+      "home": "Home page",
+      "pricing": "Pricing",
+      "menu": "Menu",
+      "birthdays": "Birthdays",
+      "reviews": "Reviews",
+      "media": "Media",
+      "leads": "Enquiries",
+      "locations": "Branches",
+      "team": "Team",
+      "signOut": "Sign out",
+      "viewSite": "View site",
+      "sectionContent": "Site content",
+      "sectionOperations": "Operations",
+      "sectionAccount": "Account"
+    },
+    "common": {
+      "save": "Publish changes",
+      "saving": "Saving…",
+      "saved": "Changes published",
+      "saveError": "Saving failed. Please try again.",
+      "add": "Add",
+      "remove": "Remove",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "language": "Editing language",
+      "translate": "Fill with AI",
+      "translateAll": "Translate this page with AI",
+      "translating": "Translating…",
+      "translateError": "Translation failed. Please try again.",
+      "translateMissingKey": "No Gemini key configured (GEMINI_API_KEY).",
+      "empty": "Nothing here yet.",
+      "upload": "Upload image",
+      "uploading": "Uploading…",
+      "uploadError": "Upload failed.",
+      "uploadNotConfigured": "Media storage is not configured (R2).",
+      "imageUrl": "Image URL",
+      "clear": "Clear",
+      "cancel": "Cancel"
+    },
+    "general": {
+      "title": "General settings",
+      "description": "Branch details, opening hours, the pop-up and Google settings.",
+      "contactTitle": "Contact details & address",
+      "contactDescription": "Shown in the footer, the contact block and the navigation links.",
+      "city": "City",
+      "address": "Address",
+      "phone": "Phone",
+      "whatsapp": "WhatsApp",
+      "whatsappHint": "International format without +, e.g. 972501234567",
+      "email": "Email",
+      "leadEmail": "Enquiries email",
+      "leadEmailHint": "Birthday forms and site messages are sent here.",
+      "instagram": "Instagram",
+      "facebook": "Facebook",
+      "tiktok": "TikTok",
+      "hoursTitle": "Opening hours",
+      "hoursDescription": "Opening times per day. The “Open now” badge is derived from these.",
+      "closed": "Closed",
+      "popupTitle": "Site pop-up",
+      "popupDescription": "Shown once per visitor until dismissed.",
+      "popupStatus": "Status",
+      "popupActive": "Active — shown to every visitor",
+      "popupInactive": "Off",
+      "popupHeading": "Title",
+      "popupBody": "Paragraph (optional)",
+      "popupLines": "Lines (optional)",
+      "popupCta": "Button label",
+      "popupCtaHref": "Button link (optional)",
+      "popupBump": "Show again to everyone who dismissed it",
+      "seoTitle": "SEO",
+      "seoDescription": "Title and description for each public page.",
+      "pageHome": "Home",
+      "pageMenu": "Menu",
+      "pageBirthdays": "Birthdays",
+      "metaTitle": "Title",
+      "metaDescription": "Meta description",
+      "keywords": "Keywords",
+      "trackingTitle": "Tracking & sharing",
+      "trackingDescription": "Analytics tags, share image and favicon.",
+      "ga": "Google Analytics ID",
+      "pixel": "Meta Pixel ID",
+      "gtm": "Google Tag Manager",
+      "placeId": "Google Place ID",
+      "placeIdHint": "Used to sync reviews from Google.",
+      "ogImage": "Share image (OG)",
+      "favicon": "Favicon",
+      "opensAt": "Opening time",
+      "closesAt": "Closing time"
+    },
+    "home": {
+      "title": "Home page",
+      "description": "All the copy and images on the home page and in the footer.",
+      "heroTitle": "Hero",
+      "heroBadge": "Badge",
+      "heroHeading": "Headline",
+      "heroDescription": "Description",
+      "heroImages": "Hero images",
+      "aboutTitle": "Vision panel",
+      "aboutHeading": "Title",
+      "aboutBody": "Body",
+      "aboutImage": "Image",
+      "featuresTitle": "Three highlights",
+      "featureHeading": "Title",
+      "featureDescription": "Description",
+      "featuresCta": "Button label",
+      "reassuranceTitle": "Reassurance block",
+      "reassuranceHeading": "Title",
+      "reassuranceBody": "Body",
+      "reassuranceCta": "Button label",
+      "teaserTitle": "Menu teaser",
+      "teaserHeading": "Title",
+      "teaserBody": "Body",
+      "teaserCta": "Button label",
+      "teaserTiles": "Teaser categories",
+      "birthdayTeaserTitle": "Birthday teaser",
+      "birthdayTeaserHeading": "Title",
+      "birthdayTeaserBody": "Body",
+      "birthdayTeaserCta": "Button label",
+      "birthdayTeaserImage": "Image",
+      "sectionsTitle": "Section headings",
+      "galleryTitle": "Gallery heading",
+      "reviewsTitle": "Reviews heading",
+      "footerTitle": "Footer & contact",
+      "footerTagline": "Footer strapline",
+      "contactTitle": "Contact heading",
+      "contactEyebrow": "Contact sub-heading",
+      "subjectsTitle": "Contact form subjects",
+      "subjectLabel": "Subject"
+    },
+    "pricing": {
+      "title": "Entry pricing",
+      "description": "The price cards, footnote and rules shown on the home page.",
+      "heading": "Section heading",
+      "note": "Pricing footnote",
+      "rules": "Good to know",
+      "tiers": "Price cards",
+      "tierTitle": "Title",
+      "tierSubtitle": "Subtitle",
+      "featured": "Highlighted card",
+      "rowLabel": "Label",
+      "rowAmount": "Price (₪)",
+      "addTier": "Add card",
+      "addRow": "Add row"
+    },
+    "menu": {
+      "title": "Menu",
+      "description": "Categories and items. Reorder them and use the toggle to hide.",
+      "heading": "Page heading",
+      "intro": "Description",
+      "note": "Footnote",
+      "categoryLabel": "Category name",
+      "visible": "Visible on the site",
+      "itemName": "Item name",
+      "itemDescription": "Description",
+      "itemAmount": "Price (₪)",
+      "addCategory": "Add category",
+      "addItem": "Add item"
+    },
+    "birthdays": {
+      "title": "Birthdays page",
+      "description": "The copy, prices and booking form fields.",
+      "heroTitle": "Hero",
+      "heroHeading": "Headline",
+      "heroDescription": "Description",
+      "heroImage": "Image",
+      "stepsTitle": "What the event includes",
+      "stepsHeading": "Section heading",
+      "stepsNote": "Footnote",
+      "stepTitle": "Title",
+      "stepSubtitle": "Description",
+      "stepImage": "Image",
+      "addStep": "Add step",
+      "packageTitle": "Birthday package",
+      "packageHeading": "Package title",
+      "packageAmount": "Package price (₪)",
+      "packageChildren": "Children included",
+      "extraChild": "Price per extra child (₪)",
+      "includedTitle": "“What's included” heading",
+      "packageLines": "What's included",
+      "lineText": "Line",
+      "addLine": "Add line",
+      "depositAmount": "Deposit (₪)",
+      "depositNote": "Deposit note",
+      "upgradesTitle": "Add-ons & upgrades",
+      "upgradesHeading": "Section heading",
+      "upgradeLabel": "Add-on name",
+      "upgradeAmount": "Price (₪)",
+      "addUpgrade": "Add upgrade",
+      "rulesTitle": "Important rules",
+      "rulesHeading": "Section heading",
+      "rules": "Rules",
+      "formTitle": "Booking form",
+      "formHeading": "Form heading",
+      "formDescription": "Form description",
+      "cancellationPolicy": "Cancellation policy",
+      "consentLabel": "Consent text",
+      "disclaimer": "Small print",
+      "successMessage": "Success message",
+      "requiresSignature": "Require a digital signature",
+      "signatureTitle": "Signature heading",
+      "signatureHint": "Signature hint",
+      "fieldsTitle": "Form fields",
+      "fieldsDescription": "What bookers fill in. The key is the name shown on each enquiry.",
+      "fieldKey": "Key",
+      "fieldKeyHint": "Latin letters only, e.g. celebrantNames",
+      "fieldLabel": "Label",
+      "fieldPlaceholder": "Placeholder",
+      "fieldType": "Type",
+      "fieldRequired": "Required",
+      "fieldVisible": "Visible",
+      "fieldOptions": "Choices",
+      "optionValue": "Value",
+      "optionLabel": "Label",
+      "addOption": "Add choice",
+      "addField": "Add field",
+      "types": {
+        "text": "Short text",
+        "textarea": "Long text",
+        "tel": "Phone",
+        "email": "Email",
+        "date": "Date",
+        "number": "Number",
+        "select": "Choice list",
+        "checkbox": "Checkbox"
+      }
+    },
+    "reviews": {
+      "title": "Reviews",
+      "description": "Hand-written reviews and reviews imported from Google.",
+      "googleTitle": "Sync from Google",
+      "googleDescription": "Imports up to 5 recent reviews using the branch's Place ID.",
+      "sync": "Sync now",
+      "syncing": "Syncing…",
+      "syncResult": "Imported {imported}, updated {updated}.",
+      "syncMissingPlaceId": "Set a Google Place ID in general settings first.",
+      "syncMissingKey": "No Google Places key configured.",
+      "syncError": "Sync failed.",
+      "author": "Author",
+      "rating": "Rating",
+      "text": "Review text",
+      "date": "Date",
+      "published": "Shown on the site",
+      "sourceGoogle": "Google",
+      "sourceManual": "Manual",
+      "addReview": "Add review"
+    },
+    "media": {
+      "title": "Home page gallery",
+      "description": "The first image is shown large. Reorder as you like.",
+      "alt": "Alt text",
+      "cover": "Cover image",
+      "addImage": "Add image",
+      "dropzone": "Upload gallery images",
+      "dropzoneHint": "JPG · PNG · WEBP"
+    },
+    "leads": {
+      "title": "Enquiries",
+      "description": "Birthday booking forms and contact form messages.",
+      "empty": "No enquiries yet.",
+      "kindBirthday": "Birthday",
+      "kindContact": "Contact",
+      "status": "Status",
+      "statusNew": "New",
+      "statusInProgress": "In progress",
+      "statusDone": "Done",
+      "statusArchived": "Archived",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "subject": "Subject",
+      "message": "Message",
+      "details": "Form details",
+      "upgrades": "Add-ons",
+      "total": "Estimated total",
+      "signature": "Signature",
+      "viewSignature": "View signature",
+      "createdAt": "Received",
+      "notifyFailed": "Email delivery failed: {error}",
+      "filterAll": "All",
+      "delete": "Delete enquiry"
+    },
+    "locations": {
+      "title": "Branches",
+      "description": "Each branch owns its own content, prices and enquiries.",
+      "add": "Add branch",
+      "addTitle": "New branch",
+      "addDescription": "The branch opens with a full set of starter content you can edit right away.",
+      "slug": "URL slug",
+      "slugHint": "Lowercase letters and dashes, e.g. kiryat-ono",
+      "nameLabel": "Branch name",
+      "create": "Create branch",
+      "creating": "Creating…",
+      "published": "Published",
+      "unpublished": "Not published",
+      "publish": "Publish this branch",
+      "sortOrder": "Display order",
+      "settings": "Branch settings",
+      "delete": "Delete branch",
+      "deleteHint": "Deleting removes all of the branch's content and enquiries. This cannot be undone.",
+      "deleteConfirm": "Delete this branch and all its content?",
+      "slugTaken": "That slug is already taken.",
+      "empty": "No branches yet."
+    },
+    "team": {
+      "title": "Team",
+      "description": "Owners see every branch; managers only see the ones assigned to them.",
+      "name": "Name",
+      "email": "Email",
+      "password": "Initial password",
+      "passwordHint": "At least 8 characters. Share it with the user so they can change it.",
+      "role": "Role",
+      "owner": "Owner",
+      "manager": "Branch manager",
+      "assignedLocations": "Assigned branches",
+      "addMember": "Add user",
+      "create": "Create user",
+      "update": "Update",
+      "delete": "Delete user",
+      "you": "This is you",
+      "emailTaken": "A user with that email already exists.",
+      "cannotDemoteSelf": "You cannot remove your own owner role.",
+      "cannotDeleteSelf": "You cannot delete yourself.",
+      "empty": "No other users yet."
+    }
   }
 }

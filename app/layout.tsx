@@ -1,12 +1,9 @@
+import type { Metadata } from "next"
 import { Assistant, Fredoka } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getLocale } from "next-intl/server"
 
 import "./globals.css"
-import { AnnouncementModal } from "@/components/brand/announcement-modal"
-import { ContactSection } from "@/components/home/contact-section"
-import { SiteFooter } from "@/components/home/site-footer"
-import { SiteHeader } from "@/components/home/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
@@ -26,6 +23,15 @@ const fredoka = Fredoka({
   variable: "--font-heading",
 })
 
+export const metadata: Metadata = {
+  title: "Baloona",
+}
+
+/**
+ * Root shell only: fonts, locale and theme. Site chrome (header, contact block,
+ * footer) lives in `app/[location]/layout.tsx` because it is bound to a venue,
+ * and the admin renders its own shell.
+ */
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -46,16 +52,7 @@ export default async function RootLayout({
           {/* The Pastel Wonderland design is light-only; force light so
               token-based text never inverts to white-on-white in dark
               environments. */}
-          <ThemeProvider forcedTheme="light">
-            <div className="flex min-h-svh flex-col bg-background">
-              <SiteHeader />
-              <main className="flex-1">{children}</main>
-              {/* Contact appears on every page, just above the footer. */}
-              <ContactSection />
-              <SiteFooter />
-            </div>
-            <AnnouncementModal />
-          </ThemeProvider>
+          <ThemeProvider forcedTheme="light">{children}</ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>
