@@ -16,14 +16,32 @@ next-intl (he/en) · Tailwind v4 · Storybook.
 
 ```bash
 bun install
-cp .env.example .env.local   # fill in DATABASE_URL and BETTER_AUTH_SECRET
-bun run db:migrate           # create the schema
-bun run db:seed              # owner account + the two starter branches
+cp .env.example .env    # fill in DATABASE_URL and BETTER_AUTH_SECRET
+bun run db:migrate      # create the schema
+bun run db:seed         # owner account + the two starter branches
 bun run dev
 ```
 
+Generate the secret with `openssl rand -base64 32`. `.env` is gitignored — no
+credentials are ever committed.
+
 Sign in at `/admin/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`. Public sign-up
 is disabled; further accounts are created by an owner in **ניהול צוות**.
+
+### Conductor workspaces
+
+`.conductor/settings.toml` wires up the parallel-workspace workflow: `setup`
+runs `bun install`, the Run button offers the dev server, Storybook and Drizzle
+Studio (each on the workspace's own `$CONDUCTOR_PORT`), and `archive` deletes
+`node_modules`/`.next`/`storybook-static` when a workspace is retired.
+
+Secrets are copied, not committed: put a filled-in `.env` in the **repository
+root directory** once, and `file_include_globs = [".env*"]` hands every new
+workspace its own copy.
+
+```bash
+cp .env.example "$CONDUCTOR_ROOT_PATH/.env"   # then fill it in
+```
 
 ### Optional integrations
 
