@@ -53,13 +53,14 @@ function MediaForm({ slug, initial }: { slug: string; initial: MediaDraft }) {
               )}
               <ImageField
                 label={t("dropzone")}
-                hint={t("dropzoneHint")}
+                tooltip={t("dropzoneTip")}
                 folder="gallery"
                 value={image.url}
                 onChange={(url) => update({ ...image, url })}
               />
               <LocalizedField
                 label={t("alt")}
+                tooltip={t("altTip")}
                 value={image.alt}
                 onChange={(alt) => update({ ...image, alt })}
               />

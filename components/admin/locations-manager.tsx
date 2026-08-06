@@ -107,9 +107,9 @@ function NewLocationForm({ onCancel }: { onCancel: () => void }) {
     })
   }
 
-  const pair = (name: string, label: string) => (
+  const pair = (name: string, label: string, tooltip?: string) => (
     <div className="grid gap-3 sm:grid-cols-2">
-      <AdminField label={`${label} (עב)`}>
+      <AdminField label={`${label} (עב)`} tooltip={tooltip}>
         <AdminInput name={`${name}He`} required />
       </AdminField>
       <AdminField label={`${label} (EN)`}>
@@ -121,7 +121,7 @@ function NewLocationForm({ onCancel }: { onCancel: () => void }) {
   return (
     <AdminCard title={t("addTitle")} description={t("addDescription")}>
       <form onSubmit={submit} className="space-y-4">
-        <AdminField label={t("slug")} hint={t("slugHint")}>
+        <AdminField label={t("slug")} tooltip={t("slugTip")}>
           <AdminInput
             name="slug"
             required
@@ -130,17 +130,20 @@ function NewLocationForm({ onCancel }: { onCancel: () => void }) {
             className="text-start"
           />
         </AdminField>
-        {pair("name", t("nameLabel"))}
-        {pair("city", general("city"))}
-        {pair("address", general("address"))}
+        {pair("name", t("nameLabel"), t("nameLabelTip"))}
+        {pair("city", general("city"), general("cityTip"))}
+        {pair("address", general("address"), general("addressTip"))}
         <div className="grid gap-3 sm:grid-cols-3">
-          <AdminField label={general("phone")}>
+          <AdminField label={general("phone")} tooltip={general("phoneTip")}>
             <AdminInput name="phone" dir="ltr" />
           </AdminField>
-          <AdminField label={general("whatsapp")}>
+          <AdminField
+            label={general("whatsapp")}
+            tooltip={general("whatsappTip")}
+          >
             <AdminInput name="whatsapp" dir="ltr" />
           </AdminField>
-          <AdminField label={general("email")}>
+          <AdminField label={general("email")} tooltip={general("emailTip")}>
             <AdminInput name="email" type="email" dir="ltr" />
           </AdminField>
         </div>

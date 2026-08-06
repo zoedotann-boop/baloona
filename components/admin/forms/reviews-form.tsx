@@ -137,7 +137,7 @@ function ReviewsForm({
                 </span>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
-                <AdminField label={t("author")}>
+                <AdminField label={t("author")} tooltip={t("authorTip")}>
                   <AdminInput
                     value={review.authorName}
                     onChange={(event) =>
@@ -145,7 +145,7 @@ function ReviewsForm({
                     }
                   />
                 </AdminField>
-                <AdminField label={t("rating")}>
+                <AdminField label={t("rating")} tooltip={t("ratingTip")}>
                   <AdminInput
                     type="number"
                     min={1}
@@ -159,7 +159,7 @@ function ReviewsForm({
                     }
                   />
                 </AdminField>
-                <AdminField label={t("date")}>
+                <AdminField label={t("date")} tooltip={t("dateTip")}>
                   <AdminInput
                     type="date"
                     value={review.publishedAt}
@@ -171,6 +171,7 @@ function ReviewsForm({
               </div>
               <LocalizedField
                 label={t("text")}
+                tooltip={t("textTip")}
                 multiline
                 value={review.text}
                 onChange={(text) => update({ ...review, text })}

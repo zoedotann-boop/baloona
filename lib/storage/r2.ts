@@ -37,27 +37,10 @@ async function client() {
   }
 }
 
-export function isStorageConfigured(): boolean {
-  return r2Config() !== null
-}
-
 /** Public URL for a stored object key. */
 function publicUrl(key: string): string {
   const config = r2Config()
   return config ? `${config.publicBaseUrl}/${key}` : ""
-}
-
-/** A collision-free object key under a location's folder. */
-export function buildObjectKey(
-  locationSlug: string,
-  folder: string,
-  fileName: string
-): string {
-  const safeName = fileName
-    .toLowerCase()
-    .replace(/[^a-z0-9.]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-  return `${locationSlug}/${folder}/${crypto.randomUUID()}-${safeName || "file"}`
 }
 
 /** Presigned PUT the browser uploads to, plus the URL to store afterwards. */
@@ -105,7 +88,7 @@ export async function uploadObject(
 }
 
 export async function deleteObject(key: string): Promise<void> {
-  if (!isStorageConfigured()) return
+  if (!r2Config()) return
   const { config, s3 } = await client()
   const { DeleteObjectCommand } = await import("@aws-sdk/client-s3")
 

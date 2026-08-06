@@ -76,6 +76,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
   in one action, and provides the language switch plus the AI translate shortcut
   through context. Editable lists use `<RowList>`; order is the array order and
   becomes `sortOrder` on save.
+- Every editable field explains itself. Pass `tooltip` to `AdminField` /
+  `LocalizedField` / `LocalizedListField` / `ImageField` and it renders an
+  `<InfoTooltip>` info icon beside the label (hover or keyboard focus reveals it).
+  Copy lives in `messages/*.json` under the section, keyed `<field>Tip`; keep `he`
+  and `en` in sync.
 - Saving a list submits the whole array. `syncCollection` in
   `lib/actions/admin/shared.ts` turns that snapshot into inserts, updates and deletes.
 - The birthday booking form is editor-defined: `birthday_form_field` rows compile to a

@@ -4,6 +4,8 @@ import { createContext, useContext, useId } from "react"
 
 import { cn } from "@/lib/utils"
 
+import { InfoTooltip } from "./info-tooltip"
+
 /**
  * Small building blocks shared by every admin form.
  *
@@ -57,16 +59,17 @@ function AdminCard({
   )
 }
 
-/** Label + optional hint around a control, which it also labels. */
+/** Label + optional info tooltip around a control, which it also labels. */
 function AdminField({
   label,
-  hint,
+  tooltip,
   action,
   children,
   className,
 }: {
   label: string
-  hint?: string
+  /** Guidance shown on an info icon beside the label — "what goes here". */
+  tooltip?: string
   /** Rendered on the label row, e.g. the "fill with AI" button. */
   action?: React.ReactNode
   children: React.ReactNode
@@ -77,13 +80,15 @@ function AdminField({
   return (
     <div className={className}>
       <div className="mb-1.5 flex items-center justify-between gap-3">
-        <label htmlFor={id} className="text-[13px] font-bold text-brand-plum">
-          {label}
-        </label>
+        <span className="flex items-center gap-1.5">
+          <label htmlFor={id} className="text-[13px] font-bold text-brand-plum">
+            {label}
+          </label>
+          {tooltip && <InfoTooltip text={tooltip} />}
+        </span>
         {action}
       </div>
       <FieldIdContext.Provider value={id}>{children}</FieldIdContext.Provider>
-      {hint && <p className="mt-1 text-[12px] text-muted-foreground">{hint}</p>}
     </div>
   )
 }

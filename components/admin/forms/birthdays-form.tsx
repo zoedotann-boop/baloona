@@ -111,13 +111,14 @@ function BirthdaysForm({
 
   const numberField = (
     label: string,
+    tooltip: string,
     key:
       | "packageAmount"
       | "packageChildrenCount"
       | "extraChildAmount"
       | "depositAmount"
   ) => (
-    <AdminField label={label}>
+    <AdminField label={label} tooltip={tooltip}>
       <AdminInput
         type="number"
         min={0}
@@ -140,17 +141,20 @@ function BirthdaysForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("heroHeading")}
+            tooltip={t("heroHeadingTip")}
             value={draft.content.heroTitle}
             onChange={(value) => content("heroTitle", value)}
           />
           <LocalizedField
             label={t("heroDescription")}
+            tooltip={t("heroDescriptionTip")}
             multiline
             value={draft.content.heroDescription}
             onChange={(value) => content("heroDescription", value)}
           />
           <ImageField
             label={t("heroImage")}
+            tooltip={t("heroImageTip")}
             folder="hero"
             value={draft.content.heroImageUrl}
             onChange={(value) => content("heroImageUrl", value)}
@@ -162,11 +166,13 @@ function BirthdaysForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("stepsHeading")}
+            tooltip={t("stepsHeadingTip")}
             value={draft.content.stepsTitle}
             onChange={(value) => content("stepsTitle", value)}
           />
           <LocalizedField
             label={t("stepsNote")}
+            tooltip={t("stepsNoteTip")}
             multiline
             rows={2}
             value={draft.content.stepsNote}
@@ -186,16 +192,19 @@ function BirthdaysForm({
               <div className="space-y-3">
                 <LocalizedField
                   label={t("stepTitle")}
+                  tooltip={t("stepTitleTip")}
                   value={step.title}
                   onChange={(title) => update({ ...step, title })}
                 />
                 <LocalizedField
                   label={t("stepSubtitle")}
+                  tooltip={t("stepSubtitleTip")}
                   value={step.subtitle}
                   onChange={(subtitle) => update({ ...step, subtitle })}
                 />
                 <ImageField
                   label={t("stepImage")}
+                  tooltip={t("stepImageTip")}
                   folder="steps"
                   value={step.imageUrl}
                   onChange={(imageUrl) => update({ ...step, imageUrl })}
@@ -210,22 +219,41 @@ function BirthdaysForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("packageHeading")}
+            tooltip={t("packageHeadingTip")}
             value={draft.content.packageTitle}
             onChange={(value) => content("packageTitle", value)}
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {numberField(t("packageAmount"), "packageAmount")}
-            {numberField(t("packageChildren"), "packageChildrenCount")}
-            {numberField(t("extraChild"), "extraChildAmount")}
-            {numberField(t("depositAmount"), "depositAmount")}
+            {numberField(
+              t("packageAmount"),
+              t("packageAmountTip"),
+              "packageAmount"
+            )}
+            {numberField(
+              t("packageChildren"),
+              t("packageChildrenTip"),
+              "packageChildrenCount"
+            )}
+            {numberField(
+              t("extraChild"),
+              t("extraChildTip"),
+              "extraChildAmount"
+            )}
+            {numberField(
+              t("depositAmount"),
+              t("depositAmountTip"),
+              "depositAmount"
+            )}
           </div>
           <LocalizedField
             label={t("depositNote")}
+            tooltip={t("depositNoteTip")}
             value={draft.content.depositNote}
             onChange={(value) => content("depositNote", value)}
           />
           <LocalizedField
             label={t("includedTitle")}
+            tooltip={t("includedTitleTip")}
             value={draft.content.includedTitle}
             onChange={(value) => content("includedTitle", value)}
           />
@@ -244,6 +272,7 @@ function BirthdaysForm({
               renderRow={(line, _index, update) => (
                 <LocalizedField
                   label={t("lineText")}
+                  tooltip={t("lineTextTip")}
                   value={line.text}
                   onChange={(text) => update({ ...line, text })}
                 />
@@ -257,6 +286,7 @@ function BirthdaysForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("upgradesHeading")}
+            tooltip={t("upgradesHeadingTip")}
             value={draft.content.upgradesTitle}
             onChange={(value) => content("upgradesTitle", value)}
           />
@@ -275,10 +305,14 @@ function BirthdaysForm({
                 <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
                   <LocalizedField
                     label={t("upgradeLabel")}
+                    tooltip={t("upgradeLabelTip")}
                     value={upgrade.label}
                     onChange={(label) => update({ ...upgrade, label })}
                   />
-                  <AdminField label={t("upgradeAmount")}>
+                  <AdminField
+                    label={t("upgradeAmount")}
+                    tooltip={t("upgradeAmountTip")}
+                  >
                     <AdminInput
                       type="number"
                       min={0}
@@ -307,11 +341,13 @@ function BirthdaysForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("rulesHeading")}
+            tooltip={t("rulesHeadingTip")}
             value={draft.content.rulesTitle}
             onChange={(value) => content("rulesTitle", value)}
           />
           <LocalizedListField
             label={t("rules")}
+            tooltip={t("rulesTip")}
             value={draft.content.rules}
             onChange={(value) => content("rules", value)}
             addLabel={common("add")}
@@ -323,11 +359,13 @@ function BirthdaysForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("formHeading")}
+            tooltip={t("formHeadingTip")}
             value={draft.content.formTitle}
             onChange={(value) => content("formTitle", value)}
           />
           <LocalizedField
             label={t("formDescription")}
+            tooltip={t("formDescriptionTip")}
             multiline
             rows={2}
             value={draft.content.formDescription}
@@ -335,6 +373,7 @@ function BirthdaysForm({
           />
           <LocalizedField
             label={t("cancellationPolicy")}
+            tooltip={t("cancellationPolicyTip")}
             multiline
             rows={3}
             value={draft.content.cancellationPolicy}
@@ -342,6 +381,7 @@ function BirthdaysForm({
           />
           <LocalizedField
             label={t("consentLabel")}
+            tooltip={t("consentLabelTip")}
             multiline
             rows={2}
             value={draft.content.consentLabel}
@@ -349,6 +389,7 @@ function BirthdaysForm({
           />
           <LocalizedField
             label={t("disclaimer")}
+            tooltip={t("disclaimerTip")}
             multiline
             rows={2}
             value={draft.content.disclaimer}
@@ -356,6 +397,7 @@ function BirthdaysForm({
           />
           <LocalizedField
             label={t("successMessage")}
+            tooltip={t("successMessageTip")}
             multiline
             rows={2}
             value={draft.content.successMessage}
@@ -370,11 +412,13 @@ function BirthdaysForm({
             <div className="grid gap-4 sm:grid-cols-2">
               <LocalizedField
                 label={t("signatureTitle")}
+                tooltip={t("signatureTitleTip")}
                 value={draft.content.signatureTitle}
                 onChange={(value) => content("signatureTitle", value)}
               />
               <LocalizedField
                 label={t("signatureHint")}
+                tooltip={t("signatureHintTip")}
                 value={draft.content.signatureHint}
                 onChange={(value) => content("signatureHint", value)}
               />
@@ -401,7 +445,7 @@ function BirthdaysForm({
           renderRow={(field, _index, update) => (
             <div className="space-y-3">
               <div className="grid gap-3 sm:grid-cols-2">
-                <AdminField label={t("fieldKey")} hint={t("fieldKeyHint")}>
+                <AdminField label={t("fieldKey")} tooltip={t("fieldKeyTip")}>
                   <AdminInput
                     value={field.key}
                     dir="ltr"
@@ -410,7 +454,7 @@ function BirthdaysForm({
                     }
                   />
                 </AdminField>
-                <AdminField label={t("fieldType")}>
+                <AdminField label={t("fieldType")} tooltip={t("fieldTypeTip")}>
                   <AdminSelect
                     value={field.type}
                     onChange={(event) =>
@@ -430,11 +474,13 @@ function BirthdaysForm({
               </div>
               <LocalizedField
                 label={t("fieldLabel")}
+                tooltip={t("fieldLabelTip")}
                 value={field.label}
                 onChange={(label) => update({ ...field, label })}
               />
               <LocalizedField
                 label={t("fieldPlaceholder")}
+                tooltip={t("fieldPlaceholderTip")}
                 value={field.placeholder}
                 onChange={(placeholder) => update({ ...field, placeholder })}
               />
@@ -451,7 +497,10 @@ function BirthdaysForm({
                     addLabel={t("addOption")}
                     renderRow={(option, _optionIndex, updateOption) => (
                       <div className="grid gap-3 sm:grid-cols-2">
-                        <AdminField label={t("optionValue")}>
+                        <AdminField
+                          label={t("optionValue")}
+                          tooltip={t("optionValueTip")}
+                        >
                           <AdminInput
                             value={option.value}
                             dir="ltr"
@@ -465,6 +514,7 @@ function BirthdaysForm({
                         </AdminField>
                         <LocalizedField
                           label={t("optionLabel")}
+                          tooltip={t("optionLabelTip")}
                           value={option.label}
                           onChange={(label) =>
                             updateOption({ ...option, label })

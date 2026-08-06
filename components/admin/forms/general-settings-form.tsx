@@ -130,17 +130,19 @@ function GeneralSettingsForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <LocalizedField
             label={t("city")}
+            tooltip={t("cityTip")}
             value={draft.contact.city}
             onChange={(city) => update("contact", { ...draft.contact, city })}
           />
           <LocalizedField
             label={t("address")}
+            tooltip={t("addressTip")}
             value={draft.contact.address}
             onChange={(address) =>
               update("contact", { ...draft.contact, address })
             }
           />
-          <AdminField label={t("phone")}>
+          <AdminField label={t("phone")} tooltip={t("phoneTip")}>
             <AdminInput
               value={draft.contact.phone}
               dir="ltr"
@@ -153,7 +155,7 @@ function GeneralSettingsForm({
               className="text-start"
             />
           </AdminField>
-          <AdminField label={t("whatsapp")} hint={t("whatsappHint")}>
+          <AdminField label={t("whatsapp")} tooltip={t("whatsappTip")}>
             <AdminInput
               value={draft.contact.whatsapp}
               dir="ltr"
@@ -167,7 +169,7 @@ function GeneralSettingsForm({
               className="text-start"
             />
           </AdminField>
-          <AdminField label={t("email")}>
+          <AdminField label={t("email")} tooltip={t("emailTip")}>
             <AdminInput
               type="email"
               value={draft.contact.email}
@@ -181,7 +183,7 @@ function GeneralSettingsForm({
               className="text-start"
             />
           </AdminField>
-          <AdminField label={t("leadEmail")} hint={t("leadEmailHint")}>
+          <AdminField label={t("leadEmail")} tooltip={t("leadEmailTip")}>
             <AdminInput
               type="email"
               value={draft.contact.leadRecipientEmail}
@@ -197,12 +199,12 @@ function GeneralSettingsForm({
           </AdminField>
           {(
             [
-              ["instagramUrl", t("instagram")],
-              ["facebookUrl", t("facebook")],
-              ["tiktokUrl", t("tiktok")],
+              ["instagramUrl", t("instagram"), t("instagramTip")],
+              ["facebookUrl", t("facebook"), t("facebookTip")],
+              ["tiktokUrl", t("tiktok"), t("tiktokTip")],
             ] as const
-          ).map(([key, label]) => (
-            <AdminField key={key} label={label}>
+          ).map(([key, label, tooltip]) => (
+            <AdminField key={key} label={label} tooltip={tooltip}>
               <AdminInput
                 value={draft.contact[key]}
                 dir="ltr"
@@ -306,6 +308,7 @@ function GeneralSettingsForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("popupHeading")}
+            tooltip={t("popupHeadingTip")}
             value={draft.announcement.title}
             onChange={(title) =>
               update("announcement", { ...draft.announcement, title })
@@ -313,6 +316,7 @@ function GeneralSettingsForm({
           />
           <LocalizedField
             label={t("popupBody")}
+            tooltip={t("popupBodyTip")}
             multiline
             rows={2}
             value={draft.announcement.body}
@@ -322,6 +326,7 @@ function GeneralSettingsForm({
           />
           <LocalizedListField
             label={t("popupLines")}
+            tooltip={t("popupLinesTip")}
             value={draft.announcement.lines}
             onChange={(lines) =>
               update("announcement", { ...draft.announcement, lines })
@@ -331,12 +336,16 @@ function GeneralSettingsForm({
           <div className="grid gap-4 sm:grid-cols-2">
             <LocalizedField
               label={t("popupCta")}
+              tooltip={t("popupCtaTip")}
               value={draft.announcement.ctaLabel}
               onChange={(ctaLabel) =>
                 update("announcement", { ...draft.announcement, ctaLabel })
               }
             />
-            <AdminField label={t("popupCtaHref")}>
+            <AdminField
+              label={t("popupCtaHref")}
+              tooltip={t("popupCtaHrefTip")}
+            >
               <AdminInput
                 value={draft.announcement.ctaHref}
                 dir="ltr"
@@ -369,6 +378,7 @@ function GeneralSettingsForm({
               </div>
               <LocalizedField
                 label={t("metaTitle")}
+                tooltip={t("metaTitleTip")}
                 value={page.title}
                 onChange={(title) =>
                   update("seo", {
@@ -381,6 +391,7 @@ function GeneralSettingsForm({
               />
               <LocalizedField
                 label={t("metaDescription")}
+                tooltip={t("metaDescriptionTip")}
                 multiline
                 rows={2}
                 value={page.description}
@@ -395,6 +406,7 @@ function GeneralSettingsForm({
               />
               <LocalizedField
                 label={t("keywords")}
+                tooltip={t("keywordsTip")}
                 value={page.keywords}
                 onChange={(keywords) =>
                   update("seo", {
@@ -417,12 +429,12 @@ function GeneralSettingsForm({
         <div className="grid gap-4 sm:grid-cols-2">
           {(
             [
-              ["gaMeasurementId", t("ga"), "G-XXXXXXXXXX"],
-              ["metaPixelId", t("pixel"), "123456789012345"],
-              ["gtmContainerId", t("gtm"), "GTM-XXXXXXX"],
+              ["gaMeasurementId", t("ga"), "G-XXXXXXXXXX", t("gaTip")],
+              ["metaPixelId", t("pixel"), "123456789012345", t("pixelTip")],
+              ["gtmContainerId", t("gtm"), "GTM-XXXXXXX", t("gtmTip")],
             ] as const
-          ).map(([key, label, placeholder]) => (
-            <AdminField key={key} label={label}>
+          ).map(([key, label, placeholder, tooltip]) => (
+            <AdminField key={key} label={label} tooltip={tooltip}>
               <AdminInput
                 value={draft.seo[key]}
                 dir="ltr"
@@ -434,7 +446,7 @@ function GeneralSettingsForm({
               />
             </AdminField>
           ))}
-          <AdminField label={t("placeId")} hint={t("placeIdHint")}>
+          <AdminField label={t("placeId")} tooltip={t("placeIdTip")}>
             <AdminInput
               value={draft.seo.googlePlaceId}
               dir="ltr"
@@ -453,6 +465,7 @@ function GeneralSettingsForm({
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <ImageField
             label={t("ogImage")}
+            tooltip={t("ogImageTip")}
             folder="branding"
             value={draft.seo.ogImageUrl}
             onChange={(ogImageUrl) =>
@@ -461,6 +474,7 @@ function GeneralSettingsForm({
           />
           <ImageField
             label={t("favicon")}
+            tooltip={t("faviconTip")}
             folder="branding"
             value={draft.seo.faviconUrl}
             onChange={(faviconUrl) =>
