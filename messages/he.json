@@ -153,6 +153,17 @@
     "emailLabel": "אימייל",
     "addressLabel": "כתובת"
   },
+  "punchCard": {
+    "cardTitle": "הכרטיסייה שלך",
+    "greeting": "הכרטיסייה של {name}",
+    "usedOfTotal": "{used} מתוך {total} נוקבו",
+    "remaining": "נותרו <strong>{count}</strong> ניקובים",
+    "completed": "הכרטיסייה מלאה! 🎉",
+    "slotFilled": "ניקוב מנוצל",
+    "slotEmpty": "ניקוב פנוי",
+    "issuedBy": "הונפק בסניף {branch}",
+    "footerNote": "שמרו את הקישור הזה — זו הכרטיסייה הדיגיטלית שלכם."
+  },
   "admin": {
     "brand": "ניהול בלונה",
     "signIn": {
@@ -172,6 +183,7 @@
       "birthdays": "ימי הולדת",
       "reviews": "ניהול ביקורות",
       "media": "מדיה",
+      "punchCards": "כרטיסיות",
       "leads": "פניות",
       "locations": "סניפים",
       "team": "ניהול צוות",
@@ -546,6 +558,34 @@
       "notifyFailed": "שליחת המייל נכשלה: {error}",
       "filterAll": "הכל",
       "delete": "מחיקת הפנייה"
+    },
+    "punchCards": {
+      "title": "כרטיסיות",
+      "description": "ניהול כרטיסיות ניקוב דיגיטליות של לקוחות — הנפקה, ניקוב ומעקב.",
+      "issueTitle": "הנפקת כרטיסייה",
+      "issueDescription": "הנפקת כרטיסייה חדשה ללקוח. להמרת כרטיסייה פיזית קיימת, הזינו כמה ניקובים עוד נותרו בה.",
+      "issueButton": "הנפקת כרטיסייה",
+      "issueError": "ההנפקה נכשלה. בדקו את הפרטים ונסו שוב.",
+      "phone": "טלפון",
+      "fullName": "שם הלקוח",
+      "email": "אימייל",
+      "note": "הערה",
+      "noteTip": "הערה חופשית, למשל סימון שמדובר בכרטיסייה פיזית שהומרה.",
+      "total": "מספר ניקובים בכרטיסייה",
+      "totalTip": "כמה כניסות יש בכרטיסייה מלאה.",
+      "remaining": "ניקובים שנותרו",
+      "remainingTip": "השאירו ריק לכרטיסייה חדשה ומלאה. להמרת כרטיסייה פיזית, הזינו כמה ניקובים עוד נותרו בה.",
+      "remainingPlaceholder": "כמו סך הכל",
+      "searchTitle": "חיפוש לקוח",
+      "searchPlaceholder": "טלפון או אימייל",
+      "searchButton": "חיפוש",
+      "noResults": "לא נמצאו לקוחות.",
+      "punch": "ניקוב",
+      "cardFull": "הכרטיסייה מלאה",
+      "undo": "ביטול ניקוב",
+      "copyLink": "העתקת קישור",
+      "copied": "הועתק!",
+      "openCard": "פתיחת הכרטיסייה"
     },
     "locations": {
       "title": "סניפים",

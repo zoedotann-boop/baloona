@@ -3,7 +3,7 @@ import "server-only"
 import { asc, eq } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import { locations, type SeoPage } from "@/lib/db/schema"
+import { locations, punchCards, type SeoPage } from "@/lib/db/schema"
 
 /**
  * Read models for the public site.
@@ -106,6 +106,22 @@ export async function getBirthdayPage(slug: string) {
         where: (f) => eq(f.isVisible, true),
         orderBy: (f) => [asc(f.sortOrder)],
       },
+    },
+  })
+}
+
+/**
+ * A punch card by its share token, for the customer's `/card/<token>` view.
+ * Global to the brand (not scoped to a branch); returns `undefined` for unknown
+ * tokens so the caller can 404. The token is the only credential — there is no
+ * customer login — so it must be unguessable.
+ */
+export async function getPunchCardByToken(token: string) {
+  return db.query.punchCards.findFirst({
+    where: eq(punchCards.token, token),
+    with: {
+      customer: { columns: { fullName: true } },
+      issuedByLocation: { columns: { name: true } },
     },
   })
 }

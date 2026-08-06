@@ -8,6 +8,13 @@
       "when": 1785857331309,
       "tag": "0000_daily_the_leader",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786037409534,
+      "tag": "0001_great_pixie",
+      "breakpoints": true
     }
   ]
 }

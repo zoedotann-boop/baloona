@@ -153,6 +153,17 @@
     "emailLabel": "Email",
     "addressLabel": "Address"
   },
+  "punchCard": {
+    "cardTitle": "Your punch card",
+    "greeting": "{name}'s punch card",
+    "usedOfTotal": "{used} of {total} punched",
+    "remaining": "<strong>{count}</strong> punches left",
+    "completed": "Card complete! 🎉",
+    "slotFilled": "Punch used",
+    "slotEmpty": "Punch available",
+    "issuedBy": "Issued at {branch}",
+    "footerNote": "Keep this link — it's your digital punch card."
+  },
   "admin": {
     "brand": "Baloona admin",
     "signIn": {
@@ -172,6 +183,7 @@
       "birthdays": "Birthdays",
       "reviews": "Reviews",
       "media": "Media",
+      "punchCards": "Punch cards",
       "leads": "Enquiries",
       "locations": "Branches",
       "team": "Team",
@@ -546,6 +558,34 @@
       "notifyFailed": "Email delivery failed: {error}",
       "filterAll": "All",
       "delete": "Delete enquiry"
+    },
+    "punchCards": {
+      "title": "Punch cards",
+      "description": "Manage customers' digital punch cards — issue, punch and track.",
+      "issueTitle": "Issue a card",
+      "issueDescription": "Issue a new card to a customer. To migrate an existing physical card, enter how many punches it still has left.",
+      "issueButton": "Issue card",
+      "issueError": "Could not issue the card. Check the details and try again.",
+      "phone": "Phone",
+      "fullName": "Customer name",
+      "email": "Email",
+      "note": "Note",
+      "noteTip": "Free note, e.g. marking a migrated physical card.",
+      "total": "Punches on the card",
+      "totalTip": "How many visits a full card holds.",
+      "remaining": "Punches left",
+      "remainingTip": "Leave blank for a brand-new full card. To migrate a physical card, enter how many punches it still has left.",
+      "remainingPlaceholder": "Same as total",
+      "searchTitle": "Find a customer",
+      "searchPlaceholder": "Phone or email",
+      "searchButton": "Search",
+      "noResults": "No customers found.",
+      "punch": "Punch",
+      "cardFull": "Card is full",
+      "undo": "Undo punch",
+      "copyLink": "Copy link",
+      "copied": "Copied!",
+      "openCard": "Open card"
     },
     "locations": {
       "title": "Branches",

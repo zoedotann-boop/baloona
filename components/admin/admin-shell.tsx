@@ -14,6 +14,7 @@ import {
   Settings,
   Star,
   Tag,
+  Ticket,
   UtensilsCrossed,
   Users,
 } from "lucide-react"
@@ -87,7 +88,14 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
     : []
 
   const operationLinks = active
-    ? [{ href: `/admin/${active.slug}/leads`, label: t("leads"), icon: Inbox }]
+    ? [
+        {
+          href: `/admin/${active.slug}/punch-cards`,
+          label: t("punchCards"),
+          icon: Ticket,
+        },
+        { href: `/admin/${active.slug}/leads`, label: t("leads"), icon: Inbox },
+      ]
     : []
 
   const accountLinks = [

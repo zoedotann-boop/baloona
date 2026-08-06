@@ -4,10 +4,13 @@ A multi-branch site for Baloona — an indoor playground and café for children 
 with a Hebrew-first admin panel that owns every piece of content.
 
 - **Public site**: `/` lists the branches, `/<slug>` is a branch's home page,
-  with `/menu`, `/birthdays` and `/accessibility` beneath it.
+  with `/menu`, `/birthdays` and `/accessibility` beneath it. `/card/<token>` is a
+  customer's digital punch card, opened by the share link/QR the front desk hands out
+  (no login — the token is the credential; the `card` slug is reserved).
 - **Admin**: `/admin` — contact details, opening hours, the pop-up, SEO, home
   page copy, pricing, menu, birthdays, media, reviews and the enquiries inbox,
-  all per branch.
+  all per branch, plus a brand-global **punch cards** console (issue, punch, undo
+  and migrate physical cards).
 
 Stack: Next.js 16 (App Router) · Neon Postgres + Drizzle · Better Auth ·
 next-intl (he/en) · Tailwind v4 · Storybook.

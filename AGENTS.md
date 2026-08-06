@@ -63,6 +63,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Data access: `lib/db/queries/site.ts` (public) and `lib/db/queries/admin.ts` (editor
   views). Mutations are server actions under `lib/actions/`, each one validating with
   zod and re-checking access via `requireLocationAccess`.
+- **Punch cards are the one brand-global exception.** The loyalty tables
+  (`customer`, `punch_card`, `punch_event` in `lib/db/schema/punch-cards.ts`) do **not**
+  cascade from a location: a card belongs to the brand so its balance is one number a
+  customer redeems at any branch. The `location`/`user` references on a card and its
+  punch events are audit trails (`onDelete: "set null"`) — which branch issued it, which
+  branch and clerk redeemed each punch. There is no customer login: a customer is keyed
+  by phone at the front desk and views their card through an unguessable share token at
+  `/card/<token>` (the `card` slug is reserved). The admin console
+  (`/admin/<branch>/punch-cards`) still runs through `requireLocationAccess(slug)` — the
+  branch in the URL is the acting branch recorded on each punch.
 
 ## Admin panel
 
