@@ -60,11 +60,13 @@ function PricingForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("heading")}
+            tooltip={t("headingTip")}
             value={draft.title}
             onChange={(title) => setDraft((d) => ({ ...d, title }))}
           />
           <LocalizedField
             label={t("note")}
+            tooltip={t("noteTip")}
             multiline
             rows={2}
             value={draft.note}
@@ -72,6 +74,7 @@ function PricingForm({
           />
           <LocalizedListField
             label={t("rules")}
+            tooltip={t("rulesTip")}
             value={draft.rules}
             onChange={(rules) => setDraft((d) => ({ ...d, rules }))}
             addLabel={common("add")}
@@ -96,11 +99,13 @@ function PricingForm({
               <div className="grid gap-3 sm:grid-cols-2">
                 <LocalizedField
                   label={t("tierTitle")}
+                  tooltip={t("tierTitleTip")}
                   value={tier.title}
                   onChange={(title) => update({ ...tier, title })}
                 />
                 <LocalizedField
                   label={t("tierSubtitle")}
+                  tooltip={t("tierSubtitleTip")}
                   value={tier.subtitle}
                   onChange={(subtitle) => update({ ...tier, subtitle })}
                 />
@@ -119,10 +124,14 @@ function PricingForm({
                   <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
                     <LocalizedField
                       label={t("rowLabel")}
+                      tooltip={t("rowLabelTip")}
                       value={row.label}
                       onChange={(label) => updateRow({ ...row, label })}
                     />
-                    <AdminField label={t("rowAmount")}>
+                    <AdminField
+                      label={t("rowAmount")}
+                      tooltip={t("rowAmountTip")}
+                    >
                       <AdminInput
                         type="number"
                         min={0}

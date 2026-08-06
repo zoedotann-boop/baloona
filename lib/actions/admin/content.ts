@@ -25,7 +25,7 @@ import {
   reviews,
   siteContents,
 } from "@/lib/db/schema"
-import { deleteObject, keyFromUrl } from "@/lib/storage/r2"
+import { deleteObject, keyFromUrl } from "@/lib/storage"
 
 import {
   localizedListSchema,

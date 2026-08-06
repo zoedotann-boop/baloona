@@ -4,7 +4,7 @@ import { z } from "zod"
 
 import { translateValues } from "@/lib/ai/translate"
 import { requireLocationAccess } from "@/lib/admin/access"
-import { buildObjectKey, createPresignedUpload } from "@/lib/storage/r2"
+import { buildObjectKey, createPresignedUpload } from "@/lib/storage"
 
 /**
  * Editor tools shared by every admin section: AI-drafted translations and

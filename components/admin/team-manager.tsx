@@ -184,10 +184,10 @@ function NewMemberForm({
     <AdminCard title={t("addMember")}>
       <form onSubmit={submit} className="space-y-4">
         <div className="grid gap-3 sm:grid-cols-2">
-          <AdminField label={t("name")}>
+          <AdminField label={t("name")} tooltip={t("nameTip")}>
             <AdminInput name="name" required />
           </AdminField>
-          <AdminField label={t("email")}>
+          <AdminField label={t("email")} tooltip={t("emailTip")}>
             <AdminInput
               name="email"
               type="email"
@@ -196,7 +196,7 @@ function NewMemberForm({
               className="text-start"
             />
           </AdminField>
-          <AdminField label={t("password")} hint={t("passwordHint")}>
+          <AdminField label={t("password")} tooltip={t("passwordTip")}>
             <AdminInput
               name="password"
               type="text"
@@ -206,7 +206,7 @@ function NewMemberForm({
               className="text-start"
             />
           </AdminField>
-          <AdminField label={t("role")}>
+          <AdminField label={t("role")} tooltip={t("roleTip")}>
             <RolePicker value={role} onChange={setRole} />
           </AdminField>
         </div>

@@ -39,3 +39,6 @@ next-env.d.ts
 # storybook
 *storybook.log
 storybook-static/
+
+# Local media-storage fallback (used when R2 is not configured in dev)
+/public/uploads/

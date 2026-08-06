@@ -98,16 +98,19 @@ function HomeContentForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("heroBadge")}
+            tooltip={t("heroBadgeTip")}
             value={draft.home.heroBadge}
             onChange={(value) => home("heroBadge", value)}
           />
           <LocalizedField
             label={t("heroHeading")}
+            tooltip={t("heroHeadingTip")}
             value={draft.home.heroTitle}
             onChange={(value) => home("heroTitle", value)}
           />
           <LocalizedField
             label={t("heroDescription")}
+            tooltip={t("heroDescriptionTip")}
             multiline
             value={draft.home.heroDescription}
             onChange={(value) => home("heroDescription", value)}
@@ -117,6 +120,7 @@ function HomeContentForm({
               <ImageField
                 key={index}
                 label={`${t("heroImages")} ${index + 1}`}
+                tooltip={t("heroImagesTip")}
                 folder="hero"
                 value={url}
                 onChange={(next) =>
@@ -137,11 +141,13 @@ function HomeContentForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("aboutHeading")}
+            tooltip={t("aboutHeadingTip")}
             value={draft.home.aboutTitle}
             onChange={(value) => home("aboutTitle", value)}
           />
           <LocalizedField
             label={t("aboutBody")}
+            tooltip={t("aboutBodyTip")}
             multiline
             rows={4}
             value={draft.home.aboutBody}
@@ -149,6 +155,7 @@ function HomeContentForm({
           />
           <ImageField
             label={t("aboutImage")}
+            tooltip={t("aboutImageTip")}
             folder="hero"
             value={draft.home.aboutImageUrl}
             onChange={(value) => home("aboutImageUrl", value)}
@@ -172,11 +179,13 @@ function HomeContentForm({
             <div className="space-y-3">
               <LocalizedField
                 label={t("featureHeading")}
+                tooltip={t("featureHeadingTip")}
                 value={item.title}
                 onChange={(title) => update({ ...item, title })}
               />
               <LocalizedField
                 label={t("featureDescription")}
+                tooltip={t("featureDescriptionTip")}
                 value={item.description}
                 onChange={(description) => update({ ...item, description })}
               />
@@ -186,6 +195,7 @@ function HomeContentForm({
         <div className="mt-4">
           <LocalizedField
             label={t("featuresCta")}
+            tooltip={t("featuresCtaTip")}
             value={draft.home.featuresCta}
             onChange={(value) => home("featuresCta", value)}
           />
@@ -196,17 +206,20 @@ function HomeContentForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("reassuranceHeading")}
+            tooltip={t("reassuranceHeadingTip")}
             value={draft.home.reassuranceTitle}
             onChange={(value) => home("reassuranceTitle", value)}
           />
           <LocalizedField
             label={t("reassuranceBody")}
+            tooltip={t("reassuranceBodyTip")}
             multiline
             value={draft.home.reassuranceBody}
             onChange={(value) => home("reassuranceBody", value)}
           />
           <LocalizedField
             label={t("reassuranceCta")}
+            tooltip={t("reassuranceCtaTip")}
             value={draft.home.reassuranceCta}
             onChange={(value) => home("reassuranceCta", value)}
           />
@@ -217,17 +230,20 @@ function HomeContentForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("teaserHeading")}
+            tooltip={t("teaserHeadingTip")}
             value={draft.home.menuTeaserTitle}
             onChange={(value) => home("menuTeaserTitle", value)}
           />
           <LocalizedField
             label={t("teaserBody")}
+            tooltip={t("teaserBodyTip")}
             multiline
             value={draft.home.menuTeaserBody}
             onChange={(value) => home("menuTeaserBody", value)}
           />
           <LocalizedField
             label={t("teaserCta")}
+            tooltip={t("teaserCtaTip")}
             value={draft.home.menuTeaserCta}
             onChange={(value) => home("menuTeaserCta", value)}
           />
@@ -246,6 +262,7 @@ function HomeContentForm({
               renderRow={(item, _index, update) => (
                 <LocalizedField
                   label={t("subjectLabel")}
+                  tooltip={t("teaserTileTip")}
                   value={item.label}
                   onChange={(label) => update({ ...item, label })}
                 />
@@ -259,22 +276,26 @@ function HomeContentForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("birthdayTeaserHeading")}
+            tooltip={t("birthdayTeaserHeadingTip")}
             value={draft.home.birthdayTeaserTitle}
             onChange={(value) => home("birthdayTeaserTitle", value)}
           />
           <LocalizedField
             label={t("birthdayTeaserBody")}
+            tooltip={t("birthdayTeaserBodyTip")}
             multiline
             value={draft.home.birthdayTeaserBody}
             onChange={(value) => home("birthdayTeaserBody", value)}
           />
           <LocalizedField
             label={t("birthdayTeaserCta")}
+            tooltip={t("birthdayTeaserCtaTip")}
             value={draft.home.birthdayTeaserCta}
             onChange={(value) => home("birthdayTeaserCta", value)}
           />
           <ImageField
             label={t("birthdayTeaserImage")}
+            tooltip={t("birthdayTeaserImageTip")}
             folder="hero"
             value={draft.home.birthdayTeaserImageUrl}
             onChange={(value) => home("birthdayTeaserImageUrl", value)}
@@ -286,11 +307,13 @@ function HomeContentForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <LocalizedField
             label={t("galleryTitle")}
+            tooltip={t("galleryTitleTip")}
             value={draft.home.galleryTitle}
             onChange={(value) => home("galleryTitle", value)}
           />
           <LocalizedField
             label={t("reviewsTitle")}
+            tooltip={t("reviewsTitleTip")}
             value={draft.home.reviewsTitle}
             onChange={(value) => home("reviewsTitle", value)}
           />
@@ -301,6 +324,7 @@ function HomeContentForm({
         <div className="space-y-4">
           <LocalizedField
             label={t("footerTagline")}
+            tooltip={t("footerTaglineTip")}
             multiline
             rows={2}
             value={draft.site.footerTagline}
@@ -309,11 +333,13 @@ function HomeContentForm({
           <div className="grid gap-4 sm:grid-cols-2">
             <LocalizedField
               label={t("contactTitle")}
+              tooltip={t("contactTitleTip")}
               value={draft.site.contactTitle}
               onChange={(value) => site("contactTitle", value)}
             />
             <LocalizedField
               label={t("contactEyebrow")}
+              tooltip={t("contactEyebrowTip")}
               value={draft.site.contactEyebrow}
               onChange={(value) => site("contactEyebrow", value)}
             />
@@ -333,6 +359,7 @@ function HomeContentForm({
               renderRow={(item, _index, update) => (
                 <LocalizedField
                   label={t("subjectLabel")}
+                  tooltip={t("contactSubjectTip")}
                   value={item.label}
                   onChange={(label) => update({ ...item, label })}
                 />

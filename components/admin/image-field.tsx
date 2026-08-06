@@ -14,7 +14,7 @@ type UploadFolder = "gallery" | "hero" | "steps" | "branding"
 
 interface ImageFieldProps {
   label: string
-  hint?: string
+  tooltip?: string
   value: string
   onChange: (url: string) => void
   folder: UploadFolder
@@ -30,7 +30,7 @@ interface ImageFieldProps {
  */
 function ImageField({
   label,
-  hint,
+  tooltip,
   value,
   onChange,
   folder,
@@ -74,7 +74,7 @@ function ImageField({
   }
 
   return (
-    <AdminField label={label} hint={hint} className={className}>
+    <AdminField label={label} tooltip={tooltip} className={className}>
       <div className="flex items-start gap-3">
         <div className="relative size-20 shrink-0 overflow-hidden rounded-xl border border-border bg-muted">
           {value ? (

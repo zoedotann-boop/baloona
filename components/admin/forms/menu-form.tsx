@@ -52,11 +52,13 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
         <div className="space-y-4">
           <LocalizedField
             label={t("heading")}
+            tooltip={t("headingTip")}
             value={draft.title}
             onChange={(title) => setDraft((d) => ({ ...d, title }))}
           />
           <LocalizedField
             label={t("intro")}
+            tooltip={t("introTip")}
             multiline
             rows={2}
             value={draft.description}
@@ -64,6 +66,7 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
           />
           <LocalizedField
             label={t("note")}
+            tooltip={t("noteTip")}
             multiline
             rows={2}
             value={draft.note}
@@ -87,6 +90,7 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
             <div className="space-y-3">
               <LocalizedField
                 label={t("categoryLabel")}
+                tooltip={t("categoryLabelTip")}
                 value={category.label}
                 onChange={(label) => update({ ...category, label })}
               />
@@ -110,10 +114,14 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
                     <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
                       <LocalizedField
                         label={t("itemName")}
+                        tooltip={t("itemNameTip")}
                         value={item.name}
                         onChange={(name) => updateItem({ ...item, name })}
                       />
-                      <AdminField label={t("itemAmount")}>
+                      <AdminField
+                        label={t("itemAmount")}
+                        tooltip={t("itemAmountTip")}
+                      >
                         <AdminInput
                           type="number"
                           min={0}
@@ -129,6 +137,7 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
                     </div>
                     <LocalizedField
                       label={t("itemDescription")}
+                      tooltip={t("itemDescriptionTip")}
                       value={item.description}
                       onChange={(description) =>
                         updateItem({ ...item, description })

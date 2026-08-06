@@ -17,7 +17,7 @@ import {
   buildObjectKey,
   isStorageConfigured,
   uploadObject,
-} from "@/lib/storage/r2"
+} from "@/lib/storage"
 
 /**
  * Public form submissions.

@@ -34,7 +34,7 @@ export const Section: Story = {
         </AdminField>
         <AdminField
           label="כתובת לקבלת פניות"
-          hint="לשם יישלחו טפסי יום הולדת והודעות מהאתר."
+          tooltip="לכתובת הזו יישלחו טפסי יום הולדת והודעות מהאתר."
         >
           <AdminInput dir="ltr" defaultValue="hello@baloona.co.il" />
         </AdminField>

@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { AccentSquare } from "@/components/brand/accent-square"
 import { Photo } from "@/components/brand/photo"
@@ -21,7 +21,13 @@ interface GalleryProps {
   images: GalleryImage[]
 }
 
-/** Photo gallery grid of venue images with a click-to-open lightbox. */
+/**
+ * Venue photo gallery with a click-to-open lightbox.
+ *
+ * Two presentations share one image list: a swipeable snap-slider on mobile
+ * (where a grid would shrink every tile to a thumbnail) and a featured mosaic
+ * on desktop. Both open the same RTL-aware lightbox.
+ */
 function Gallery({ title, images }: GalleryProps) {
   const t = useTranslations("gallery")
   // Index of the image shown in the lightbox, or null when it is closed.
@@ -57,6 +63,18 @@ function Gallery({ title, images }: GalleryProps) {
     }
   }, [isOpen, close, next, prev])
 
+  // Physical swipe in the lightbox: drag left → next, drag right → previous.
+  const touchStartX = useRef<number | null>(null)
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    if (Math.abs(dx) > 40) (dx < 0 ? next : prev)()
+    touchStartX.current = null
+  }
+
   if (total === 0) return null
 
   return (
@@ -72,7 +90,19 @@ function Gallery({ title, images }: GalleryProps) {
             {title}
           </h2>
         </Reveal>
-        <Reveal className="grid auto-rows-[106px] grid-cols-2 gap-4 md:grid-cols-4">
+
+        {/* Mobile: swipeable snap slider with a peek of the next photo. */}
+        <Reveal className="md:hidden">
+          <MobileSlider
+            images={images}
+            onOpen={setActive}
+            openLabel={(index) => t("openImage", { index: index + 1 })}
+            dotLabel={(index) => t("goToImage", { index: index + 1 })}
+          />
+        </Reveal>
+
+        {/* Desktop: featured mosaic — the first photo leads at double size. */}
+        <Reveal className="hidden auto-rows-[150px] grid-cols-3 gap-4 md:grid">
           {images.map((image, index) => (
             <button
               key={image.id}
@@ -81,8 +111,7 @@ function Gallery({ title, images }: GalleryProps) {
               aria-label={t("openImage", { index: index + 1 })}
               className={cn(
                 "group relative h-full cursor-zoom-in overflow-hidden rounded-[26px] outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-                index === 0 && "col-span-2 row-span-2",
-                index === total - 1 && "col-span-2 md:col-span-4"
+                index === 0 && "col-span-2 row-span-2"
               )}
             >
               <Photo
@@ -102,6 +131,8 @@ function Gallery({ title, images }: GalleryProps) {
           aria-modal="true"
           aria-label={t("dialog")}
           onClick={close}
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
         >
           <button
             type="button"
@@ -112,6 +143,7 @@ function Gallery({ title, images }: GalleryProps) {
             <X className="size-6" />
           </button>
 
+          {/* RTL: previous sits on the right (start), next on the left (end). */}
           <button
             type="button"
             onClick={(e) => {
@@ -119,7 +151,7 @@ function Gallery({ title, images }: GalleryProps) {
               prev()
             }}
             aria-label={t("previous")}
-            className="absolute end-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:end-6"
+            className="absolute start-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:start-6"
           >
             <ChevronRight className="size-7" />
           </button>
@@ -131,7 +163,7 @@ function Gallery({ title, images }: GalleryProps) {
               next()
             }}
             aria-label={t("next")}
-            className="absolute start-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:start-6"
+            className="absolute end-3 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-foreground transition hover:bg-white md:end-6"
           >
             <ChevronLeft className="size-7" />
           </button>
@@ -158,6 +190,94 @@ function Gallery({ title, images }: GalleryProps) {
         </div>
       )}
     </section>
+  )
+}
+
+/**
+ * The mobile presentation: a horizontal scroll-snap track. Each slide is a bit
+ * narrower than the viewport so the neighbouring photo peeks, signalling that
+ * the row slides; the dots below track and jump between photos.
+ */
+function MobileSlider({
+  images,
+  onOpen,
+  openLabel,
+  dotLabel,
+}: {
+  images: GalleryImage[]
+  onOpen: (index: number) => void
+  openLabel: (index: number) => string
+  dotLabel: (index: number) => string
+}) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [current, setCurrent] = useState(0)
+
+  // Derive the active slide from whichever tile is nearest the track's centre.
+  // Reading geometry (not scrollLeft) keeps it correct under RTL scrolling.
+  const syncCurrent = useCallback(() => {
+    const track = trackRef.current
+    if (!track) return
+    const centre = track.getBoundingClientRect().left + track.clientWidth / 2
+    let nearest = 0
+    let nearestDistance = Infinity
+    Array.from(track.children).forEach((child, index) => {
+      const rect = (child as HTMLElement).getBoundingClientRect()
+      const distance = Math.abs(rect.left + rect.width / 2 - centre)
+      if (distance < nearestDistance) {
+        nearestDistance = distance
+        nearest = index
+      }
+    })
+    setCurrent(nearest)
+  }, [])
+
+  const goTo = (index: number) => {
+    const child = trackRef.current?.children[index] as HTMLElement | undefined
+    child?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    })
+  }
+
+  return (
+    <div>
+      <div
+        ref={trackRef}
+        onScroll={syncCurrent}
+        className="-mx-5 flex snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto px-5 pb-1 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {images.map((image, index) => (
+          <button
+            key={image.id}
+            type="button"
+            onClick={() => onOpen(index)}
+            aria-label={openLabel(index)}
+            className="relative aspect-[4/3] w-[82%] shrink-0 cursor-zoom-in snap-center overflow-hidden rounded-[26px] outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            <Photo src={image.url} alt={image.alt} className="h-full" />
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-4 flex justify-center gap-2">
+        {images.map((image, index) => (
+          <button
+            key={image.id}
+            type="button"
+            onClick={() => goTo(index)}
+            aria-label={dotLabel(index)}
+            aria-current={index === current}
+            className={cn(
+              "h-2 rounded-full transition-all",
+              index === current
+                ? "w-5 bg-primary"
+                : "w-2 bg-brand-lavender/50 hover:bg-brand-lavender"
+            )}
+          />
+        ))}
+      </div>
+    </div>
   )
 }
 

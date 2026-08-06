@@ -49,7 +49,7 @@ function TranslateButton({
 
 interface LocalizedFieldProps {
   label: string
-  hint?: string
+  tooltip?: string
   value: Localized
   onChange: (value: Localized) => void
   multiline?: boolean
@@ -65,7 +65,7 @@ interface LocalizedFieldProps {
  */
 function LocalizedField({
   label,
-  hint,
+  tooltip,
   value,
   onChange,
   multiline = false,
@@ -81,7 +81,7 @@ function LocalizedField({
   return (
     <AdminField
       label={label}
-      hint={hint}
+      tooltip={tooltip}
       className={className}
       action={
         <TranslateButton
@@ -110,7 +110,7 @@ function LocalizedField({
 
 interface LocalizedListFieldProps {
   label: string
-  hint?: string
+  tooltip?: string
   value: LocalizedList
   onChange: (value: LocalizedList) => void
   addLabel: string
@@ -119,7 +119,7 @@ interface LocalizedListFieldProps {
 /** A translatable list of short lines (pop-up bullets, pricing rules, rules). */
 function LocalizedListField({
   label,
-  hint,
+  tooltip,
   value,
   onChange,
   addLabel,
@@ -157,7 +157,7 @@ function LocalizedListField({
   return (
     <AdminField
       label={label}
-      hint={hint}
+      tooltip={tooltip}
       action={
         <TranslateButton
           sources={source}

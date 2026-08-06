@@ -56,17 +56,17 @@ export const LOCATION_BLUEPRINTS: LocationBlueprint[] = [
     ],
   },
   {
-    slug: "tel-aviv",
-    name: l("בלונה תל אביב", "Baloona Tel Aviv"),
+    slug: "ganei-tikva",
+    name: l("בלונה גני תקווה", "Baloona Ganei Tikva"),
     isPublished: true,
     sortOrder: 1,
     contact: {
-      city: l("תל אביב", "Tel Aviv"),
-      address: l("רחוב אבן גבירול 71, תל אביב", "71 Ibn Gabirol St., Tel Aviv"),
+      city: l("גני תקווה", "Ganei Tikva"),
+      address: l("רחוב הגליל 5, גני תקווה", "5 HaGalil St., Ganei Tikva"),
       phone: "03-7654321",
       whatsapp: "972501234568",
-      email: "telaviv@baloona.co.il",
-      leadRecipientEmail: "telaviv@baloona.co.il",
+      email: "ganeitikva@baloona.co.il",
+      leadRecipientEmail: "ganeitikva@baloona.co.il",
     },
     hours: [
       ["09:00", "19:00", false],
