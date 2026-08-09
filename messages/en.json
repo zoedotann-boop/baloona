@@ -200,7 +200,7 @@
       "upload": "Upload image",
       "uploading": "Uploading…",
       "uploadError": "Upload failed.",
-      "uploadNotConfigured": "Media storage is not configured (R2).",
+      "uploadNotConfigured": "Media storage is not configured (Vercel Blob).",
       "imageUrl": "Image URL",
       "clear": "Clear",
       "cancel": "Cancel"

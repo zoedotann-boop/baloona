@@ -33,16 +33,13 @@ export const resendConfig = () => {
   return apiKey && from ? { apiKey, from } : null
 }
 
-export const r2Config = () => {
-  const accountId = optional("R2_ACCOUNT_ID")
-  const accessKeyId = optional("R2_ACCESS_KEY_ID")
-  const secretAccessKey = optional("R2_SECRET_ACCESS_KEY")
-  const bucket = optional("R2_BUCKET")
-  const publicBaseUrl = optional("R2_PUBLIC_BASE_URL")
-  return accountId && accessKeyId && secretAccessKey && bucket && publicBaseUrl
-    ? { accountId, accessKeyId, secretAccessKey, bucket, publicBaseUrl }
-    : null
-}
+/**
+ * Vercel Blob read-write token. Present in production once a Blob store is
+ * connected to the project (Vercel injects it); locally it arrives via
+ * `vercel env pull`. `handleUpload` needs this static token specifically — an
+ * OIDC token cannot sign the client tokens that browser uploads use.
+ */
+export const blobToken = () => optional("BLOB_READ_WRITE_TOKEN")
 
 export const geminiApiKey = () => optional("GEMINI_API_KEY")
 

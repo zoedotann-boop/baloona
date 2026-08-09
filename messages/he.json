@@ -200,7 +200,7 @@
       "upload": "העלאת תמונה",
       "uploading": "מעלה…",
       "uploadError": "ההעלאה נכשלה.",
-      "uploadNotConfigured": "אחסון המדיה לא מוגדר (R2).",
+      "uploadNotConfigured": "אחסון המדיה לא מוגדר (Vercel Blob).",
       "imageUrl": "כתובת תמונה",
       "clear": "ניקוי",
       "cancel": "ביטול"

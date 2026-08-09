@@ -94,8 +94,10 @@ See `.env.example`.
 
 - **Resend** — emails each new lead to the branch's `leadRecipientEmail`. Failures are
   recorded on the lead, never surfaced to the visitor.
-- **Cloudflare R2** — image uploads via presigned PUT straight from the browser.
-  `next.config.ts` derives `images.remotePatterns` from `R2_PUBLIC_BASE_URL`.
+- **Vercel Blob** — image uploads client-side straight from the browser: the image
+  field calls `@vercel/blob/client` `upload()`, and `app/api/admin/media/upload`
+  signs the token after re-checking branch access. Without `BLOB_READ_WRITE_TOKEN`,
+  dev falls back to local disk (`public/uploads`, PUT to `app/api/admin/media/[...key]`).
 - **Gemini** — drafts translations for the "מלא עם AI" buttons. Output is always
   editable, never published blind.
 - **Google Places** — imports reviews per branch, unpublished, for an editor to approve.
