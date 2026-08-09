@@ -3,7 +3,7 @@ import "server-only"
 import { asc, desc, eq } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import { leads, locations, users } from "@/lib/db/schema"
+import { leads, locations, products, users } from "@/lib/db/schema"
 
 /**
  * Read models for the admin.
@@ -114,6 +114,11 @@ export async function listTeam() {
     orderBy: [asc(users.createdAt)],
     with: { memberships: true },
   })
+}
+
+/** The full shop catalog for the admin editor (brand-global, in display order). */
+export async function listProducts() {
+  return db.query.products.findMany({ orderBy: [asc(products.sortOrder)] })
 }
 
 /**

@@ -150,34 +150,40 @@ function AdminToggle({
   checked,
   onChange,
   label,
+  tooltip,
 }: {
   checked: boolean
   onChange: (value: boolean) => void
   label: string
+  /** Guidance shown on an info icon beside the label — "what this does". */
+  tooltip?: string
 }) {
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className="flex items-center gap-2.5 text-[14px] font-bold text-brand-plum"
-    >
-      <span
-        className={cn(
-          "relative h-6 w-11 shrink-0 rounded-full transition",
-          checked ? "bg-primary" : "bg-muted"
-        )}
+    <span className="inline-flex items-center gap-1.5">
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        onClick={() => onChange(!checked)}
+        className="flex items-center gap-2.5 text-[14px] font-bold text-brand-plum"
       >
         <span
           className={cn(
-            "absolute top-0.5 size-5 rounded-full bg-white transition-all",
-            checked ? "start-[22px]" : "start-0.5"
+            "relative h-6 w-11 shrink-0 rounded-full transition",
+            checked ? "bg-primary" : "bg-muted"
           )}
-        />
-      </span>
-      {label}
-    </button>
+        >
+          <span
+            className={cn(
+              "absolute top-0.5 size-5 rounded-full bg-white transition-all",
+              checked ? "start-[22px]" : "start-0.5"
+            )}
+          />
+        </span>
+        {label}
+      </button>
+      {tooltip && <InfoTooltip text={tooltip} />}
+    </span>
   )
 }
 

@@ -213,3 +213,80 @@ export async function undoLastPunch(
 
   return OK
 }
+
+const updateCustomerSchema = z.object({
+  slug: z.string().min(1),
+  customerId: z.uuid(),
+  fullName: z.string().trim().default(""),
+  email: z.string().trim().default(""),
+})
+
+/** Correct a customer's name / email (phone stays their key). */
+export async function updateCustomerDetails(
+  input: z.input<typeof updateCustomerSchema>
+): Promise<ActionResult> {
+  await requireLocationAccess(input.slug)
+
+  const parsed = updateCustomerSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, error: "invalid" }
+
+  await db
+    .update(customers)
+    .set({
+      fullName: parsed.data.fullName,
+      email: parsed.data.email || null,
+    })
+    .where(eq(customers.id, parsed.data.customerId))
+
+  return OK
+}
+
+const updateCardSchema = z.object({
+  slug: z.string().min(1),
+  cardId: z.uuid(),
+  totalPunches: z.coerce.number().int().min(1).max(100),
+  note: z.string().trim().default(""),
+})
+
+/** Adjust a card's size / note; used punches are clamped to the new total. */
+export async function updateCardDetails(
+  input: z.input<typeof updateCardSchema>
+): Promise<ActionResult> {
+  await requireLocationAccess(input.slug)
+
+  const parsed = updateCardSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, error: "invalid" }
+
+  const card = await db.query.punchCards.findFirst({
+    where: eq(punchCards.id, parsed.data.cardId),
+  })
+  if (!card) return { ok: false, error: "notFound" }
+
+  const totalPunches = parsed.data.totalPunches
+  const usedPunches = Math.min(card.usedPunches, totalPunches)
+  await db
+    .update(punchCards)
+    .set({
+      totalPunches,
+      usedPunches,
+      status: usedPunches >= totalPunches ? "completed" : "active",
+      note: parsed.data.note || null,
+    })
+    .where(eq(punchCards.id, card.id))
+
+  return OK
+}
+
+/** Delete a card entirely (its punch events cascade away). */
+export async function deleteCard(
+  input: z.input<typeof cardActionSchema>
+): Promise<ActionResult> {
+  await requireLocationAccess(input.slug)
+
+  const parsed = cardActionSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, error: "invalid" }
+
+  await db.delete(punchCards).where(eq(punchCards.id, parsed.data.cardId))
+
+  return OK
+}

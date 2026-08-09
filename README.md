@@ -7,10 +7,15 @@ with a Hebrew-first admin panel that owns every piece of content.
   with `/menu`, `/birthdays` and `/accessibility` beneath it. `/card/<token>` is a
   customer's digital punch card, opened by the share link/QR the front desk hands out
   (no login — the token is the credential; the `card` slug is reserved).
+- **Store**: the digital punch-card packages are sold in a **section on each branch home
+  page** (anchored `#shop`, linked from the header and footer). `/checkout` collects details
+  with a mandatory Terms consent (payment is a placeholder until PayMe is connected — see
+  `lib/shop/payment.ts`), and `/terms` is the Terms & Cancellation policy page. `checkout`
+  and `terms` are reserved slugs.
 - **Admin**: `/admin` — contact details, opening hours, the pop-up, SEO, home
-  page copy, pricing, menu, birthdays, media, reviews and the enquiries inbox,
-  all per branch, plus a brand-global **punch cards** console (issue, punch, undo
-  and migrate physical cards).
+  page copy, pricing, menu, birthdays, media, reviews, the **shop** catalog and the
+  enquiries inbox, all per branch, plus a brand-global **punch cards** console (issue,
+  punch, undo and migrate physical cards).
 
 Stack: Next.js 16 (App Router) · Neon Postgres + Drizzle · Better Auth ·
 next-intl (he/en) · Tailwind v4 · Storybook.

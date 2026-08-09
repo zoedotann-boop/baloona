@@ -10,6 +10,7 @@ export function locationPaths(slug: string) {
     birthdays: `${base}/birthdays`,
     accessibility: `${base}/accessibility`,
     pricing: `${base}#pricing`,
+    shop: `${base}#shop`,
     contact: `${base}#contact`,
   }
 }

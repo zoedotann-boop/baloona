@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   LogOut,
   Settings,
+  ShoppingBag,
   Star,
   Tag,
   Ticket,
@@ -83,6 +84,11 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
           href: `/admin/${active.slug}/reviews`,
           label: t("reviews"),
           icon: Star,
+        },
+        {
+          href: `/admin/${active.slug}/shop`,
+          label: t("shop"),
+          icon: ShoppingBag,
         },
       ]
     : []

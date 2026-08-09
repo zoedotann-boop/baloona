@@ -1,9 +1,8 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Heart } from "lucide-react"
 
-import { Reveal } from "@/components/brand/reveal"
+import { BalloonClusterIcon } from "@/components/brand/balloon-cluster-icon"
 import { remainingPunches } from "@/lib/punch-cards"
 import { cn } from "@/lib/utils"
 
@@ -16,14 +15,19 @@ interface PunchCardDisplayProps {
   branchName?: string | null
   /** Free note (e.g. a physical-card migration marker). */
   note?: string | null
+  /** `"md"` is the customer view; `"sm"` is the denser admin view. */
+  size?: "sm" | "md"
+  /** Hide the title row (the admin already shows the customer + summary). */
+  showHeader?: boolean
   className?: string
 }
 
 /**
  * The visual punch card, shared by the customer's `/card/<token>` view and the
- * admin manager. It is a dumb component: totals and names come in as plain
- * values (a page resolves them) while its own labels come from `messages` via
- * `useTranslations`, exactly like the other brand components.
+ * admin console — styled as the same postage stamp the shop sells: a solid
+ * purple perforated frame around a white card, with flower punch-marks (filled
+ * for used punches, faded for the ones still to collect). Dumb component; the
+ * page resolves the values and the labels come from `messages`.
  */
 function PunchCardDisplay({
   total,
@@ -31,80 +35,112 @@ function PunchCardDisplay({
   customerName,
   branchName,
   note,
+  size = "md",
+  showHeader = true,
   className,
 }: PunchCardDisplayProps) {
   const t = useTranslations("punchCard")
   const remaining = remainingPunches(total, used)
   const isComplete = remaining === 0
+  const compact = size === "sm"
 
   return (
-    <div
-      className={cn(
-        "rounded-[26px] border border-border bg-brand-cloud p-6 md:p-8",
-        className
-      )}
-    >
-      <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="font-heading text-[22px] font-black text-brand-plum">
-          {customerName
-            ? t("greeting", { name: customerName })
-            : t("cardTitle")}
-        </h2>
-        <span className="text-[14px] font-bold text-muted-foreground">
-          {t("usedOfTotal", { used, total })}
-        </span>
-      </div>
-
-      <ul
-        className="grid grid-cols-5 gap-3 sm:grid-cols-6"
-        aria-label={t("usedOfTotal", { used, total })}
+    // Two-layer stamp: a purple stamp whose padding shows as a solid perforated
+    // frame around the white inner card (matching the shop cards).
+    <div className={cn("stamp-edge bg-accent p-[3px]", className)}>
+      <div
+        className={cn(
+          "stamp-edge bg-white text-center",
+          compact ? "p-4" : "p-6 md:p-8"
+        )}
       >
-        {Array.from({ length: total }, (_, index) => {
-          const filled = index < used
-          return (
-            <Reveal
-              as="li"
-              key={index}
-              delay={index * 40}
+        {showHeader && (
+          <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2 text-start">
+            <h2
               className={cn(
-                "flex aspect-square items-center justify-center rounded-full transition-colors",
-                filled
-                  ? "bg-brand-lavender text-white"
-                  : "border-2 border-dashed border-border bg-white text-transparent"
+                "font-heading font-black text-brand-plum",
+                compact ? "text-[16px]" : "text-[22px]"
               )}
-              aria-label={filled ? t("slotFilled") : t("slotEmpty")}
             >
-              <Heart className="size-5" fill="currentColor" aria-hidden />
-            </Reveal>
-          )
-        })}
-      </ul>
+              {customerName
+                ? t("greeting", { name: customerName })
+                : t("cardTitle")}
+            </h2>
+            <span className="text-[14px] font-bold text-muted-foreground">
+              {t("usedOfTotal", { used, total })}
+            </span>
+          </div>
+        )}
 
-      <div className="mt-6 rounded-[20px] bg-brand-lavender-soft px-5 py-4 text-center">
-        {isComplete ? (
-          <p className="animate-baloona-float font-heading text-[18px] font-black text-brand-plum">
-            {t("completed")}
-          </p>
-        ) : (
-          <p className="text-[16px] text-brand-ink-soft">
-            {t.rich("remaining", {
-              count: remaining,
-              strong: (chunks) => (
-                <strong className="font-heading text-[20px] font-black text-brand-plum">
-                  {chunks}
-                </strong>
-              ),
-            })}
-          </p>
+        <ul
+          className="flex flex-wrap justify-center gap-1.5"
+          aria-label={t("usedOfTotal", { used, total })}
+        >
+          {Array.from({ length: total }, (_, index) => {
+            const punched = index < used
+            return (
+              <li
+                key={index}
+                aria-label={punched ? t("slotFilled") : t("slotEmpty")}
+              >
+                <BalloonClusterIcon
+                  color="var(--brand-lavender)"
+                  size={compact ? 20 : 26}
+                  solidCenter={!punched}
+                />
+              </li>
+            )
+          })}
+        </ul>
+
+        <div
+          className={cn(
+            "bg-brand-lavender-soft text-center",
+            compact
+              ? "mt-4 rounded-[16px] px-4 py-2.5"
+              : "mt-6 rounded-[20px] px-5 py-4"
+          )}
+        >
+          {isComplete ? (
+            <p
+              className={cn(
+                "animate-baloona-float font-heading font-black text-brand-plum",
+                compact ? "text-[15px]" : "text-[18px]"
+              )}
+            >
+              {t("completed")}
+            </p>
+          ) : (
+            <p
+              className={cn(
+                "text-brand-ink-soft",
+                compact ? "text-[14px]" : "text-[16px]"
+              )}
+            >
+              {t.rich("remaining", {
+                count: remaining,
+                strong: (chunks) => (
+                  <strong
+                    className={cn(
+                      "font-heading font-black text-brand-plum",
+                      compact ? "text-[16px]" : "text-[20px]"
+                    )}
+                  >
+                    {chunks}
+                  </strong>
+                ),
+              })}
+            </p>
+          )}
+        </div>
+
+        {(branchName || note) && (
+          <div className="mt-4 space-y-1 text-center text-[13px] text-muted-foreground">
+            {branchName && <p>{t("issuedBy", { branch: branchName })}</p>}
+            {note && <p>{note}</p>}
+          </div>
         )}
       </div>
-
-      {(branchName || note) && (
-        <div className="mt-4 space-y-1 text-center text-[13px] text-muted-foreground">
-          {branchName && <p>{t("issuedBy", { branch: branchName })}</p>}
-          {note && <p>{note}</p>}
-        </div>
-      )}
     </div>
   )
 }
