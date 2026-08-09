@@ -1,21 +1,17 @@
 "$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
 
-# Secrets never enter git. Every workspace gets a copy of the gitignored `.env`
-# sitting in the repository root directory ($CONDUCTOR_ROOT_PATH), so a new
-# workspace is runnable the moment setup finishes. Create the root file once,
-# from the template: `cp .env.example $CONDUCTOR_ROOT_PATH/.env`.
-file_include_globs = [ ".env*" ]
-
 # Lifecycle scripts.
 [scripts]
 run_mode = "concurrent" # every workspace runs on its own $CONDUCTOR_PORT
 
-# On workspace create: install deps, then fail loudly if the .env copy is missing
-# (Neon is the one hard requirement — see lib/env.ts).
-setup = """
+# On workspace create: install deps, then copy the gitignored root .env
+# ($CONDUCTOR_ROOT_PATH/.env) so the workspace is runnable — Neon is a hard
+# requirement (see lib/env.ts). Create the root file once from the template in
+# .env.example (it never enters git).
+setup = '''
 bun install
-[ -f .env ] || echo "⚠️  no .env — create one at $CONDUCTOR_ROOT_PATH/.env (see .env.example) and recreate this workspace"
-"""
+cp "$CONDUCTOR_ROOT_PATH/.env" .env
+'''
 
 # On archive: reclaim the ~1GB of build artefacts each worktree accumulates.
 # Nothing here touches the shared Neon database.
@@ -40,6 +36,11 @@ icon = "book"
 command = "bunx drizzle-kit studio --port $CONDUCTOR_PORT" # browse Neon
 available_in = [ "local" ]
 icon = "database"
+
+[scripts.run.db-seed]
+command = "bun run db:seed" # create the owner account from the .env ADMIN_* vars
+available_in = [ "local" ]
+icon = "user-plus"
 
 # Git workflow defaults.
 [git]
