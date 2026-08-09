@@ -77,9 +77,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
   global catalog of punch-card packages (`entries` + integer `price`), edited from the
   branch-scoped `/admin/<branch>/shop` (auth-only slug, like punch cards). The storefront is
   a **home-page section** (`components/home/shop-section.tsx`, anchor `#shop`) rather than its
-  own page — customers reach it from the branch home, header and footer. Only `/checkout` and
-  `/terms` are standalone global routes, on a minimal shell (route group `app/(store)/`;
-  `checkout`/`terms` are reserved slugs). Each product's "buy" links to
+  own page — customers reach it from the branch home, header and footer. The customer card
+  (`/card/<token>`), `/checkout` and `/terms` are the standalone global routes; they share one
+  minimal shell (logo header + terms footer) via the `app/(standalone)/` route group
+  (`card`/`checkout`/`terms` are reserved slugs). Each product's "buy" links to
   `/checkout?product=<id>`, which collects details + a mandatory Terms consent, then calls
   `lib/shop/payment.ts` `startPayment` — a **placeholder** ahead of PayMe approval that
   persists nothing; wire the real payment there. `/terms` renders a general Terms &

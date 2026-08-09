@@ -167,7 +167,7 @@
     "issuedBy": "Issued at {branch}",
     "footerNote": "Keep this link — it's your digital punch card."
   },
-  "store": {
+  "standalone": {
     "terms": "Terms & Cancellation Policy",
     "backToSite": "Back to site"
   },

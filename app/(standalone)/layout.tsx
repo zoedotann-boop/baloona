@@ -4,15 +4,16 @@ import { getTranslations } from "next-intl/server"
 import { Logo } from "@/components/brand/logo"
 
 /**
- * Minimal shell for the brand-global store + legal pages (`/shop`, `/checkout`,
- * `/terms`). These are not tied to a branch, so they render on the bare root
- * layout rather than the per-location chrome — just a logo header and a slim
- * footer that keeps the Terms page reachable.
+ * Minimal shell shared by the brand-global standalone pages — the customer
+ * card (`/card/<token>`), `/checkout` and `/terms`. These are not tied to a
+ * branch, so they render on the bare root layout rather than the per-location
+ * chrome: just a logo header and a slim footer that keeps the Terms page
+ * reachable. Each page supplies its own centered container + padding.
  */
-export default async function StoreLayout({
+export default async function StandaloneLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const t = await getTranslations("store")
+  const t = await getTranslations("standalone")
 
   return (
     <div className="flex min-h-svh flex-col bg-background">

@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 
-import { Logo } from "@/components/brand/logo"
 import { PunchCardDisplay } from "@/components/punch-cards/punch-card-display"
 import { type Locale } from "@/i18n/routing"
 import { getPunchCardByToken } from "@/lib/db/queries/site"
@@ -9,9 +8,8 @@ import { pickLocale } from "@/lib/localized"
 
 /**
  * The customer's own card, reached by the opaque share link/QR the front desk
- * hands them. No login: the token is the credential. Brand-global, so it lives
- * at the app root rather than under a `/[location]` branch and renders on the
- * bare root shell (fonts, RTL, forced-light theme).
+ * hands them. No login: the token is the credential. Brand-global, so it renders
+ * on the shared standalone shell (see `app/(standalone)/layout.tsx`).
  */
 export default async function PunchCardPage({
   params,
@@ -26,10 +24,9 @@ export default async function PunchCardPage({
   if (!card) notFound()
 
   return (
-    <main className="flex min-h-svh flex-col items-center gap-8 bg-background px-5 py-12">
-      <Logo size="md" />
+    <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-5 py-12">
       <PunchCardDisplay
-        className="w-full max-w-md"
+        className="w-full"
         total={card.totalPunches}
         used={card.usedPunches}
         customerName={card.customer.fullName || undefined}
@@ -40,9 +37,9 @@ export default async function PunchCardPage({
         }
         note={card.note}
       />
-      <p className="max-w-md text-center text-[13px] text-muted-foreground">
+      <p className="text-center text-[13px] text-muted-foreground">
         {t("footerNote")}
       </p>
-    </main>
+    </div>
   )
 }
