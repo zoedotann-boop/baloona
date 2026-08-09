@@ -4,12 +4,12 @@ import { mkdir, rm, writeFile } from "node:fs/promises"
 import { dirname, join, normalize, sep } from "node:path"
 
 /**
- * Local-disk media backend — the development fallback used when Cloudflare R2
- * is not configured (see `../storage`).
+ * Local-disk media backend — the development fallback used when Vercel Blob is
+ * not configured (see `../storage`).
  *
  * Files land under `public/uploads/<key>` and Next serves them at
  * `/uploads/<key>`, so the admin's image fields work with zero external setup.
- * Unlike R2 there is no presigned URL, so the browser PUTs straight to the
+ * Unlike Blob there is no direct upload, so the browser PUTs straight to the
  * `app/api/admin/media/[...key]` route, which then calls {@link writeObject}.
  *
  * Not for production: a serverless filesystem is read-only and ephemeral, which
@@ -50,8 +50,8 @@ export async function writeObject(
   await writeFile(target, body)
 }
 
-/** R2's presigned-upload shape: here the browser PUTs to our own route. */
-export function createPresignedUpload(key: string): {
+/** Where the browser PUTs an upload, plus the URL to store afterwards. */
+export function createLocalUpload(key: string): {
   uploadUrl: string
   url: string
 } {
