@@ -3,19 +3,18 @@
 import { useTranslations } from "next-intl"
 import {
   Check,
-  ChevronDown,
   Copy,
   ExternalLink,
   Minus,
   Pencil,
+  Plus,
   Search,
   Trash2,
 } from "lucide-react"
-import { useState, useTransition } from "react"
+import { useRef, useState, useTransition } from "react"
 
 import { AdminCard, AdminField, AdminInput } from "@/components/admin/admin-ui"
 import { PillButton } from "@/components/brand/pill-button"
-import { PunchCardDisplay } from "@/components/punch-cards/punch-card-display"
 import {
   deleteCard,
   issuePunchCard,
@@ -28,13 +27,18 @@ import {
 import { remainingPunches, type CustomerCardsView } from "@/lib/punch-cards"
 import { cn } from "@/lib/utils"
 
+interface CardRow {
+  customer: CustomerCardsView
+  card: CustomerCardsView["cards"][number]
+}
+
 /**
- * כרטיסיות — the front-desk console.
+ * כרטיסיות — the front-desk console, as a searchable table.
  *
  * Cards are brand-global, so this searches every customer regardless of branch;
- * the `slug` it carries is only the acting branch, recorded on each punch. Every
- * mutation re-runs the current search so the balance the clerk sees is always
- * the live database value.
+ * the `slug` it carries is only the acting branch, recorded on each punch. Search
+ * runs live (debounced) and every mutation re-runs it so the balance the clerk
+ * sees is always the live database value.
  */
 function PunchCardsManager({
   slug,
@@ -46,230 +50,187 @@ function PunchCardsManager({
   const t = useTranslations("admin.punchCards")
   const [query, setQuery] = useState("")
   const [results, setResults] = useState(initial)
-  const [searching, startSearch] = useTransition()
+  const [, startSearch] = useTransition()
+  const [pending, start] = useTransition()
+  const [showIssue, setShowIssue] = useState(false)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const rows: CardRow[] = results.flatMap((customer) =>
+    customer.cards.map((card) => ({ customer, card }))
+  )
 
   const runSearch = (value: string) =>
     startSearch(async () => {
       setResults(await searchPunchCards({ slug, query: value }))
+      setSelected(new Set())
     })
 
+  // Start searching while typing, debounced so every keystroke isn't a request.
+  const onSearchChange = (value: string) => {
+    setQuery(value)
+    if (debounce.current) clearTimeout(debounce.current)
+    debounce.current = setTimeout(() => runSearch(value), 300)
+  }
+
+  const refresh = () => runSearch(query)
+
+  const toggleRow = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+
+  const allSelected =
+    rows.length > 0 && rows.every((row) => selected.has(row.card.id))
+
+  const toggleAll = () =>
+    setSelected(allSelected ? new Set() : new Set(rows.map((r) => r.card.id)))
+
+  const deleteSelected = () => {
+    if (!window.confirm(t("deleteSelectedConfirm"))) return
+    start(async () => {
+      await Promise.all(
+        [...selected].map((cardId) => deleteCard({ slug, cardId }))
+      )
+      refresh()
+    })
+  }
+
   return (
-    <div className="space-y-6 pb-10">
-      <header>
-        <h1 className="font-heading text-[28px] font-black text-brand-plum">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-[15px] text-muted-foreground">
-          {t("description")}
-        </p>
+    <div className="space-y-5 pb-10">
+      <header className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-heading text-[26px] font-black text-brand-plum">
+            {t("title")}
+          </h1>
+          <p className="mt-0.5 text-[14px] text-muted-foreground">
+            {t("description")}
+          </p>
+        </div>
+        <PillButton
+          type="button"
+          size="md"
+          onClick={() => setShowIssue((value) => !value)}
+        >
+          <Plus className="size-4" />
+          {t("issueButton")}
+        </PillButton>
       </header>
 
-      <IssueForm
-        slug={slug}
-        onIssued={(phone) => {
-          setQuery(phone)
-          runSearch(phone)
-        }}
-      />
-
-      <AdminCard title={t("searchTitle")}>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            runSearch(query)
+      {showIssue && (
+        <IssueForm
+          slug={slug}
+          onIssued={(phone) => {
+            setShowIssue(false)
+            setQuery(phone)
+            runSearch(phone)
           }}
-          className="flex gap-2"
-        >
-          <AdminInput
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={t("searchPlaceholder")}
-            aria-label={t("searchPlaceholder")}
-            inputMode="tel"
-          />
-          <PillButton
-            type="submit"
-            variant="primary"
-            size="md"
-            disabled={searching}
-          >
-            <Search className="size-4" />
-            {t("searchButton")}
-          </PillButton>
-        </form>
-      </AdminCard>
+        />
+      )}
 
-      {results.length === 0 ? (
+      <div className="relative">
+        <Search className="pointer-events-none absolute end-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <AdminInput
+          value={query}
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder={t("searchPlaceholder")}
+          aria-label={t("searchPlaceholder")}
+          inputMode="tel"
+          className="pe-10"
+        />
+      </div>
+
+      {selected.size > 0 && (
+        <div className="flex items-center justify-between rounded-xl bg-brand-lavender-soft px-4 py-2">
+          <span className="text-[14px] font-bold text-brand-plum">
+            {t("selectedCount", { count: selected.size })}
+          </span>
+          <button
+            type="button"
+            onClick={deleteSelected}
+            disabled={pending}
+            className="flex h-8 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-destructive transition hover:bg-destructive/10 disabled:opacity-40"
+          >
+            <Trash2 className="size-4" />
+            {t("deleteSelected")}
+          </button>
+        </div>
+      )}
+
+      {rows.length === 0 ? (
         <p className="py-12 text-center text-[15px] text-muted-foreground">
           {t("noResults")}
         </p>
       ) : (
-        <div className="space-y-4">
-          {results.map((customer) => (
-            <CustomerRow
-              key={customer.id}
-              customer={customer}
-              slug={slug}
-              onChanged={() => runSearch(query)}
-            />
-          ))}
+        <div className="overflow-x-auto rounded-[22px] border border-border bg-white">
+          <table className="w-full text-[14px]">
+            <thead>
+              <tr className="border-b border-border text-[13px] text-muted-foreground">
+                <th className="w-10 px-3 py-3">
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    onChange={toggleAll}
+                    aria-label={t("selectAll")}
+                    className="size-4 accent-primary"
+                  />
+                </th>
+                <th className="px-3 py-3 text-start font-bold">
+                  {t("colCustomer")}
+                </th>
+                <th className="px-3 py-3 text-start font-bold">
+                  {t("colCard")}
+                </th>
+                <th className="px-3 py-3 text-start font-bold">
+                  {t("colBranch")}
+                </th>
+                <th className="px-3 py-3 text-end font-bold">
+                  {t("colActions")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ customer, card }) => (
+                <CardRowView
+                  key={card.id}
+                  slug={slug}
+                  customer={customer}
+                  card={card}
+                  selected={selected.has(card.id)}
+                  onToggle={() => toggleRow(card.id)}
+                  onChanged={refresh}
+                />
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
   )
 }
 
-/** Issue a fresh card, or migrate a physical one by setting remaining below total. */
-function IssueForm({
-  slug,
-  onIssued,
-}: {
-  slug: string
-  onIssued: (phone: string) => void
-}) {
-  const t = useTranslations("admin.punchCards")
-  const [pending, start] = useTransition()
-  const [error, setError] = useState(false)
-
-  return (
-    <AdminCard title={t("issueTitle")} description={t("issueDescription")}>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          const form = event.currentTarget
-          const data = new FormData(form)
-          const phone = String(data.get("phone") ?? "").trim()
-          const total = Number(data.get("total"))
-          const remainingRaw = String(data.get("remaining") ?? "").trim()
-          const remaining = remainingRaw === "" ? total : Number(remainingRaw)
-
-          setError(false)
-          start(async () => {
-            const result = await issuePunchCard({
-              slug,
-              phone,
-              fullName: String(data.get("fullName") ?? "").trim(),
-              email: String(data.get("email") ?? "").trim(),
-              note: String(data.get("note") ?? "").trim(),
-              totalPunches: total,
-              remainingPunches: remaining,
-            })
-            if (result.ok) {
-              form.reset()
-              onIssued(phone)
-            } else {
-              setError(true)
-            }
-          })
-        }}
-        className="grid gap-4 sm:grid-cols-2"
-      >
-        <AdminField label={t("phone")}>
-          <AdminInput name="phone" required inputMode="tel" dir="ltr" />
-        </AdminField>
-        <AdminField label={t("fullName")}>
-          <AdminInput name="fullName" />
-        </AdminField>
-        <AdminField label={t("email")}>
-          <AdminInput name="email" type="email" dir="ltr" />
-        </AdminField>
-        <AdminField label={t("note")} tooltip={t("noteTip")}>
-          <AdminInput name="note" />
-        </AdminField>
-        <AdminField label={t("total")} tooltip={t("totalTip")}>
-          <AdminInput
-            name="total"
-            type="number"
-            min={1}
-            max={100}
-            defaultValue={10}
-            required
-          />
-        </AdminField>
-        <AdminField label={t("remaining")} tooltip={t("remainingTip")}>
-          <AdminInput
-            name="remaining"
-            type="number"
-            min={0}
-            placeholder={t("remainingPlaceholder")}
-          />
-        </AdminField>
-
-        <div className="flex items-center gap-3 sm:col-span-2">
-          <PillButton
-            type="submit"
-            variant="primary"
-            size="md"
-            disabled={pending}
-          >
-            {t("issueButton")}
-          </PillButton>
-          {error && (
-            <span className="text-[14px] font-bold text-destructive">
-              {t("issueError")}
-            </span>
-          )}
-        </div>
-      </form>
-    </AdminCard>
-  )
-}
-
-function CustomerRow({
-  customer,
-  slug,
-  onChanged,
-}: {
-  customer: CustomerCardsView
-  slug: string
-  onChanged: () => void
-}) {
-  return (
-    <AdminCard>
-      <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="font-heading text-[18px] font-black text-brand-plum">
-          {customer.fullName || "—"}
-        </span>
-        <span dir="ltr" className="text-[14px] text-muted-foreground">
-          {customer.phone}
-        </span>
-        {customer.email && (
-          <span dir="ltr" className="text-[14px] text-muted-foreground">
-            {customer.email}
-          </span>
-        )}
-      </div>
-
-      <div className="space-y-2.5">
-        {customer.cards.map((card) => (
-          <CardControls
-            key={card.id}
-            slug={slug}
-            customer={customer}
-            card={card}
-            onChanged={onChanged}
-          />
-        ))}
-      </div>
-    </AdminCard>
-  )
-}
-
-function CardControls({
+/** One card row: summary + quick actions, with an inline edit panel. */
+function CardRowView({
   slug,
   customer,
   card,
+  selected,
+  onToggle,
   onChanged,
 }: {
   slug: string
   customer: CustomerCardsView
   card: CustomerCardsView["cards"][number]
+  selected: boolean
+  onToggle: () => void
   onChanged: () => void
 }) {
   const t = useTranslations("admin.punchCards")
   const [pending, start] = useTransition()
   const [copied, setCopied] = useState(false)
-  const [expanded, setExpanded] = useState(false)
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState({
     fullName: "",
@@ -317,7 +278,7 @@ function CardControls({
       setEditing(false)
     })
 
-  const removeCard = () => {
+  const remove = () => {
     if (!window.confirm(t("deleteConfirm"))) return
     start(async () => {
       await deleteCard({ slug, cardId: card.id })
@@ -326,185 +287,304 @@ function CardControls({
   }
 
   return (
-    <div className="overflow-hidden rounded-[16px] border border-border bg-brand-cloud">
-      {/* Collapsed by default: a compact, scannable summary that opens on tap. */}
-      <button
-        type="button"
-        onClick={() => setExpanded((value) => !value)}
-        aria-expanded={expanded}
-        className="flex w-full items-center gap-3 px-4 py-3 text-start transition hover:bg-muted/40"
-      >
-        <ChevronDown
-          className={cn(
-            "size-4 shrink-0 text-muted-foreground transition-transform",
-            expanded && "rotate-180"
-          )}
-        />
-        <span className="font-heading text-[15px] font-black text-brand-plum">
-          {t("cardSummary", { remaining, total: card.totalPunches })}
-        </span>
-        {remaining === 0 && (
-          <span className="rounded-full bg-brand-lavender-soft px-2 py-0.5 text-[12px] font-bold text-brand-plum">
-            {t("completedBadge")}
-          </span>
-        )}
-        {card.issuedByLocationName && (
-          <span className="ms-auto text-[13px] text-muted-foreground">
-            {card.issuedByLocationName}
-          </span>
-        )}
-      </button>
-
-      {!expanded ? null : (
-        <div className="border-t border-border px-4 pt-4 pb-4">
-          {editing ? (
-            <div className="space-y-3">
-              <div className="grid gap-3 sm:grid-cols-2">
-                <AdminField label={t("fullName")}>
-                  <AdminInput
-                    value={form.fullName}
-                    onChange={(event) =>
-                      setForm((f) => ({ ...f, fullName: event.target.value }))
-                    }
-                  />
-                </AdminField>
-                <AdminField label={t("email")}>
-                  <AdminInput
-                    type="email"
-                    dir="ltr"
-                    value={form.email}
-                    onChange={(event) =>
-                      setForm((f) => ({ ...f, email: event.target.value }))
-                    }
-                  />
-                </AdminField>
-                <AdminField label={t("total")} tooltip={t("editTotalTip")}>
-                  <AdminInput
-                    type="number"
-                    min={1}
-                    max={100}
-                    value={form.total}
-                    onChange={(event) =>
-                      setForm((f) => ({ ...f, total: event.target.value }))
-                    }
-                  />
-                </AdminField>
-                <AdminField label={t("note")} tooltip={t("noteTip")}>
-                  <AdminInput
-                    value={form.note}
-                    onChange={(event) =>
-                      setForm((f) => ({ ...f, note: event.target.value }))
-                    }
-                  />
-                </AdminField>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                <PillButton
-                  type="button"
-                  variant="primary"
-                  size="md"
-                  disabled={pending}
-                  onClick={saveEdit}
-                >
-                  {t("save")}
-                </PillButton>
-                <button
-                  type="button"
-                  onClick={() => setEditing(false)}
-                  className="flex h-9 items-center rounded-full px-3 text-[14px] font-bold text-muted-foreground transition hover:bg-muted"
-                >
-                  {t("cancel")}
-                </button>
-                <button
-                  type="button"
-                  disabled={pending}
-                  onClick={removeCard}
-                  className="ms-auto flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-destructive transition hover:bg-destructive/10"
-                >
-                  <Trash2 className="size-4" />
-                  {t("deleteCard")}
-                </button>
-              </div>
+    <>
+      <tr className="border-b border-border last:border-0">
+        <td className="px-3 py-3 align-top">
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggle}
+            aria-label={t("selectRow")}
+            className="mt-1 size-4 accent-primary"
+          />
+        </td>
+        <td className="px-3 py-3 align-top">
+          <div className="font-bold text-brand-plum">
+            {customer.fullName || "—"}
+          </div>
+          <div dir="ltr" className="text-end text-[13px] text-muted-foreground">
+            {customer.phone}
+          </div>
+          {customer.email && (
+            <div
+              dir="ltr"
+              className="text-end text-[13px] text-muted-foreground"
+            >
+              {customer.email}
             </div>
-          ) : (
-            <>
-              <PunchCardDisplay
-                size="sm"
-                showHeader={false}
-                total={card.totalPunches}
-                used={card.usedPunches}
-                note={card.note}
-              />
+          )}
+        </td>
+        <td className="px-3 py-3 align-top">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-bold text-brand-plum">
+              {t("cardSummary", { remaining, total: card.totalPunches })}
+            </span>
+            {remaining === 0 && (
+              <span className="rounded-full bg-brand-lavender-soft px-2 py-0.5 text-[12px] font-bold text-brand-plum">
+                {t("completedBadge")}
+              </span>
+            )}
+          </div>
+        </td>
+        <td className="px-3 py-3 align-top text-[13px] text-muted-foreground">
+          {card.issuedByLocationName ?? "—"}
+        </td>
+        <td className="px-3 py-3 align-top">
+          <div className="flex flex-wrap items-center justify-end gap-1">
+            <PillButton
+              type="button"
+              size="md"
+              disabled={pending || remaining === 0}
+              onClick={() =>
+                start(async () => {
+                  await punchCard({ slug, cardId: card.id })
+                  onChanged()
+                })
+              }
+              className="h-8 px-4 text-[13px]"
+            >
+              {remaining === 0 ? t("cardFull") : t("punch")}
+            </PillButton>
+            <IconButton
+              label={t("undo")}
+              onClick={() =>
+                start(async () => {
+                  await undoLastPunch({ slug, cardId: card.id })
+                  onChanged()
+                })
+              }
+              disabled={pending || card.usedPunches === 0}
+            >
+              <Minus className="size-4" />
+            </IconButton>
+            <IconButton label={t("copyLink")} onClick={copyLink}>
+              {copied ? (
+                <Check className="size-4" />
+              ) : (
+                <Copy className="size-4" />
+              )}
+            </IconButton>
+            <IconButton label={t("openCard")} href={cardPath}>
+              <ExternalLink className="size-4" />
+            </IconButton>
+            <IconButton label={t("edit")} onClick={startEdit} active={editing}>
+              <Pencil className="size-4" />
+            </IconButton>
+            <IconButton label={t("deleteCard")} onClick={remove} danger>
+              <Trash2 className="size-4" />
+            </IconButton>
+          </div>
+        </td>
+      </tr>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <PillButton
-                  type="button"
-                  variant="primary"
-                  size="md"
-                  disabled={pending || remaining === 0}
-                  onClick={() =>
-                    start(async () => {
-                      await punchCard({ slug, cardId: card.id })
-                      onChanged()
-                    })
+      {editing && (
+        <tr className="border-b border-border bg-muted/30 last:border-0">
+          <td colSpan={5} className="px-4 py-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <AdminField label={t("fullName")}>
+                <AdminInput
+                  value={form.fullName}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, fullName: event.target.value }))
                   }
-                >
-                  {remaining === 0 ? t("cardFull") : t("punch")}
-                </PillButton>
-
-                <button
-                  type="button"
-                  disabled={pending || card.usedPunches === 0}
-                  onClick={() =>
-                    start(async () => {
-                      await undoLastPunch({ slug, cardId: card.id })
-                      onChanged()
-                    })
+                />
+              </AdminField>
+              <AdminField label={t("email")}>
+                <AdminInput
+                  type="email"
+                  dir="ltr"
+                  value={form.email}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, email: event.target.value }))
                   }
-                  className="flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-muted-foreground transition hover:bg-muted disabled:opacity-40"
-                >
-                  <Minus className="size-4" />
-                  {t("undo")}
-                </button>
+                />
+              </AdminField>
+              <AdminField label={t("total")} tooltip={t("editTotalTip")}>
+                <AdminInput
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={form.total}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, total: event.target.value }))
+                  }
+                />
+              </AdminField>
+              <AdminField label={t("note")} tooltip={t("noteTip")}>
+                <AdminInput
+                  value={form.note}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, note: event.target.value }))
+                  }
+                />
+              </AdminField>
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <PillButton
+                type="button"
+                size="md"
+                disabled={pending}
+                onClick={saveEdit}
+                className="h-9"
+              >
+                {t("save")}
+              </PillButton>
+              <button
+                type="button"
+                onClick={() => setEditing(false)}
+                className="flex h-9 items-center rounded-full px-3 text-[14px] font-bold text-muted-foreground transition hover:bg-muted"
+              >
+                {t("cancel")}
+              </button>
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
+  )
+}
 
-                <button
-                  type="button"
-                  onClick={copyLink}
-                  className="flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-brand-plum transition hover:bg-muted"
-                >
-                  {copied ? (
-                    <Check className="size-4" />
-                  ) : (
-                    <Copy className="size-4" />
-                  )}
-                  {copied ? t("copied") : t("copyLink")}
-                </button>
+/** A compact square action button (or link when `href` is given). */
+function IconButton({
+  label,
+  onClick,
+  href,
+  disabled,
+  danger,
+  active,
+  children,
+}: {
+  label: string
+  onClick?: () => void
+  href?: string
+  disabled?: boolean
+  danger?: boolean
+  active?: boolean
+  children: React.ReactNode
+}) {
+  const className = cn(
+    "flex size-8 items-center justify-center rounded-lg transition disabled:opacity-40",
+    danger
+      ? "text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+      : "text-brand-plum hover:bg-muted",
+    active && "bg-muted"
+  )
 
-                <a
-                  href={cardPath}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-brand-plum transition hover:bg-muted"
-                >
-                  <ExternalLink className="size-4" />
-                  {t("openCard")}
-                </a>
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+        className={className}
+      >
+        {children}
+      </a>
+    )
+  }
 
-                <button
-                  type="button"
-                  onClick={startEdit}
-                  className="ms-auto flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-brand-plum transition hover:bg-muted"
-                >
-                  <Pencil className="size-4" />
-                  {t("edit")}
-                </button>
-              </div>
-            </>
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      className={className}
+    >
+      {children}
+    </button>
+  )
+}
+
+/** Issue a fresh card, or migrate a physical one by setting remaining below total. */
+function IssueForm({
+  slug,
+  onIssued,
+}: {
+  slug: string
+  onIssued: (phone: string) => void
+}) {
+  const t = useTranslations("admin.punchCards")
+  const [pending, start] = useTransition()
+  const [error, setError] = useState(false)
+
+  return (
+    <AdminCard title={t("issueTitle")} description={t("issueDescription")}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          const form = event.currentTarget
+          const data = new FormData(form)
+          const phone = String(data.get("phone") ?? "").trim()
+          const total = Number(data.get("total"))
+          const remainingRaw = String(data.get("remaining") ?? "").trim()
+          const remaining = remainingRaw === "" ? total : Number(remainingRaw)
+
+          setError(false)
+          start(async () => {
+            const result = await issuePunchCard({
+              slug,
+              phone,
+              fullName: String(data.get("fullName") ?? "").trim(),
+              email: String(data.get("email") ?? "").trim(),
+              note: String(data.get("note") ?? "").trim(),
+              totalPunches: total,
+              remainingPunches: remaining,
+            })
+            if (result.ok) {
+              form.reset()
+              onIssued(phone)
+            } else {
+              setError(true)
+            }
+          })
+        }}
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <AdminField label={t("phone")}>
+          <AdminInput name="phone" required inputMode="tel" dir="ltr" />
+        </AdminField>
+        <AdminField label={t("fullName")}>
+          <AdminInput name="fullName" />
+        </AdminField>
+        <AdminField label={t("email")}>
+          <AdminInput name="email" type="email" dir="ltr" />
+        </AdminField>
+        <AdminField label={t("note")} tooltip={t("noteTip")}>
+          <AdminInput name="note" />
+        </AdminField>
+        <AdminField label={t("total")} tooltip={t("totalTip")}>
+          <AdminInput
+            name="total"
+            type="number"
+            min={1}
+            max={100}
+            defaultValue={10}
+            required
+          />
+        </AdminField>
+        <AdminField label={t("remaining")} tooltip={t("remainingTip")}>
+          <AdminInput
+            name="remaining"
+            type="number"
+            min={0}
+            placeholder={t("remainingPlaceholder")}
+          />
+        </AdminField>
+
+        <div className="flex items-center gap-3 sm:col-span-2 lg:col-span-3">
+          <PillButton type="submit" size="md" disabled={pending}>
+            {t("issueButton")}
+          </PillButton>
+          {error && (
+            <span className="text-[14px] font-bold text-destructive">
+              {t("issueError")}
+            </span>
           )}
         </div>
-      )}
-    </div>
+      </form>
+    </AdminCard>
   )
 }
 

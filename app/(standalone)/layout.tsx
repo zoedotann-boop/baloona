@@ -26,12 +26,6 @@ export default async function StandaloneLayout({
       </header>
 
       <main className="flex-1">{children}</main>
-
-      <footer className="border-t border-border bg-brand-cloud px-5 py-6 text-center text-[13px] text-brand-plum md:px-9">
-        <Link href="/terms" className="underline hover:text-foreground">
-          {t("terms")}
-        </Link>
-      </footer>
     </div>
   )
 }

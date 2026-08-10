@@ -5,7 +5,7 @@ import { useState, useTransition } from "react"
 
 import { ConsentCheckbox } from "@/components/brand/consent-checkbox"
 import { PillButton } from "@/components/brand/pill-button"
-import { startPayment } from "@/lib/shop/payment"
+import { purchasePunchCard } from "@/lib/actions/shop"
 import { cn } from "@/lib/utils"
 
 const inputClass =
@@ -16,25 +16,31 @@ interface CheckoutFormProps {
   productName: string
   entriesLabel: string
   productPrice: string
+  /** Branch the visitor came from, recorded as the card's issuing branch. */
+  from: string
   /** Link to the terms page, opened from the consent label. */
   termsHref: string
 }
 
 /**
- * Checkout details + mandatory terms consent. The "proceed to payment" button
- * runs a placeholder (`startPayment`) — PayMe is not connected yet, so nothing
- * is persisted; it only validates the form and requires the consent box.
+ * Checkout details + mandatory terms consent. Until PayMe is connected,
+ * submitting issues the punch card immediately (see `purchasePunchCard`) so it
+ * lands in the front-desk console, then offers the customer their card link.
  */
 function CheckoutForm({
   productId,
   productName,
   entriesLabel,
   productPrice,
+  from,
   termsHref,
 }: CheckoutFormProps) {
   const t = useTranslations("checkout")
   const [agreed, setAgreed] = useState(false)
-  const [status, setStatus] = useState<"idle" | "consent" | "done">("idle")
+  const [status, setStatus] = useState<"idle" | "consent" | "error" | "done">(
+    "idle"
+  )
+  const [token, setToken] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -45,22 +51,36 @@ function CheckoutForm({
     }
     const form = new FormData(event.currentTarget)
     startTransition(async () => {
-      await startPayment({
+      const result = await purchasePunchCard({
         productId,
+        from,
         fullName: String(form.get("fullName") ?? ""),
         phone: String(form.get("phone") ?? ""),
         email: String(form.get("email") ?? ""),
       })
-      setStatus("done")
+      if (result.ok) {
+        setToken(result.token)
+        setStatus("done")
+      } else {
+        setStatus("error")
+      }
     })
   }
 
   if (status === "done") {
     return (
       <div className="rounded-[26px] border border-border bg-brand-lavender-soft p-8 text-center">
-        <p className="text-[19px] leading-relaxed font-bold text-brand-plum">
-          {t("placeholderNotice")}
+        <p className="font-heading text-[22px] font-black text-brand-plum">
+          {t("successTitle")}
         </p>
+        <p className="mt-2 text-[16px] leading-relaxed text-brand-ink-soft">
+          {t("successBody")}
+        </p>
+        {token && (
+          <PillButton href={`/card/${token}`} size="md" className="mt-5">
+            {t("viewCard")}
+          </PillButton>
+        )}
       </div>
     )
   }
@@ -117,7 +137,7 @@ function CheckoutForm({
           checked={agreed}
           onChange={(next) => {
             setAgreed(next)
-            if (next) setStatus("idle")
+            if (next && status === "consent") setStatus("idle")
           }}
         >
           {t.rich("consent", {
@@ -137,6 +157,11 @@ function CheckoutForm({
         {status === "consent" && (
           <p role="alert" className="text-[15px] font-bold text-destructive">
             {t("consentRequired")}
+          </p>
+        )}
+        {status === "error" && (
+          <p role="alert" className="text-[15px] font-bold text-destructive">
+            {t("error")}
           </p>
         )}
 

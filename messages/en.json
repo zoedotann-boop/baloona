@@ -168,7 +168,6 @@
     "footerNote": "Keep this link — it's your digital punch card."
   },
   "standalone": {
-    "terms": "Terms & Cancellation Policy",
     "backToSite": "Back to site"
   },
   "shop": {
@@ -195,7 +194,10 @@
     "consent": "I have read and agree to the <terms>Terms & Conditions and Cancellation Policy</terms>",
     "consentRequired": "You must agree to the Terms & Conditions and Cancellation Policy to continue.",
     "proceed": "Proceed to Payment",
-    "placeholderNotice": "Payment will open here soon. Thank you! We'll be in touch to complete your purchase.",
+    "successTitle": "Your punch card is ready!",
+    "successBody": "Keep this link — it's your digital punch card, valid at every Baloona branch.",
+    "viewCard": "View my card",
+    "error": "Something went wrong. Check the details and try again.",
     "noProductTitle": "No product selected",
     "noProductBody": "Choose a punch card from the shop to continue.",
     "noProductCta": "Go to the shop"
@@ -288,6 +290,9 @@
       "reviews": "Reviews",
       "media": "Media",
       "shop": "Website cards",
+      "terms": "Terms & policy",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
       "punchCards": "Card management",
       "leads": "Enquiries",
       "locations": "Branches",
@@ -681,10 +686,17 @@
       "remaining": "Punches left",
       "remainingTip": "Leave blank for a brand-new full card. To migrate a physical card, enter how many punches it still has left.",
       "remainingPlaceholder": "Same as total",
-      "searchTitle": "Find a customer",
-      "searchPlaceholder": "Phone or email",
-      "searchButton": "Search",
+      "searchPlaceholder": "Search by phone, email or name…",
       "noResults": "No customers found.",
+      "colCustomer": "Customer",
+      "colCard": "Card",
+      "colBranch": "Branch",
+      "colActions": "Actions",
+      "selectAll": "Select all",
+      "selectRow": "Select card",
+      "selectedCount": "{count} selected",
+      "deleteSelected": "Delete selected",
+      "deleteSelectedConfirm": "Permanently delete the selected cards?",
       "cardSummary": "{remaining} of {total} left",
       "completedBadge": "Full",
       "punch": "Punch",
@@ -715,6 +727,12 @@
       "activeTip": "Only cards ticked here appear on the website for sale.",
       "featured": "Featured (popular choice)",
       "featuredTip": "Highlights the card with a \"popular choice\" badge to draw the eye."
+    },
+    "termsEditor": {
+      "title": "Terms & Cancellation Policy",
+      "description": "Edit this branch's terms & cancellation page. Leave empty to show the default copy.",
+      "body": "Page content",
+      "bodyTip": "Free text; a line break starts a new paragraph. Leave empty to show the default copy."
     },
     "locations": {
       "title": "Branches",

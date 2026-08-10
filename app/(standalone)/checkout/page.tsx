@@ -71,7 +71,8 @@ export default async function CheckoutPage({
           productName={pickLocale(product.name, locale)}
           entriesLabel={t("entries", { count: product.entries })}
           productPrice={formatPrice(product.price, locale)}
-          termsHref="/terms"
+          from={from}
+          termsHref={from ? `/${from}/terms` : "/"}
         />
       </div>
     </div>

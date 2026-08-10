@@ -142,6 +142,19 @@ export async function getProductById(id: string) {
   return db.query.products.findFirst({ where: eq(products.id, id) })
 }
 
+/**
+ * Terms body for a branch's `/<slug>/terms` page. Returns the location (so the
+ * caller can 404 on unknown slugs) with its editable `terms`; when that is empty
+ * the page renders the default copy from `messages`.
+ */
+export async function getTermsPage(slug: string) {
+  return db.query.locations.findFirst({
+    where: eq(locations.slug, slug),
+    columns: { id: true },
+    with: { site: { columns: { terms: true } } },
+  })
+}
+
 /** SEO row for one page of a location, used by `generateMetadata`. */
 export async function getSeoEntry(locationId: string, page: SeoPage) {
   return db.query.seoEntries.findFirst({

@@ -129,7 +129,10 @@ function SiteFooter({ paths, tagline, contact, hours, year }: SiteFooterProps) {
             >
               {t("accessibility")}
             </Link>
-            <Link href="/terms" className="underline hover:text-foreground">
+            <Link
+              href={paths.terms}
+              className="underline hover:text-foreground"
+            >
               {t("terms")}
             </Link>
             <span>

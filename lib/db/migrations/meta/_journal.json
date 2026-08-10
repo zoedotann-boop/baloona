@@ -29,6 +29,13 @@
       "when": 1786275381445,
       "tag": "0003_clear_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786355183536,
+      "tag": "0004_cheerful_red_wolf",
+      "breakpoints": true
     }
   ]
 }

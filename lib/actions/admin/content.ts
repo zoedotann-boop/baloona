@@ -663,3 +663,26 @@ export async function saveGallery(
 
   return OK
 }
+
+// --- תקנון ומדיניות ביטול ----------------------------------------------------
+
+const termsSchema = z.object({
+  slug: z.string().min(1),
+  terms: localizedSchema,
+})
+
+export async function saveTerms(
+  input: z.input<typeof termsSchema>
+): Promise<ActionResult> {
+  const { location } = await requireLocationAccess(input.slug)
+
+  const parsed = termsSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, error: "invalid" }
+
+  await db
+    .update(siteContents)
+    .set({ terms: parsed.data.terms })
+    .where(eq(siteContents.locationId, location.id))
+
+  return OK
+}

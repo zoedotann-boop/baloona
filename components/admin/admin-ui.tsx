@@ -38,12 +38,12 @@ function AdminCard({
   return (
     <section
       className={cn(
-        "rounded-[26px] border border-border bg-white p-6",
+        "rounded-[22px] border border-border bg-white p-5",
         className
       )}
     >
       {title && (
-        <div className="mb-5">
+        <div className="mb-4">
           <h2 className="font-heading text-[19px] font-black text-brand-plum">
             {title}
           </h2>
