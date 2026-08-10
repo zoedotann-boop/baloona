@@ -9,7 +9,9 @@ export function locationPaths(slug: string) {
     menu: `${base}/menu`,
     birthdays: `${base}/birthdays`,
     accessibility: `${base}/accessibility`,
+    terms: `${base}/terms`,
     pricing: `${base}#pricing`,
+    shop: `${base}#shop`,
     contact: `${base}#contact`,
   }
 }

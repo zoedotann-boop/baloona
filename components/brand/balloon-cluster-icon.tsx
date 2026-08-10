@@ -5,6 +5,8 @@ interface BalloonClusterIconProps extends React.HTMLAttributes<HTMLSpanElement> 
   color?: string
   /** Overall box size in pixels. */
   size?: number
+  /** Fill the centre with the petal color instead of white (no "hole"). */
+  solidCenter?: boolean
 }
 
 // Six petals arranged radially around a white center — the recurring
@@ -14,6 +16,7 @@ const PETAL_ANGLES = [0, 60, 120, 180, 240, 300]
 function BalloonClusterIcon({
   color = "var(--brand-rose)",
   size = 50,
+  solidCenter = false,
   className,
   style,
   ...props
@@ -43,12 +46,16 @@ function BalloonClusterIcon({
         />
       ))}
       <span
-        className="absolute top-1/2 left-1/2 rounded-[50%] bg-white"
+        className={cn(
+          "absolute top-1/2 left-1/2 rounded-[50%]",
+          !solidCenter && "bg-white"
+        )}
         style={{
           width: center,
           height: center,
           marginTop: -center / 2,
           marginLeft: -center / 2,
+          background: solidCenter ? color : undefined,
         }}
       />
     </span>

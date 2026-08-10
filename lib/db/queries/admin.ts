@@ -3,7 +3,13 @@ import "server-only"
 import { asc, desc, eq } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import { leads, locations, users } from "@/lib/db/schema"
+import {
+  leads,
+  locations,
+  products,
+  siteContents,
+  users,
+} from "@/lib/db/schema"
 
 /**
  * Read models for the admin.
@@ -113,5 +119,46 @@ export async function listTeam() {
   return db.query.users.findMany({
     orderBy: [asc(users.createdAt)],
     with: { memberships: true },
+  })
+}
+
+/** The full shop catalog for the admin editor (brand-global, in display order). */
+export async function listProducts() {
+  return db.query.products.findMany({ orderBy: [asc(products.sortOrder)] })
+}
+
+/** The editable terms body for one branch (empty until an editor fills it). */
+export async function getTermsEditor(locationId: string) {
+  return db.query.siteContents.findFirst({
+    where: eq(siteContents.locationId, locationId),
+    columns: { terms: true },
+  })
+}
+
+/**
+ * Customers and their punch cards for the front-desk manager. Punch cards are
+ * brand-global, so this is not scoped to a location: a clerk at any branch finds
+ * any customer. A blank query returns the most recent customers as a starting
+ * point; a query matches phone, email or name.
+ */
+export async function searchCustomerCards(query?: string, limit = 20) {
+  const q = query?.trim()
+  return db.query.customers.findMany({
+    where: q
+      ? (c, { or, ilike }) =>
+          or(
+            ilike(c.phone, `%${q}%`),
+            ilike(c.email, `%${q}%`),
+            ilike(c.fullName, `%${q}%`)
+          )
+      : undefined,
+    orderBy: (c) => [desc(c.createdAt)],
+    limit,
+    with: {
+      cards: {
+        orderBy: (card) => [desc(card.createdAt)],
+        with: { issuedByLocation: { columns: { name: true } } },
+      },
+    },
   })
 }

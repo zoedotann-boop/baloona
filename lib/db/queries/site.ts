@@ -3,7 +3,7 @@ import "server-only"
 import { asc, eq } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import { locations, type SeoPage } from "@/lib/db/schema"
+import { locations, products, punchCards, type SeoPage } from "@/lib/db/schema"
 
 /**
  * Read models for the public site.
@@ -107,6 +107,51 @@ export async function getBirthdayPage(slug: string) {
         orderBy: (f) => [asc(f.sortOrder)],
       },
     },
+  })
+}
+
+/**
+ * A punch card by its share token, for the customer's `/card/<token>` view.
+ * Global to the brand (not scoped to a branch); returns `undefined` for unknown
+ * tokens so the caller can 404. The token is the only credential — there is no
+ * customer login — so it must be unguessable.
+ */
+export async function getPunchCardByToken(token: string) {
+  return db.query.punchCards.findFirst({
+    where: eq(punchCards.token, token),
+    with: {
+      customer: { columns: { fullName: true } },
+      issuedByLocation: { columns: { name: true } },
+    },
+  })
+}
+
+/**
+ * Active shop products for the global `/shop` page, in display order. Products
+ * are brand-global (not scoped to a branch), so this is not location-filtered.
+ */
+export async function listActiveProducts() {
+  return db.query.products.findMany({
+    where: eq(products.isActive, true),
+    orderBy: (p) => [asc(p.sortOrder)],
+  })
+}
+
+/** A single product for the checkout page; `undefined` for unknown/removed ids. */
+export async function getProductById(id: string) {
+  return db.query.products.findFirst({ where: eq(products.id, id) })
+}
+
+/**
+ * Terms body for a branch's `/<slug>/terms` page. Returns the location (so the
+ * caller can 404 on unknown slugs) with its editable `terms`; when that is empty
+ * the page renders the default copy from `messages`.
+ */
+export async function getTermsPage(slug: string) {
+  return db.query.locations.findFirst({
+    where: eq(locations.slug, slug),
+    columns: { id: true },
+    with: { site: { columns: { terms: true } } },
   })
 }
 

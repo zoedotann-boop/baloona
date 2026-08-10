@@ -37,6 +37,7 @@ function SiteHeader({
     { href: paths.home, label: t("nav.home") },
     { href: paths.menu, label: t("nav.menu") },
     { href: paths.birthdays, label: t("nav.birthdays") },
+    { href: paths.shop, label: t("nav.shop") },
   ]
 
   // Lock body scroll while the mobile drawer is open.

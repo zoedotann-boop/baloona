@@ -63,6 +63,28 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Data access: `lib/db/queries/site.ts` (public) and `lib/db/queries/admin.ts` (editor
   views). Mutations are server actions under `lib/actions/`, each one validating with
   zod and re-checking access via `requireLocationAccess`.
+- **Punch cards are the one brand-global exception.** The loyalty tables
+  (`customer`, `punch_card`, `punch_event` in `lib/db/schema/punch-cards.ts`) do **not**
+  cascade from a location: a card belongs to the brand so its balance is one number a
+  customer redeems at any branch. The `location`/`user` references on a card and its
+  punch events are audit trails (`onDelete: "set null"`) — which branch issued it, which
+  branch and clerk redeemed each punch. There is no customer login: a customer is keyed
+  by phone at the front desk and views their card through an unguessable share token at
+  `/card/<token>` (the `card` slug is reserved). The admin console
+  (`/admin/<branch>/punch-cards`) still runs through `requireLocationAccess(slug)` — the
+  branch in the URL is the acting branch recorded on each punch.
+- **The shop is the other brand-global surface.** `product` (`lib/db/schema/shop.ts`) is a
+  global catalog of punch-card packages (`entries` + integer `price`), edited from the
+  branch-scoped `/admin/<branch>/shop` (auth-only slug, like punch cards). The storefront is
+  a **home-page section** (`components/home/shop-section.tsx`, anchor `#shop`) rather than its
+  own page — customers reach it from the branch home, header and footer. The customer card
+  (`/card/<token>`), `/checkout` and `/terms` are the standalone global routes; they share one
+  minimal shell (logo header + terms footer) via the `app/(standalone)/` route group
+  (`card`/`checkout`/`terms` are reserved slugs). Each product's "buy" links to
+  `/checkout?product=<id>`, which collects details + a mandatory Terms consent, then calls
+  `lib/shop/payment.ts` `startPayment` — a **placeholder** ahead of PayMe approval that
+  persists nothing; wire the real payment there. `/terms` renders a general Terms &
+  Cancellation policy from a `sections` block in `messages/*.json` (edit the copy there).
 
 ## Admin panel
 

@@ -35,6 +35,7 @@
     "home": "Home",
     "menu": "Menu",
     "birthdays": "Birthdays",
+    "shop": "Baloona's punch cards",
     "toggle": "Navigation menu",
     "allBranches": "All branches"
   },
@@ -88,6 +89,8 @@
     "pricingLink": "Pricing",
     "contactLink": "Contact us",
     "accessibility": "Accessibility statement",
+    "shop": "Baloona's punch cards",
+    "terms": "Terms",
     "credit": "Designed & built by",
     "rights": "© {year} Baloona · All rights reserved"
   },
@@ -153,6 +156,120 @@
     "emailLabel": "Email",
     "addressLabel": "Address"
   },
+  "punchCard": {
+    "cardTitle": "Your punch card",
+    "greeting": "{name}'s punch card",
+    "usedOfTotal": "{used} of {total} punched",
+    "remaining": "<strong>{count}</strong> punches left",
+    "completed": "Card complete! 🎉",
+    "slotFilled": "Punch used",
+    "slotEmpty": "Punch available",
+    "issuedBy": "Issued at {branch}",
+    "footerNote": "Keep this link — it's your digital punch card."
+  },
+  "standalone": {
+    "backToSite": "Back to site"
+  },
+  "shop": {
+    "title": "Baloona's punch cards",
+    "subtitle": "Buy a digital punch card and enjoy entries at a great price.",
+    "validAllBranches": "Your punch card is valid at every Baloona branch",
+    "entries": "{count} entries",
+    "perEntry": "Just {amount} per entry!",
+    "popularBadge": "Popular choice",
+    "benefits": [
+      "Saved on your phone — no more lost punch cards",
+      "Valid for the whole family — siblings included",
+      "Your balance updates automatically after every visit"
+    ],
+    "buy": "Buy now"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "back": "Back to punch cards",
+    "entries": "{count} entries",
+    "namePlaceholder": "Full name",
+    "phonePlaceholder": "Phone",
+    "emailPlaceholder": "Email",
+    "consent": "I have read and agree to the <terms>Terms & Conditions and Cancellation Policy</terms>",
+    "consentRequired": "You must agree to the Terms & Conditions and Cancellation Policy to continue.",
+    "proceed": "Proceed to Payment",
+    "successTitle": "Your punch card is ready!",
+    "successBody": "Keep this link — it's your digital punch card, valid at every Baloona branch.",
+    "viewCard": "View my card",
+    "error": "Something went wrong. Check the details and try again.",
+    "noProductTitle": "No product selected",
+    "noProductBody": "Choose a punch card from the shop to continue.",
+    "noProductCta": "Go to the shop"
+  },
+  "terms": {
+    "title": "Terms & Conditions and Cancellation Policy",
+    "intro": "The terms of use and cancellation policy below apply to purchasing digital punch cards and using the Baloona site and services. Please read them carefully before making a purchase.",
+    "lastUpdated": "Last updated: __",
+    "sections": [
+      {
+        "title": "General",
+        "body": [
+          "The site is operated by Baloona (the \"Company\", \"we\"). These terms are written in one grammatical form for convenience only and are addressed to all genders.",
+          "Making a purchase or using the site constitutes full acceptance of these terms. If you do not agree to them, please do not use the site.",
+          "The Company may update these terms from time to time; the binding version is the one published on the site at the time of purchase."
+        ]
+      },
+      {
+        "title": "The punch cards and service",
+        "body": [
+          "A digital punch card grants a fixed number of entries to the venue, as stated on the purchased product.",
+          "A punch card is personal and may not be transferred or exchanged for money unless stated otherwise.",
+          "An entry is punched on arrival at the venue; the remaining balance updates in real time and can be viewed via the card's personal link.",
+          "Use of the venue and its facilities is subject to the venue rules and the staff's instructions."
+        ]
+      },
+      {
+        "title": "Prices and payments",
+        "body": [
+          "Prices on the site are in New Israeli Shekels and include VAT as required by law.",
+          "Payment is made through a secure payment gateway; an order confirmation is sent once payment is received.",
+          "The Company may update prices from time to time; the binding price is the one shown at the time of purchase."
+        ]
+      },
+      {
+        "title": "Cancellation and refunds",
+        "body": [
+          "Cancellation is handled in accordance with the Israeli Consumer Protection Law, 1981, and the Consumer Protection (Cancellation of a Transaction) Regulations, 2010.",
+          "A punch-card purchase may be cancelled within 14 days of purchase, provided it has not been used (no entry has been punched).",
+          "For a cancellation not due to a defect or mismatch, the Company will refund the payment less a cancellation fee of 5% of the transaction price or 100 ₪, whichever is lower.",
+          "For a partially used card, a proportional credit for the unused entries may be given, at the Company's discretion and subject to law.",
+          "A cancellation request should be sent to customer service using the details on the site, together with the purchase details; the refund is issued to the original payment method."
+        ]
+      },
+      {
+        "title": "Card validity",
+        "body": [
+          "A punch card is valid for the period stated at the time of purchase, or for a reasonable period as determined by the Company.",
+          "Entries not used by the end of the card's validity period may expire, subject to law."
+        ]
+      },
+      {
+        "title": "Liability",
+        "body": [
+          "The Company makes efforts to keep the site and service available and functioning, but does not guarantee uninterrupted, fault-free operation.",
+          "Use of the venue and its facilities is at the user's responsibility and in accordance with the safety and staff instructions."
+        ]
+      },
+      {
+        "title": "Privacy",
+        "body": [
+          "The details provided at purchase are used to provide the service, manage the card and make contact, and will not be shared with a third party except to complete the transaction or as required by law."
+        ]
+      },
+      {
+        "title": "Contact",
+        "body": [
+          "For questions, enquiries and cancellation requests, contact Baloona customer service using the details on the site."
+        ]
+      }
+    ]
+  },
   "admin": {
     "brand": "Baloona admin",
     "signIn": {
@@ -172,6 +289,11 @@
       "birthdays": "Birthdays",
       "reviews": "Reviews",
       "media": "Media",
+      "shop": "Website cards",
+      "terms": "Terms & policy",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "punchCards": "Card management",
       "leads": "Enquiries",
       "locations": "Branches",
       "team": "Team",
@@ -546,6 +668,71 @@
       "notifyFailed": "Email delivery failed: {error}",
       "filterAll": "All",
       "delete": "Delete enquiry"
+    },
+    "punchCards": {
+      "title": "Card management",
+      "description": "Manage customers' digital punch cards — issue, punch and track.",
+      "issueTitle": "Issue a card",
+      "issueDescription": "Issue a new card to a customer. To migrate an existing physical card, enter how many punches it still has left.",
+      "issueButton": "Issue card",
+      "issueError": "Could not issue the card. Check the details and try again.",
+      "phone": "Phone",
+      "fullName": "Customer name",
+      "email": "Email",
+      "note": "Note",
+      "noteTip": "Free note, e.g. marking a migrated physical card.",
+      "total": "Punches on the card",
+      "totalTip": "How many visits a full card holds.",
+      "remaining": "Punches left",
+      "remainingTip": "Leave blank for a brand-new full card. To migrate a physical card, enter how many punches it still has left.",
+      "remainingPlaceholder": "Same as total",
+      "searchPlaceholder": "Search by phone, email or name…",
+      "noResults": "No customers found.",
+      "colCustomer": "Customer",
+      "colCard": "Card",
+      "colBranch": "Branch",
+      "colActions": "Actions",
+      "selectAll": "Select all",
+      "selectRow": "Select card",
+      "selectedCount": "{count} selected",
+      "deleteSelected": "Delete selected",
+      "deleteSelectedConfirm": "Permanently delete the selected cards?",
+      "cardSummary": "{remaining} of {total} left",
+      "completedBadge": "Full",
+      "punch": "Punch",
+      "cardFull": "Card is full",
+      "undo": "Undo punch",
+      "copyLink": "Copy link",
+      "copied": "Copied!",
+      "openCard": "Open card",
+      "edit": "Edit details",
+      "editTotalTip": "Change the card size. If you lower it below the punches already used, they're clamped automatically.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "deleteCard": "Delete card",
+      "deleteConfirm": "Delete this card permanently?"
+    },
+    "shop": {
+      "title": "Website cards",
+      "description": "Manage the digital punch-card packages sold on the site.",
+      "products": "Products",
+      "addProduct": "Add product",
+      "name": "Product name",
+      "nameTip": "The package name as shown in the shop, e.g. \"10-entry punch card\".",
+      "entries": "Entries",
+      "entriesTip": "How many entries the punch card grants.",
+      "price": "Price (₪)",
+      "priceTip": "Product price in whole shekels.",
+      "active": "Shown on the website",
+      "activeTip": "Only cards ticked here appear on the website for sale.",
+      "featured": "Featured (popular choice)",
+      "featuredTip": "Highlights the card with a \"popular choice\" badge to draw the eye."
+    },
+    "termsEditor": {
+      "title": "Terms & Cancellation Policy",
+      "description": "Edit this branch's terms & cancellation page. Leave empty to show the default copy.",
+      "body": "Page content",
+      "bodyTip": "Free text; a line break starts a new paragraph. Leave empty to show the default copy."
     },
     "locations": {
       "title": "Branches",

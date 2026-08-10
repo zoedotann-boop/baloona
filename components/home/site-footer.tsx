@@ -23,6 +23,7 @@ function SiteFooter({ paths, tagline, contact, hours, year }: SiteFooterProps) {
     { label: nav("home"), href: paths.home },
     { label: nav("menu"), href: paths.menu },
     { label: nav("birthdays"), href: paths.birthdays },
+    { label: t("shop"), href: paths.shop },
     { label: t("pricingLink"), href: paths.pricing },
     { label: t("contactLink"), href: paths.contact },
   ]
@@ -127,6 +128,12 @@ function SiteFooter({ paths, tagline, contact, hours, year }: SiteFooterProps) {
               className="underline hover:text-foreground"
             >
               {t("accessibility")}
+            </Link>
+            <Link
+              href={paths.terms}
+              className="underline hover:text-foreground"
+            >
+              {t("terms")}
             </Link>
             <span>
               {t("credit")}{" "}

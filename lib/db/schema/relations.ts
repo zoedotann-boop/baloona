@@ -30,6 +30,7 @@ import {
   siteSettings,
 } from "./locations"
 import { menuCategories, menuContents, menuItems } from "./menu"
+import { customers, punchCards, punchEvents } from "./punch-cards"
 
 /**
  * Relations live in one file so the table modules stay a directed graph
@@ -262,6 +263,37 @@ export const leadsRelations = relations(leads, ({ one }) => ({
 
 export const usersRelations = relations(users, ({ many }) => ({
   memberships: many(locationMembers),
+}))
+
+export const customersRelations = relations(customers, ({ many }) => ({
+  cards: many(punchCards),
+}))
+
+export const punchCardsRelations = relations(punchCards, ({ one, many }) => ({
+  customer: one(customers, {
+    fields: [punchCards.customerId],
+    references: [customers.id],
+  }),
+  issuedByLocation: one(locations, {
+    fields: [punchCards.issuedByLocationId],
+    references: [locations.id],
+  }),
+  events: many(punchEvents),
+}))
+
+export const punchEventsRelations = relations(punchEvents, ({ one }) => ({
+  card: one(punchCards, {
+    fields: [punchEvents.cardId],
+    references: [punchCards.id],
+  }),
+  location: one(locations, {
+    fields: [punchEvents.locationId],
+    references: [locations.id],
+  }),
+  admin: one(users, {
+    fields: [punchEvents.adminUserId],
+    references: [users.id],
+  }),
 }))
 
 export const locationMembersRelations = relations(

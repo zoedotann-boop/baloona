@@ -6,17 +6,23 @@ import { useTranslations } from "next-intl"
 import {
   Building2,
   Cake,
+  ChevronDown,
   ExternalLink,
   Image as ImageIcon,
-  Inbox,
   LayoutDashboard,
   LogOut,
+  Menu,
+  ScrollText,
   Settings,
+  ShoppingBag,
   Star,
   Tag,
+  Ticket,
   UtensilsCrossed,
   Users,
+  X,
 } from "lucide-react"
+import { useState } from "react"
 
 import { Logo } from "@/components/brand/logo"
 import { authClient } from "@/lib/auth-client"
@@ -40,6 +46,9 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
   const t = useTranslations("admin.nav")
   const pathname = usePathname()
   const router = useRouter()
+  // The sidebar is a static column on desktop and a slide-in drawer on mobile.
+  const [open, setOpen] = useState(false)
+  const close = () => setOpen(false)
 
   // Branch-scoped routes are `/admin/<slug>/…`; owner pages are not. Reading it
   // from the path keeps the shell in the layout, above the `[location]` segment.
@@ -83,23 +92,38 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
           label: t("reviews"),
           icon: Star,
         },
+        {
+          href: `/admin/${active.slug}/shop`,
+          label: t("shop"),
+          icon: ShoppingBag,
+        },
+        {
+          href: `/admin/${active.slug}/terms`,
+          label: t("terms"),
+          icon: ScrollText,
+        },
       ]
     : []
 
   const operationLinks = active
-    ? [{ href: `/admin/${active.slug}/leads`, label: t("leads"), icon: Inbox }]
+    ? [
+        {
+          href: `/admin/${active.slug}/punch-cards`,
+          label: t("punchCards"),
+          icon: Ticket,
+        },
+      ]
     : []
 
-  const accountLinks = [
-    ...(user.isOwner
-      ? [
-          { href: "/admin/locations", label: t("locations"), icon: Building2 },
-          { href: "/admin/team", label: t("team"), icon: Users },
-        ]
-      : []),
-  ]
+  const accountLinks = user.isOwner
+    ? [
+        { href: "/admin/locations", label: t("locations"), icon: Building2 },
+        { href: "/admin/team", label: t("team"), icon: Users },
+      ]
+    : []
 
   async function signOut() {
+    close()
     await authClient.signOut()
     router.push(ADMIN_LOGIN_PATH)
     router.refresh()
@@ -109,49 +133,75 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
     // The shell owns the viewport: it never scrolls, so the sidebar stays put
     // and only the content column moves.
     <div className="flex h-svh overflow-hidden bg-brand-cloud">
-      <aside className="hidden w-[264px] shrink-0 flex-col border-e border-border bg-white md:flex">
-        <div className="border-b border-border px-4 py-2.5">
+      {/* Mobile scrim behind the drawer. */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-foreground/40 md:hidden"
+          onClick={close}
+          aria-hidden
+        />
+      )}
+
+      <aside
+        className={cn(
+          "fixed inset-y-0 right-0 z-50 flex w-[264px] shrink-0 flex-col border-e border-border bg-white transition-transform duration-200 md:static md:translate-x-0",
+          open ? "translate-x-0" : "translate-x-full md:translate-x-0"
+        )}
+      >
+        <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
           <Logo size="sm" />
+          <button
+            type="button"
+            onClick={close}
+            aria-label={t("closeMenu")}
+            className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted md:hidden"
+          >
+            <X className="size-5" />
+          </button>
         </div>
 
         {locations.length > 0 && (
-          <div className="border-b border-border p-3">
-            <select
-              value={active?.slug ?? ""}
-              aria-label={t("locations")}
-              onChange={(event) =>
-                router.push(`/admin/${event.target.value}/general`)
-              }
-              className="h-10 w-full rounded-xl border border-border bg-white px-3 text-[14px] font-bold text-brand-plum focus:border-primary focus:outline-none"
-            >
-              {!active && <option value="">—</option>}
-              {locations.map((location) => (
-                <option key={location.slug} value={location.slug}>
-                  {location.name}
-                </option>
-              ))}
-            </select>
+          <div className="border-b border-border p-2">
+            <div className="relative">
+              <select
+                value={active?.slug ?? ""}
+                aria-label={t("locations")}
+                onChange={(event) => {
+                  close()
+                  router.push(`/admin/${event.target.value}/general`)
+                }}
+                className="h-10 w-full appearance-none rounded-xl border border-border bg-white ps-3 pe-9 text-[14px] font-bold text-brand-plum focus:border-primary focus:outline-none"
+              >
+                {!active && <option value="">—</option>}
+                {locations.map((location) => (
+                  <option key={location.slug} value={location.slug}>
+                    {location.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute end-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            </div>
           </div>
         )}
 
-        {/* Compact enough that all ten links fit a 720p laptop without
-            scrolling. `overflow-y-auto` is only a fallback for unusually short
-            windows — it beats clipping links out of reach. */}
         <nav className="min-h-0 flex-1 overflow-y-auto px-2 py-1">
           <NavGroup
             label={t("sectionContent")}
             links={contentLinks}
             pathname={pathname}
+            onNavigate={close}
           />
           <NavGroup
             label={t("sectionOperations")}
             links={operationLinks}
             pathname={pathname}
+            onNavigate={close}
           />
           <NavGroup
             label={t("sectionAccount")}
             links={accountLinks}
             pathname={pathname}
+            onNavigate={close}
           />
         </nav>
 
@@ -179,29 +229,40 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
         </div>
       </aside>
 
-      {/* The only scroll container on the page. */}
-      <div className="min-w-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-4xl px-6 py-8">{children}</div>
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Mobile top bar — the only way to reach the nav on a phone. */}
+        <div className="flex items-center justify-between border-b border-border bg-white px-4 py-2.5 md:hidden">
+          <Logo size="sm" />
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label={t("openMenu")}
+            className="flex size-9 items-center justify-center rounded-lg text-brand-plum transition hover:bg-muted"
+          >
+            <Menu className="size-5" />
+          </button>
+        </div>
+
+        {/* The only scroll container on the page. */}
+        <div className="min-w-0 flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">{children}</div>
+        </div>
       </div>
     </div>
   )
 }
 
-/**
- * One section of the sidebar.
- *
- * The grouping is carried by a hairline rule and by each list's `aria-label`
- * rather than a visible heading: with ten links, three headings were the
- * difference between the nav fitting a 720p laptop and scrolling.
- */
+/** One section of the sidebar. */
 function NavGroup({
   label,
   links,
   pathname,
+  onNavigate,
 }: {
   label: string
   links: { href: string; label: string; icon: React.ElementType }[]
   pathname: string
+  onNavigate: () => void
 }) {
   if (links.length === 0) return null
   return (
@@ -216,6 +277,7 @@ function NavGroup({
           <li key={link.href}>
             <Link
               href={link.href}
+              onClick={onNavigate}
               aria-current={isActive ? "page" : undefined}
               className={cn(
                 "flex h-9 items-center gap-2.5 rounded-xl px-3 text-[14px] transition",

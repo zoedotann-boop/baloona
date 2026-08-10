@@ -24,6 +24,9 @@ export const siteContents = pgTable("site_content", {
   footerTagline: localized().notNull(),
   contactTitle: localized().notNull(),
   contactEyebrow: localized().notNull(),
+  /** Terms & cancellation policy body for `/<slug>/terms`; the `/terms` page
+   *  falls back to the default copy in `messages` while this is empty. */
+  terms: localized(),
   ...timestamps,
 })
 

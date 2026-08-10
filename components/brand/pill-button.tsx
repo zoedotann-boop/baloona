@@ -9,7 +9,7 @@ const pillButtonVariants = cva(
       variant: {
         // Baby-pink solid — the primary call to action. Definition comes from
         // the hover-lift (see base) and dark text, not a drop-shadow glow.
-        primary: "bg-primary text-primary-foreground",
+        primary: "bg-brand-pink text-brand-plum",
         // White with a dark outline.
         outline:
           "border-2 border-foreground bg-white text-foreground hover:bg-muted",
