@@ -60,8 +60,8 @@ build, so you can run locally with only the database configured.
 | -------------------------------- | --------------------------------------------- |
 | `RESEND_API_KEY` + `..._FROM_..` | Emailing new enquiries to the branch's address |
 | `BLOB_READ_WRITE_TOKEN`          | Image uploads (gallery, hero, OG, favicon)     |
-| `GEMINI_API_KEY`                 | The "מלא עם AI" translation buttons            |
-| `GOOGLE_PLACES_API_KEY`          | Importing Google reviews per branch            |
+| `GEMINI_API_KEY`                 | "מלא עם AI" buttons + translating synced reviews |
+| `SERPAPI_API_KEY`                | Importing Google reviews per branch            |
 | `CRON_SECRET`                    | The nightly Google reviews sync (`/api/cron/*`) |
 
 ## Scripts

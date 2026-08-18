@@ -133,8 +133,19 @@ See `.env.example`.
   dev falls back to local disk (`public/uploads`, PUT to `app/api/admin/media/[...key]`).
 - **Gemini** — drafts translations for the "מלא עם AI" buttons. Output is always
   editable, never published blind.
-- **Google Places** — imports reviews per branch. `lib/google/sync-reviews.ts` is the one
-  implementation, matching on Google's review id so a re-sync refreshes wording in place
+- **SerpApi** — imports Google reviews per branch, through SerpApi's Google Maps Reviews
+  API rather than Google's own Places API: Places caps a response at five reviews and
+  needs a billed Google Cloud project, while SerpApi takes the same Place ID we already
+  store and returns eight. `lib/google/serpapi.ts` fetches exactly one page and never
+  paginates — one sync is one billed search, which is what keeps a nightly branch inside
+  the free tier of 250 searches a month. Don't add `num`: SerpApi rejects it on a first
+  page, which always returns 8.
+- Google serves reviews in Hebrew, so the sync drafts their English through Gemini
+  (`draftEnglish` in `lib/google/sync-reviews.ts`) in one batched call — new reviews and
+  any whose Hebrew changed. It is best-effort: no Gemini key or a failed call leaves
+  English untouched rather than failing the sync, and `pickLocale` falls back to Hebrew.
+- `lib/google/sync-reviews.ts` is the one sync implementation, matching on Google's
+  review id so a re-sync refreshes wording in place
   and never overrules an editor's publish decision on a review that already exists.
   Two callers: the admin's "סנכרון עכשיו" button imports everything unpublished for an
   editor to approve, and the nightly cron `app/api/cron/google-reviews` publishes new
@@ -142,6 +153,10 @@ See `.env.example`.
   touches is data — `site_setting.google_reviews_auto_sync`, toggled in ניהול ביקורות
   (currently Kiryat Ono alone). The schedule lives in `vercel.json`; `CRON_SECRET` is the
   bearer token Vercel sends, and without it the endpoint 401s rather than running open.
+- Because that cron publishes unattended, the home page reviews section caps itself at
+  `HOME_REVIEWS_LIMIT` (`lib/db/queries/site.ts`) — otherwise the masonry would gain a
+  few cards every night, forever. Ordering is `sortOrder` then newest, so an editor can
+  still pin a favourite above the synced ones.
 
 ## Code quality
 

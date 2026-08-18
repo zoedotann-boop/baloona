@@ -43,7 +43,11 @@ export const blobToken = () => optional("BLOB_READ_WRITE_TOKEN")
 
 export const geminiApiKey = () => optional("GEMINI_API_KEY")
 
-export const googlePlacesApiKey = () => optional("GOOGLE_PLACES_API_KEY")
+/**
+ * SerpApi key, used to read a branch's Google reviews. One key for the whole
+ * brand; the per-branch Place ID lives in `site_setting`.
+ */
+export const serpApiKey = () => optional("SERPAPI_API_KEY")
 
 /**
  * Shared secret for the scheduled jobs under `/api/cron`. Vercel sends it as
