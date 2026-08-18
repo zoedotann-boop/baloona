@@ -2,6 +2,7 @@ import { BirthdayScene } from "@/components/brand/birthday-scene"
 import { Panel } from "@/components/brand/panel"
 import { PillButton } from "@/components/brand/pill-button"
 import { Reveal } from "@/components/brand/reveal"
+import { Section } from "@/components/layout/section"
 
 interface BirthdayCtaProps {
   title: string
@@ -20,7 +21,7 @@ function BirthdayCta({
   imageUrl,
 }: BirthdayCtaProps) {
   return (
-    <section className="px-5 py-20 md:px-9 md:py-28">
+    <Section>
       <Panel
         tone="lavender"
         className="mx-auto grid max-w-6xl items-center gap-10 overflow-hidden md:grid-cols-2"
@@ -47,7 +48,7 @@ function BirthdayCta({
           </PillButton>
         </Reveal>
       </Panel>
-    </section>
+    </Section>
   )
 }
 

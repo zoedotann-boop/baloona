@@ -1,6 +1,8 @@
 import { FeatureItem } from "@/components/brand/feature-item"
 import { PillButton } from "@/components/brand/pill-button"
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 import { FEATURE_COLORS } from "@/lib/view-models"
 
 interface FeatureContent {
@@ -17,8 +19,8 @@ interface FeaturesProps {
 /** Flowing feature columns with balloon icons, plus a pill CTA. */
 function Features({ items, ctaLabel, ctaHref }: FeaturesProps) {
   return (
-    <section className="bg-white px-5 py-20 md:px-9 md:py-28">
-      <div className="mx-auto max-w-6xl">
+    <Section className="bg-white">
+      <Container>
         <div className="grid gap-12 md:grid-cols-3 md:gap-10">
           {items.map((item, index) => (
             <Reveal key={item.title} delay={index * 90}>
@@ -36,8 +38,8 @@ function Features({ items, ctaLabel, ctaHref }: FeaturesProps) {
             {ctaLabel}
           </PillButton>
         </Reveal>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

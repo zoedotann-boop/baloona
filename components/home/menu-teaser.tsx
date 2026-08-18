@@ -1,6 +1,8 @@
 import { BalloonClusterIcon } from "@/components/brand/balloon-cluster-icon"
 import { PillButton } from "@/components/brand/pill-button"
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 
 // Flower petal colors, cycled across the categories.
 const CATEGORY_COLORS = [
@@ -29,8 +31,8 @@ function MenuTeaser({
   tiles,
 }: MenuTeaserProps) {
   return (
-    <section className="bg-brand-cloud px-5 py-20 md:px-9 md:py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+    <Section className="bg-brand-cloud">
+      <Container className="grid items-center gap-12 md:grid-cols-2">
         <Reveal>
           <h2 className="mb-4 font-heading text-[38px] font-black text-brand-plum">
             {title}
@@ -59,8 +61,8 @@ function MenuTeaser({
             ))}
           </div>
         </Reveal>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

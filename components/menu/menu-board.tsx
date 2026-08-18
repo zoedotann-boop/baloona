@@ -1,4 +1,6 @@
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 
 interface MenuCategoryContent {
   id: string
@@ -21,8 +23,8 @@ interface MenuBoardProps {
 /** Menu page: a flat, flowing "docs" view — categories with priced item lines. */
 function MenuBoard({ title, description, note, categories }: MenuBoardProps) {
   return (
-    <section className="px-5 py-16 md:px-9 md:py-24">
-      <div className="mx-auto max-w-3xl">
+    <Section spacing="md">
+      <Container size="sm">
         <header className="mb-8 text-center">
           <h1 className="font-heading text-[clamp(34px,5vw,50px)] font-black text-brand-plum">
             {title}
@@ -82,8 +84,8 @@ function MenuBoard({ title, description, note, categories }: MenuBoardProps) {
         <p className="mt-12 text-center text-[14px] text-muted-foreground">
           {note}
         </p>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 
+import { BrandShell } from "@/components/layout/brand-shell"
 import { PunchCardDisplay } from "@/components/punch-cards/punch-card-display"
 import { type Locale } from "@/i18n/routing"
 import { getPunchCardByToken } from "@/lib/db/queries/site"
@@ -8,8 +9,8 @@ import { pickLocale } from "@/lib/localized"
 
 /**
  * The customer's own card, reached by the opaque share link/QR the front desk
- * hands them. No login: the token is the credential. Brand-global, so it renders
- * on the shared standalone shell (see `app/(standalone)/layout.tsx`).
+ * hands them. No login: the token is the credential. It has no branch in
+ * context, so it wears the brand-global variant of the shared shell.
  */
 export default async function PunchCardPage({
   params,
@@ -24,22 +25,24 @@ export default async function PunchCardPage({
   if (!card) notFound()
 
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-5 py-12">
-      <PunchCardDisplay
-        className="w-full"
-        total={card.totalPunches}
-        used={card.usedPunches}
-        customerName={card.customer.fullName || undefined}
-        branchName={
-          card.issuedByLocation
-            ? pickLocale(card.issuedByLocation.name, locale)
-            : null
-        }
-        note={card.note}
-      />
-      <p className="text-center text-[13px] text-muted-foreground">
-        {t("footerNote")}
-      </p>
-    </div>
+    <BrandShell>
+      <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-5 py-12">
+        <PunchCardDisplay
+          className="w-full"
+          total={card.totalPunches}
+          used={card.usedPunches}
+          customerName={card.customer.fullName || undefined}
+          branchName={
+            card.issuedByLocation
+              ? pickLocale(card.issuedByLocation.name, locale)
+              : null
+          }
+          note={card.note}
+        />
+        <p className="text-center text-[13px] text-muted-foreground">
+          {t("footerNote")}
+        </p>
+      </div>
+    </BrandShell>
   )
 }

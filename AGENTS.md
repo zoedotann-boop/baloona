@@ -33,8 +33,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
   (no glow/drop-shadow). See `components/brand/pill-button.tsx`.
 - Editorial layout primitives: `Panel` (big rounded color panel, `tone` variants),
   `AccentSquare` (decorative corner square, `-z-10`), `Confetti` (fixed pastel scatter).
-  Sections favor flowing text + rounded panels over boxed cards, with a consistent
-  `py-20 md:py-28` rhythm.
+  Sections favor flowing text + rounded panels over boxed cards. Page bands come from
+  `components/layout/`: `<Section>` owns the shared gutter (`px-5 md:px-9`) + vertical
+  rhythm presets (default `lg` = `py-20 md:py-28`) and `<Container>` the centered
+  max-width column (`lg`/`md`/`sm`) — reach for these instead of re-typing
+  `px-5 md:px-9` / `mx-auto max-w-*`.
 - Scroll-reveal (fade-in + slide-up) is `components/brand/reveal.tsx` — wrap a heading or map
   cards in `<Reveal delay={index * ~80}>` for a staggered row. The motion is a `.reveal`
   utility in `globals.css` and respects `prefers-reduced-motion`.
@@ -78,13 +81,21 @@ This version has breaking changes — APIs, conventions, and file structure may 
   branch-scoped `/admin/<branch>/shop` (auth-only slug, like punch cards). The storefront is
   a **home-page section** (`components/home/shop-section.tsx`, anchor `#shop`) rather than its
   own page — customers reach it from the branch home, header and footer. The customer card
-  (`/card/<token>`), `/checkout` and `/terms` are the standalone global routes; they share one
-  minimal shell (logo header + terms footer) via the `app/(standalone)/` route group
-  (`card`/`checkout`/`terms` are reserved slugs). Each product's "buy" links to
-  `/checkout?product=<id>`, which collects details + a mandatory Terms consent, then calls
-  `lib/shop/payment.ts` `startPayment` — a **placeholder** ahead of PayMe approval that
-  persists nothing; wire the real payment there. `/terms` renders a general Terms &
-  Cancellation policy from a `sections` block in `messages/*.json` (edit the copy there).
+  (`/card/<token>`) and `/checkout` are the brand-global routes under `app/(standalone)/`
+  (`card`/`checkout` are reserved slugs). Each product's "buy" links to
+  `/checkout?product=<id>&from=<slug>`, which collects details + a mandatory Terms consent,
+  then calls `lib/shop/payment.ts` `startPayment` — a **placeholder** ahead of PayMe
+  approval that persists nothing; wire the real payment there. `/[location]/terms` renders a
+  per-branch Terms & Cancellation policy (editable body, falling back to a `sections` block
+  in `messages/*.json`).
+- **One public shell for every page.** All public pages wear the same frame from
+  `components/layout/`: `PublicShell` (header + `<main>` + footer) filled by either
+  `SiteChrome` — the full per-branch chrome (header nav, contact block, footer, announcement,
+  analytics), used by `app/[location]/layout.tsx` and by `/checkout` when it knows the source
+  branch — or `BrandShell`, the brand-global variant (slim header + footer) for the branch
+  picker (`/`), the customer card, and checkout with no branch. `SiteHeader`/`SiteFooter`
+  render their full or slim mode from whether branch `paths` are passed. The plain legal
+  pages (`/[location]/accessibility`, `/[location]/terms`) share the `LegalPage` template.
 
 ## Admin panel
 

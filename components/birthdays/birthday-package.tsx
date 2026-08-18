@@ -1,5 +1,7 @@
 import { Panel } from "@/components/brand/panel"
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 
 interface BirthdayUpgradeContent {
   id: string
@@ -34,8 +36,8 @@ function BirthdayPackage({
   rules,
 }: BirthdayPackageProps) {
   return (
-    <section className="px-5 py-20 md:px-9 md:py-28">
-      <div className="mx-auto max-w-3xl">
+    <Section>
+      <Container size="sm">
         <Reveal>
           <Panel tone="lavender" className="text-center">
             <div className="font-heading text-[18px] font-bold text-white/85">
@@ -105,8 +107,8 @@ function BirthdayPackage({
             </ul>
           </Reveal>
         )}
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

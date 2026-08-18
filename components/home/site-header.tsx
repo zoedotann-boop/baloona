@@ -14,8 +14,13 @@ import type { LocationPaths } from "@/lib/site-links"
 import { cn } from "@/lib/utils"
 
 interface SiteHeaderProps {
-  paths: LocationPaths
-  whatsappHref: string
+  /**
+   * Per-branch links. Omitted on brand-global pages (branch picker, card,
+   * checkout without a source branch), where the bar shrinks to just the
+   * wordmark and language switcher.
+   */
+  paths?: LocationPaths
+  whatsappHref?: string
   /** Rendered from the venue's real opening hours; omitted when unknown. */
   statusLabel?: string
   /** Shown only when more than one branch is published. */
@@ -33,12 +38,15 @@ function SiteHeader({
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const navItems = [
-    { href: paths.home, label: t("nav.home") },
-    { href: paths.menu, label: t("nav.menu") },
-    { href: paths.birthdays, label: t("nav.birthdays") },
-    { href: paths.shop, label: t("nav.shop") },
-  ]
+  const navItems = paths
+    ? [
+        { href: paths.home, label: t("nav.home") },
+        { href: paths.menu, label: t("nav.menu") },
+        { href: paths.birthdays, label: t("nav.birthdays") },
+        { href: paths.shop, label: t("nav.shop") },
+      ]
+    : []
+  const hasNav = navItems.length > 0
 
   // Lock body scroll while the mobile drawer is open.
   useEffect(() => {
@@ -52,53 +60,57 @@ function SiteHeader({
 
   return (
     <header className="sticky top-0 z-40 flex h-[74px] items-center justify-between gap-6 border-b border-border bg-brand-cloud px-5 md:px-9">
-      <button
-        type="button"
-        onClick={() => setMenuOpen((v) => !v)}
-        className="flex flex-col gap-1 md:hidden"
-        aria-label={t("nav.toggle")}
-        aria-expanded={menuOpen}
-        aria-controls="mobile-nav"
-      >
-        {menuOpen ? (
-          <X className="size-6 text-foreground" />
-        ) : (
-          <Menu className="size-6 text-foreground" />
-        )}
-      </button>
+      {hasNav && (
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          className="flex flex-col gap-1 md:hidden"
+          aria-label={t("nav.toggle")}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav"
+        >
+          {menuOpen ? (
+            <X className="size-6 text-foreground" />
+          ) : (
+            <Menu className="size-6 text-foreground" />
+          )}
+        </button>
+      )}
 
-      <Link href={paths.home} aria-label={t("site.brand")}>
+      <Link href={paths?.home ?? "/"} aria-label={t("site.brand")}>
         <Logo size="md" />
       </Link>
 
-      <nav className="hidden items-center gap-1.5 md:flex">
-        {navItems.map((item) => {
-          const active = pathname === item.href
-          return (
+      {hasNav && (
+        <nav className="hidden items-center gap-1.5 md:flex">
+          {navItems.map((item) => {
+            const active = pathname === item.href
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex h-10 items-center rounded-full px-[18px] text-base",
+                  active
+                    ? "bg-brand-pink font-extrabold text-foreground"
+                    : "font-bold text-muted-foreground hover:bg-brand-pink/40"
+                )}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
+          {showBranchSwitch && (
             <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex h-10 items-center rounded-full px-[18px] text-base",
-                active
-                  ? "bg-brand-pink font-extrabold text-foreground"
-                  : "font-bold text-muted-foreground hover:bg-brand-pink/40"
-              )}
+              href="/"
+              className="flex h-10 items-center rounded-full px-[18px] text-base font-bold text-muted-foreground hover:bg-brand-pink/40"
             >
-              {item.label}
+              {t("nav.allBranches")}
             </Link>
-          )
-        })}
-        {showBranchSwitch && (
-          <Link
-            href="/"
-            className="flex h-10 items-center rounded-full px-[18px] text-base font-bold text-muted-foreground hover:bg-brand-pink/40"
-          >
-            {t("nav.allBranches")}
-          </Link>
-        )}
-      </nav>
+          )}
+        </nav>
+      )}
 
       <div className="flex items-center gap-3.5">
         {statusLabel && (
@@ -108,15 +120,17 @@ function SiteHeader({
             label={statusLabel}
           />
         )}
-        <PillButton
-          href={whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          size="md"
-          className="hidden h-10 px-[18px] text-[15px] md:inline-flex"
-        >
-          {t("site.whatsapp")}
-        </PillButton>
+        {whatsappHref && (
+          <PillButton
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="md"
+            className="hidden h-10 px-[18px] text-[15px] md:inline-flex"
+          >
+            {t("site.whatsapp")}
+          </PillButton>
+        )}
         <LanguageSwitcher />
       </div>
 
@@ -162,15 +176,17 @@ function SiteHeader({
                 {t("nav.allBranches")}
               </Link>
             )}
-            <PillButton
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="md"
-              className="mt-2 w-full"
-            >
-              {t("site.whatsapp")}
-            </PillButton>
+            {whatsappHref && (
+              <PillButton
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="md"
+                className="mt-2 w-full"
+              >
+                {t("site.whatsapp")}
+              </PillButton>
+            )}
           </nav>
         </div>
       )}
