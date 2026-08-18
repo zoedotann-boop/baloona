@@ -1,14 +1,25 @@
 "use server"
 
-import { randomUUID } from "node:crypto"
-
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 
+import { defaultLocale } from "@/i18n/routing"
 import { db } from "@/lib/db"
-import { customers, locations, products, punchCards } from "@/lib/db/schema"
+import { locations, products, punchCardOrders } from "@/lib/db/schema"
+import { paymeConfig } from "@/lib/env"
+import { pickLocale } from "@/lib/localized"
+import { generateSale } from "@/lib/payme/client"
+import { issueCard } from "@/lib/shop/orders"
+import { siteOrigin } from "@/lib/site-url"
 
-type PurchaseResult = { ok: true; token: string } | { ok: false; error: string }
+/**
+ * `redirect` — payments on: go pay at PayMe, the card is issued on confirmation.
+ * `token` — payments off: the card was issued immediately (dev/no-key fallback).
+ */
+type CheckoutResult =
+  | { ok: true; redirect: string }
+  | { ok: true; token: string }
+  | { ok: false; error: string }
 
 const schema = z.object({
   productId: z.uuid(),
@@ -19,14 +30,15 @@ const schema = z.object({
   from: z.string().optional(),
 })
 
-// Deliberately unauthenticated: it backs the public checkout. Until PayMe is
-// connected a "purchase" simply issues the card so it lands in the front-desk
-// console; once payment is live, gate this behind a verified sale. It only
-// upserts a customer by phone and inserts a card for a validated active product.
+// Deliberately unauthenticated: it backs the public checkout. With PayMe
+// configured it creates a pending order and hands back a hosted payment page —
+// the card is only issued once payment is confirmed (see `fulfilOrder`, reached
+// from the PayMe callback and the success page). Without a PayMe key it falls
+// back to issuing the card immediately so the shop still works in dev.
 // react-doctor-disable-next-line react-doctor/server-auth-actions -- public checkout
-export async function purchasePunchCard(
+export async function startPunchCardCheckout(
   input: z.input<typeof schema>
-): Promise<PurchaseResult> {
+): Promise<CheckoutResult> {
   const parsed = schema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   const { productId, fullName, phone, email, from } = parsed.data
@@ -36,27 +48,6 @@ export async function purchasePunchCard(
   })
   if (!product) return { ok: false, error: "invalid" }
 
-  const existing = await db.query.customers.findFirst({
-    where: eq(customers.phone, phone),
-  })
-
-  let customerId: string
-  if (existing) {
-    customerId = existing.id
-    const patch: Partial<typeof customers.$inferInsert> = {}
-    if (fullName && !existing.fullName) patch.fullName = fullName
-    if (email && !existing.email) patch.email = email
-    if (Object.keys(patch).length > 0) {
-      await db.update(customers).set(patch).where(eq(customers.id, customerId))
-    }
-  } else {
-    const [created] = await db
-      .insert(customers)
-      .values({ phone, fullName, email: email || null })
-      .returning({ id: customers.id })
-    customerId = created.id
-  }
-
   const branch = from
     ? await db.query.locations.findFirst({
         where: eq(locations.slug, from),
@@ -64,15 +55,53 @@ export async function purchasePunchCard(
       })
     : null
 
-  const token = randomUUID()
-  await db.insert(punchCards).values({
-    token,
-    customerId,
-    totalPunches: product.entries,
-    usedPunches: 0,
-    status: "active",
-    issuedByLocationId: branch?.id ?? null,
+  // No PayMe key: keep the pre-payment behaviour and issue the card at once.
+  if (!paymeConfig()) {
+    const { token } = await issueCard({
+      entries: product.entries,
+      fullName,
+      phone,
+      email,
+      fromLocationId: branch?.id ?? null,
+    })
+    return { ok: true, token }
+  }
+
+  const [order] = await db
+    .insert(punchCardOrders)
+    .values({
+      productId: product.id,
+      fullName,
+      phone,
+      email,
+      fromLocationId: branch?.id ?? null,
+      entries: product.entries,
+      amount: product.price,
+    })
+    .returning({ id: punchCardOrders.id })
+
+  const origin = await siteOrigin()
+  const sale = await generateSale({
+    amount: product.price,
+    productName: pickLocale(product.name, defaultLocale),
+    transactionId: `order:${order.id}`,
+    callbackUrl: `${origin}/api/payme`,
+    returnUrl: `${origin}/checkout/success?order=${order.id}`,
+    buyer: { name: fullName, email, phone },
   })
 
-  return { ok: true, token }
+  if (!sale) {
+    await db
+      .update(punchCardOrders)
+      .set({ status: "failed" })
+      .where(eq(punchCardOrders.id, order.id))
+    return { ok: false, error: "payment" }
+  }
+
+  await db
+    .update(punchCardOrders)
+    .set({ paymeSaleId: sale.saleId })
+    .where(eq(punchCardOrders.id, order.id))
+
+  return { ok: true, redirect: sale.saleUrl }
 }

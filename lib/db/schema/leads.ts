@@ -65,6 +65,11 @@ export const leads = pgTable(
     signatureUrl: text(),
     consentAcceptedAt: timestamp({ withTimezone: true }),
 
+    /** Birthday form only: the PayMe sale id for the deposit, once one is
+     * generated, and the moment PayMe confirmed it was paid. */
+    depositSaleId: text(),
+    depositPaidAt: timestamp({ withTimezone: true }),
+
     /** Set once the Resend notification goes out; holds the error otherwise. */
     notifiedAt: timestamp({ withTimezone: true }),
     notifyError: text(),

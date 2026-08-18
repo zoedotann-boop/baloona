@@ -82,9 +82,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   minimal shell (logo header + terms footer) via the `app/(standalone)/` route group
   (`card`/`checkout`/`terms` are reserved slugs). Each product's "buy" links to
   `/checkout?product=<id>`, which collects details + a mandatory Terms consent, then calls
-  `lib/shop/payment.ts` `startPayment` — a **placeholder** ahead of PayMe approval that
-  persists nothing; wire the real payment there. `/terms` renders a general Terms &
-  Cancellation policy from a `sections` block in `messages/*.json` (edit the copy there).
+  `startPunchCardCheckout` (`lib/actions/shop.ts`): with PayMe configured it opens a pending
+  `punch_card_order` and redirects to PayMe, and the card is issued only once payment is
+  **confirmed** (`fulfilOrder`, reached from the PayMe callback and `/checkout/success`);
+  without a key it falls back to issuing immediately. See **Payments** below. `/terms` renders
+  a general Terms & Cancellation policy from a `sections` block in `messages/*.json` (edit the
+  copy there).
 
 ## Admin panel
 
@@ -123,6 +126,13 @@ See `.env.example`.
 - **Gemini** — drafts translations for the "מלא עם AI" buttons. Output is always
   editable, never published blind.
 - **Google Places** — imports reviews per branch, unpublished, for an editor to approve.
+- **PayMe (PayMeService)** — online payments via the `generate-sale` API (`lib/payme/`).
+  Two surfaces: the punch-card checkout (pay first, card issued on confirmation) and the
+  birthday deposit (paid after the form is signed). Each creates a hosted sale and redirects
+  the buyer; PayMe then POSTs to `app/api/payme` (`sale_callback_url`), which **re-queries the
+  sale** to confirm it is paid before fulfilling — the callback body alone is never trusted.
+  `PAYME_SELLER_ID` is the only key (in the body, no header/secret); `PAYME_SANDBOX=true`
+  targets preprod. Unset, both surfaces keep their no-payment behaviour.
 
 ## Code quality
 

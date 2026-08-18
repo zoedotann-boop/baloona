@@ -24,6 +24,9 @@ interface InboxLead {
   details: { label: string; value: string }[]
   upgrades: { label: string; price: string }[]
   total: string | null
+  /** Birthday deposit: `true` paid, `false` awaiting payment, `null` if no
+   * deposit payment was started. */
+  depositPaid: boolean | null
   signatureUrl: string | null
   createdAt: string
   notifyError: string | null
@@ -160,6 +163,14 @@ function LeadsInbox({ slug, leads }: { slug: string; leads: InboxLead[] }) {
                   />
                 )}
                 <Row label={t("total")} value={lead.total} />
+                {lead.depositPaid !== null && (
+                  <Row
+                    label={t("deposit")}
+                    value={
+                      lead.depositPaid ? t("depositPaid") : t("depositUnpaid")
+                    }
+                  />
+                )}
               </dl>
 
               {lead.message && (

@@ -103,7 +103,8 @@
     "error": "Something went wrong. Please try again or give us a call.",
     "clearSignature": "Clear signature",
     "signatureRequired": "A signature is required before submitting",
-    "consentRequired": "Please accept the terms before submitting"
+    "consentRequired": "Please accept the terms before submitting",
+    "depositProduct": "Baloona birthday deposit"
   },
   "mobile": {
     "backToTop": "Back to top"
@@ -200,7 +201,9 @@
     "error": "Something went wrong. Check the details and try again.",
     "noProductTitle": "No product selected",
     "noProductBody": "Choose a punch card from the shop to continue.",
-    "noProductCta": "Go to the shop"
+    "noProductCta": "Go to the shop",
+    "pendingTitle": "Payment processing",
+    "pendingBody": "We've received your payment request. Your card will be ready in a moment — refresh the page and the link will appear here."
   },
   "terms": {
     "title": "Terms & Conditions and Cancellation Policy",
@@ -662,6 +665,9 @@
       "details": "Form details",
       "upgrades": "Add-ons",
       "total": "Estimated total",
+      "deposit": "Deposit",
+      "depositPaid": "Paid",
+      "depositUnpaid": "Not paid yet",
       "signature": "Signature",
       "viewSignature": "View signature",
       "createdAt": "Received",
