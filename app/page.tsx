@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { getLocale } from "next-intl/server"
 
+import { BrandShell } from "@/components/layout/brand-shell"
 import { LocationChooser } from "@/components/locations/location-chooser"
 import { listPublishedLocations } from "@/lib/db/queries/site"
 import { pickLocale } from "@/lib/localized"
@@ -18,15 +19,17 @@ export default async function Page() {
   if (locations.length === 1) redirect(`/${locations[0].slug}`)
 
   return (
-    <LocationChooser
-      locations={locations.map((location) => ({
-        slug: location.slug,
-        name: pickLocale(location.name, locale),
-        city: pickLocale(location.contact?.city, locale),
-        address: pickLocale(location.contact?.address, locale),
-        description: pickLocale(location.home?.heroDescription, locale),
-        imageUrl: location.home?.heroImages?.[0],
-      }))}
-    />
+    <BrandShell>
+      <LocationChooser
+        locations={locations.map((location) => ({
+          slug: location.slug,
+          name: pickLocale(location.name, locale),
+          city: pickLocale(location.contact?.city, locale),
+          address: pickLocale(location.contact?.address, locale),
+          description: pickLocale(location.home?.heroDescription, locale),
+          imageUrl: location.home?.heroImages?.[0],
+        }))}
+      />
+    </BrandShell>
   )
 }

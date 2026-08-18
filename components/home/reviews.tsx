@@ -4,6 +4,7 @@ import { Panel } from "@/components/brand/panel"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { ReviewCard } from "@/components/brand/review-card"
+import { Section } from "@/components/layout/section"
 
 interface ReviewContent {
   id: string
@@ -32,7 +33,7 @@ function Reviews({ title, items, photos }: ReviewsProps) {
   if (items.length === 0) return null
 
   return (
-    <section className="px-5 py-20 md:px-9 md:py-28">
+    <Section>
       <Reveal className="mx-auto max-w-6xl columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4 [&>*]:break-inside-avoid">
         <Panel
           tone="lavender"
@@ -74,7 +75,7 @@ function Reviews({ title, items, photos }: ReviewsProps) {
 
         <div aria-hidden="true" className="h-32 rounded-[26px] bg-brand-mint" />
       </Reveal>
-    </section>
+    </Section>
   )
 }
 

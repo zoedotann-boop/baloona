@@ -8,6 +8,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { AccentSquare } from "@/components/brand/accent-square"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 import { cn } from "@/lib/utils"
 
 interface GalleryImage {
@@ -78,13 +80,13 @@ function Gallery({ title, images }: GalleryProps) {
   if (total === 0) return null
 
   return (
-    <section className="relative overflow-hidden bg-white px-5 py-20 md:px-9 md:py-28">
+    <Section className="relative overflow-hidden bg-white">
       <AccentSquare
         className="absolute -end-6 top-24 -z-10"
         color="bg-brand-lavender"
         rotate={-10}
       />
-      <div className="mx-auto max-w-6xl">
+      <Container>
         <Reveal className="mb-8 flex items-end justify-between">
           <h2 className="font-heading text-[clamp(32px,4vw,46px)] font-black text-brand-plum">
             {title}
@@ -122,7 +124,7 @@ function Gallery({ title, images }: GalleryProps) {
             </button>
           ))}
         </Reveal>
-      </div>
+      </Container>
 
       {isOpen && (
         <div
@@ -189,7 +191,7 @@ function Gallery({ title, images }: GalleryProps) {
           </div>
         </div>
       )}
-    </section>
+    </Section>
   )
 }
 

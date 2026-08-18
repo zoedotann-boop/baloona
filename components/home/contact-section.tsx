@@ -3,6 +3,8 @@ import { useTranslations } from "next-intl"
 
 import { Reveal } from "@/components/brand/reveal"
 import { ContactForm } from "@/components/home/contact-form"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 import type { ContactDetails, HoursRow } from "@/lib/view-models"
 
 interface ContactSectionProps {
@@ -54,11 +56,8 @@ function ContactSection({
   ]
 
   return (
-    <section
-      id="contact"
-      className="bg-accent px-5 py-20 text-white md:px-9 md:py-28"
-    >
-      <div className="mx-auto max-w-6xl">
+    <Section id="contact" className="bg-accent text-white">
+      <Container>
         <Reveal className="mb-12 text-center">
           <h2 className="font-heading text-[clamp(34px,4.5vw,50px)] font-black">
             {title}
@@ -110,8 +109,8 @@ function ContactSection({
             <ContactForm locationId={locationId} subjects={subjects} />
           </Reveal>
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

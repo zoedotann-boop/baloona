@@ -2,15 +2,21 @@ import Link from "next/link"
 import { useTranslations } from "next-intl"
 
 import { Icon } from "@/components/brand/icon"
+import { Container } from "@/components/layout/container"
 import type { LocationPaths } from "@/lib/site-links"
 import type { ContactDetails, HoursRow } from "@/lib/view-models"
 
 interface SiteFooterProps {
-  paths: LocationPaths
-  tagline: string
-  contact: ContactDetails
-  hours: HoursRow[]
   year: number
+  /**
+   * Per-branch data. When any of these is omitted the footer renders its slim
+   * brand-global variant (wordmark + credit line only) for pages with no
+   * branch behind them.
+   */
+  paths?: LocationPaths
+  tagline?: string
+  contact?: ContactDetails
+  hours?: HoursRow[]
 }
 
 /** Site footer: brand blurb, navigation, contact details, hours and socials. */
@@ -18,6 +24,34 @@ function SiteFooter({ paths, tagline, contact, hours, year }: SiteFooterProps) {
   const t = useTranslations("footer")
   const nav = useTranslations("nav")
   const site = useTranslations("site")
+
+  // Brand-global pages have no branch to link to or list, so the footer shrinks
+  // to the wordmark and the credit line.
+  if (!paths || !contact || !hours) {
+    return (
+      <footer className="bg-brand-cloud px-5 py-10 text-brand-plum md:px-9">
+        <Container className="flex flex-col items-center gap-3 text-center text-[13px]">
+          <div className="font-heading text-2xl font-extrabold text-brand-plum">
+            {site("brand")}
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <span>
+              {t("credit")}{" "}
+              <a
+                href="https://zoedotan.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold underline hover:text-foreground"
+              >
+                Zoe Dotan
+              </a>
+            </span>
+            <span>{t("rights", { year })}</span>
+          </div>
+        </Container>
+      </footer>
+    )
+  }
 
   const navLinks = [
     { label: nav("home"), href: paths.home },
@@ -36,7 +70,7 @@ function SiteFooter({ paths, tagline, contact, hours, year }: SiteFooterProps) {
 
   return (
     <footer className="bg-brand-cloud px-5 py-14 text-brand-plum md:px-9">
-      <div className="mx-auto max-w-6xl">
+      <Container>
         <div className="grid grid-cols-1 gap-8 border-b border-brand-plum/15 pb-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1.2fr_1fr]">
           <div>
             <div className="mb-3 font-heading text-2xl font-extrabold text-brand-plum">
@@ -149,7 +183,7 @@ function SiteFooter({ paths, tagline, contact, hours, year }: SiteFooterProps) {
           </div>
           <span>{t("rights", { year })}</span>
         </div>
-      </div>
+      </Container>
     </footer>
   )
 }

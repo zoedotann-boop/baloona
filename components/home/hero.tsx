@@ -6,6 +6,8 @@ import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { StatusBadge } from "@/components/brand/status-badge"
 import { HeroMobileActions } from "@/components/home/hero-mobile-actions"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 import type { HoursRow } from "@/lib/view-models"
 
 interface HeroProps {
@@ -39,8 +41,11 @@ function Hero({
   const [lead, ...rest] = images
 
   return (
-    <section className="relative overflow-hidden bg-brand-pink-soft px-5 py-16 md:px-9 md:py-24">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
+    <Section
+      spacing="md"
+      className="relative overflow-hidden bg-brand-pink-soft"
+    >
+      <Container className="grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
         <Reveal>
           <StatusBadge className="mb-5" variant="pill" label={badge} />
           <h1 className="max-w-[12ch] font-heading text-[clamp(36px,6vw,60px)] leading-[1.05] font-black tracking-[-1px] text-brand-plum">
@@ -108,9 +113,9 @@ function Hero({
             ))}
           </div>
         </Reveal>
-      </div>
+      </Container>
       <HeroMobileActions whatsappHref={whatsappHref} isOpen={isOpen} />
-    </section>
+    </Section>
   )
 }
 
