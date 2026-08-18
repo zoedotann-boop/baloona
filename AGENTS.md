@@ -127,12 +127,11 @@ See `.env.example`.
   editable, never published blind.
 - **Google Places** — imports reviews per branch, unpublished, for an editor to approve.
 - **PayMe (PayMeService)** — online payments via the `generate-sale` API (`lib/payme/`).
-  Two surfaces: the punch-card checkout (pay first, card issued on confirmation) and the
-  birthday deposit (paid after the form is signed). Each creates a hosted sale and redirects
-  the buyer; PayMe then POSTs to `app/api/payme` (`sale_callback_url`), which **re-queries the
-  sale** to confirm it is paid before fulfilling — the callback body alone is never trusted.
+  The punch-card checkout pays first: it creates a hosted sale and redirects the buyer, and
+  PayMe then POSTs to `app/api/payme` (`sale_callback_url`), which **re-queries the sale** to
+  confirm it is paid before issuing the card — the callback body alone is never trusted.
   `PAYME_SELLER_ID` is the only key (in the body, no header/secret); `PAYME_SANDBOX=true`
-  targets preprod. Unset, both surfaces keep their no-payment behaviour.
+  targets preprod. Unset, the checkout keeps its no-payment behaviour.
 
 ## Code quality
 

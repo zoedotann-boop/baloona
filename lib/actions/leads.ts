@@ -1,7 +1,6 @@
 "use server"
 
 import { eq, inArray } from "drizzle-orm"
-import { getTranslations } from "next-intl/server"
 import { z } from "zod"
 
 import { defaultLocale } from "@/i18n/routing"
@@ -13,10 +12,7 @@ import {
   locations,
 } from "@/lib/db/schema"
 import { sendLeadNotification } from "@/lib/email/lead-notification"
-import { paymeConfig } from "@/lib/env"
 import { pickLocale } from "@/lib/localized"
-import { generateSale } from "@/lib/payme/client"
-import { siteOrigin } from "@/lib/site-url"
 import {
   buildObjectKey,
   isStorageConfigured,
@@ -31,8 +27,7 @@ import {
  * failures are recorded on the lead row instead of surfacing to the visitor.
  */
 
-export type SubmitResult =
-  { ok: true; redirect?: string } | { ok: false; error: string }
+export type SubmitResult = { ok: true } | { ok: false; error: string }
 
 // These two actions are deliberately unauthenticated: they back the site's
 // public contact and booking forms, which anonymous visitors submit. They only
@@ -182,37 +177,6 @@ export async function submitBirthdayLead(
       { label: "סכום משוער", value: `${totalAmount} ₪` },
     ],
   })
-
-  // With payments configured and a deposit set, send the booker to PayMe to pay
-  // the deposit. The lead is already saved, so a failed hand-off (or no PayMe
-  // key, or a zero deposit) simply falls back to the in-page success screen.
-  const deposit = location.birthday.depositAmount
-  if (paymeConfig() && deposit > 0) {
-    const t = await getTranslations({
-      locale: defaultLocale,
-      namespace: "birthdays",
-    })
-    const origin = await siteOrigin()
-    const sale = await generateSale({
-      amount: deposit,
-      productName: t("depositProduct"),
-      transactionId: `lead:${lead.id}`,
-      callbackUrl: `${origin}/api/payme`,
-      returnUrl: `${origin}/${location.slug}/birthdays?paid=${lead.id}#lead-form`,
-      buyer: {
-        name: answers.fullName,
-        email: answers.email,
-        phone: answers.phone,
-      },
-    })
-    if (sale) {
-      await db
-        .update(leads)
-        .set({ depositSaleId: sale.saleId })
-        .where(eq(leads.id, lead.id))
-      return { ok: true, redirect: sale.saleUrl }
-    }
-  }
 
   return { ok: true }
 }

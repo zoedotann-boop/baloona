@@ -70,8 +70,3 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
-
-/** The confirmation shown after PayMe redirects back from a paid deposit. */
-export const DepositPaid: Story = {
-  args: { paid: true },
-}

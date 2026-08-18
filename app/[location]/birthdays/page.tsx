@@ -19,12 +19,8 @@ export async function generateMetadata({
 
 export default async function BirthdaysPage({
   params,
-  searchParams,
 }: PageProps<"/[location]/birthdays">) {
   const { location: slug } = await params
-  // PayMe redirects a paid deposit back to `?paid=<leadId>`; its presence flips
-  // the form straight to its confirmation state.
-  const { paid } = await searchParams
   const [data, locale, t] = await Promise.all([
     getBirthdayPage(slug),
     getLocale() as Promise<Locale>,
@@ -108,7 +104,6 @@ export default async function BirthdaysPage({
         requiresSignature={content.requiresSignature}
         signatureTitle={pickLocale(content.signatureTitle, locale)}
         signatureHint={pickLocale(content.signatureHint, locale)}
-        paid={typeof paid === "string"}
       />
     </>
   )

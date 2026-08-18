@@ -38,8 +38,6 @@ interface BirthdayLeadFormProps {
   requiresSignature: boolean
   signatureTitle: string
   signatureHint: string
-  /** True when PayMe has just redirected back from a paid deposit. */
-  paid?: boolean
 }
 
 type Answers = Record<string, unknown>
@@ -70,7 +68,6 @@ function BirthdayLeadForm({
   requiresSignature,
   signatureTitle,
   signatureHint,
-  paid = false,
 }: BirthdayLeadFormProps) {
   const t = useTranslations("birthdays")
   const [answers, setAnswers] = useState<Answers>({})
@@ -78,7 +75,7 @@ function BirthdayLeadForm({
   const [agreed, setAgreed] = useState(false)
   const [signature, setSignature] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [submitted, setSubmitted] = useState(paid)
+  const [submitted, setSubmitted] = useState(false)
   const [pending, startTransition] = useTransition()
 
   const { schema, uiSchema } = useMemo(
@@ -104,11 +101,8 @@ function BirthdayLeadForm({
         consent: agreed,
         signature: signature ?? undefined,
       })
-      if (!result.ok) setError(t("error"))
-      // Payments on: hand off to PayMe to pay the deposit. Otherwise the lead is
-      // in — show the in-page confirmation.
-      else if (result.redirect) window.location.href = result.redirect
-      else setSubmitted(true)
+      if (result.ok) setSubmitted(true)
+      else setError(t("error"))
     })
   }
 

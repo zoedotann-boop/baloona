@@ -103,8 +103,7 @@
     "error": "Something went wrong. Please try again or give us a call.",
     "clearSignature": "Clear signature",
     "signatureRequired": "A signature is required before submitting",
-    "consentRequired": "Please accept the terms before submitting",
-    "depositProduct": "Baloona birthday deposit"
+    "consentRequired": "Please accept the terms before submitting"
   },
   "mobile": {
     "backToTop": "Back to top"
@@ -665,9 +664,6 @@
       "details": "Form details",
       "upgrades": "Add-ons",
       "total": "Estimated total",
-      "deposit": "Deposit",
-      "depositPaid": "Paid",
-      "depositUnpaid": "Not paid yet",
       "signature": "Signature",
       "viewSignature": "View signature",
       "createdAt": "Received",

@@ -103,8 +103,7 @@
     "error": "משהו השתבש בשליחה. נסו שוב או התקשרו אלינו.",
     "clearSignature": "ניקוי חתימה",
     "signatureRequired": "נדרשת חתימה לפני שליחת הטופס",
-    "consentRequired": "יש לאשר את התנאים לפני שליחת הטופס",
-    "depositProduct": "מקדמה ליום הולדת בבלונה"
+    "consentRequired": "יש לאשר את התנאים לפני שליחת הטופס"
   },
   "mobile": {
     "backToTop": "חזרה למעלה"
@@ -665,9 +664,6 @@
       "details": "פרטי הטופס",
       "upgrades": "תוספות",
       "total": "סכום משוער",
-      "deposit": "מקדמה",
-      "depositPaid": "שולמה",
-      "depositUnpaid": "טרם שולמה",
       "signature": "חתימה",
       "viewSignature": "צפייה בחתימה",
       "createdAt": "התקבל",

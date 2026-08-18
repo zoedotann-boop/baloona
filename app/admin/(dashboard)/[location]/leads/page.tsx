@@ -54,9 +54,6 @@ export default async function AdminLeadsPage({
             ? null
             : formatPrice(lead.totalAmount, locale),
         signatureUrl: lead.signatureUrl,
-        // Only birthday leads that reached PayMe carry a deposit state; the rest
-        // stay `null` so the inbox shows no deposit row for them.
-        depositPaid: lead.depositSaleId ? lead.depositPaidAt !== null : null,
         createdAt: format.dateTime(lead.createdAt, {
           dateStyle: "short",
           timeStyle: "short",
