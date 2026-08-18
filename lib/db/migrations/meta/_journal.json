@@ -36,6 +36,13 @@
       "when": 1786355183536,
       "tag": "0004_cheerful_red_wolf",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1787092271005,
+      "tag": "0005_smiling_excalibur",
+      "breakpoints": true
     }
   ]
 }

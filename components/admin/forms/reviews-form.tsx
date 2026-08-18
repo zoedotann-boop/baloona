@@ -19,6 +19,7 @@ import type { ReviewSource } from "@/lib/db/schema"
 import { emptyLocalized, type Localized } from "@/lib/localized"
 
 interface ReviewsDraft {
+  autoSync: boolean
   reviews: {
     id?: string
     authorName: string
@@ -80,6 +81,7 @@ function ReviewsForm({
       onSave={(value) =>
         saveReviews({
           slug,
+          autoSync: value.autoSync,
           reviews: value.reviews.map(
             ({ source: _source, ...review }) => review
           ),
@@ -111,12 +113,21 @@ function ReviewsForm({
             </span>
           )}
         </div>
+
+        <div className="mt-4">
+          <AdminToggle
+            label={t("autoSync")}
+            tooltip={t("autoSyncTip")}
+            checked={draft.autoSync}
+            onChange={(autoSync) => setDraft({ ...draft, autoSync })}
+          />
+        </div>
       </AdminCard>
 
       <AdminCard>
         <RowList
           items={draft.reviews}
-          onChange={(reviews) => setDraft({ reviews })}
+          onChange={(reviews) => setDraft({ ...draft, reviews })}
           createItem={() => ({
             authorName: "",
             rating: 5,

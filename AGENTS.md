@@ -133,7 +133,15 @@ See `.env.example`.
   dev falls back to local disk (`public/uploads`, PUT to `app/api/admin/media/[...key]`).
 - **Gemini** — drafts translations for the "מלא עם AI" buttons. Output is always
   editable, never published blind.
-- **Google Places** — imports reviews per branch, unpublished, for an editor to approve.
+- **Google Places** — imports reviews per branch. `lib/google/sync-reviews.ts` is the one
+  implementation, matching on Google's review id so a re-sync refreshes wording in place
+  and never overrules an editor's publish decision on a review that already exists.
+  Two callers: the admin's "סנכרון עכשיו" button imports everything unpublished for an
+  editor to approve, and the nightly cron `app/api/cron/google-reviews` publishes new
+  4-star-and-up reviews itself, because nobody is standing by. Which branches the cron
+  touches is data — `site_setting.google_reviews_auto_sync`, toggled in ניהול ביקורות
+  (currently Kiryat Ono alone). The schedule lives in `vercel.json`; `CRON_SECRET` is the
+  bearer token Vercel sends, and without it the endpoint 401s rather than running open.
 
 ## Code quality
 

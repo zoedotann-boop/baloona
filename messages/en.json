@@ -620,6 +620,8 @@
       "syncMissingPlaceId": "Set a Google Place ID in general settings first.",
       "syncMissingKey": "No Google Places key configured.",
       "syncError": "Sync failed.",
+      "autoSync": "Daily automatic sync",
+      "autoSyncTip": "Syncs this branch's Google reviews once a day. New reviews rated 4 stars and up are published automatically; lower ones wait for approval here.",
       "author": "Author",
       "rating": "Rating",
       "text": "Review text",

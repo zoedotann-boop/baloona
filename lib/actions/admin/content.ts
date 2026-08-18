@@ -24,6 +24,7 @@ import {
   pricingContents,
   reviews,
   siteContents,
+  siteSettings,
 } from "@/lib/db/schema"
 import { deleteObject, keyFromUrl } from "@/lib/storage"
 
@@ -567,6 +568,8 @@ export async function saveBirthdays(
 
 const reviewsSchema = z.object({
   slug: z.string().min(1),
+  /** Opts the branch into the nightly `/api/cron/google-reviews` job. */
+  autoSync: z.boolean(),
   reviews: z.array(
     z.object({
       id: rowIdSchema,
@@ -605,6 +608,13 @@ export async function saveReviews(
     update: (row) => db.update(reviews).set(row).where(eq(reviews.id, row.id)),
     remove: (ids) => db.delete(reviews).where(inArray(reviews.id, ids)),
   })
+
+  // The auto-sync flag lives on `site_setting` but is edited here, next to the
+  // sync button it controls, rather than buried in the SEO settings screen.
+  await db
+    .update(siteSettings)
+    .set({ googleReviewsAutoSync: parsed.data.autoSync })
+    .where(eq(siteSettings.locationId, locationId))
 
   return OK
 }

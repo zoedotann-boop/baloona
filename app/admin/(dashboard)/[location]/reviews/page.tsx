@@ -18,6 +18,7 @@ export default async function AdminReviewsPage({
       slug={slug}
       hasPlaceId={Boolean(data.settings?.googlePlaceId)}
       initial={{
+        autoSync: data.settings?.googleReviewsAutoSync ?? false,
         reviews: data.reviews.map((review) => ({
           id: review.id,
           authorName: review.authorName,
