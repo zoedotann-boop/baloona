@@ -53,6 +53,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
   prices, menu, reviews and SEO are admin-editable rows. Button labels, aria-labels,
   weekday names and admin UI strings stay in `messages/he.json` / `en.json` and are
   read with `useTranslations`. Never hard-code either kind in a component.
+- **A new branch seeds no reviews.** Everything else in `seed-content.ts` is generic
+  Baloona copy an editor rewrites, but a review is a statement attributed to a named
+  customer — inventing one puts words in a stranger's mouth on a live site. The reviews
+  section renders nothing until real ones are written or synced.
 - **Translatable values are `jsonb` `{ he, en }`** (`Localized`) or `{ he: string[] }`
   (`LocalizedList`). Hebrew is the source language; read through `pickLocale` /
   `pickLocaleList` so a missing translation falls back to Hebrew.
@@ -163,11 +167,12 @@ See `.env.example`.
 - `lib/google/sync-reviews.ts` is the one sync implementation, matching on Google's
   review id so a re-sync refreshes wording in place
   and never overrules an editor's publish decision on a review that already exists.
-  Two callers: the admin's "סנכרון עכשיו" button imports everything unpublished for an
-  editor to approve, and the nightly cron `app/api/cron/google-reviews` publishes new
-  4-star-and-up reviews itself, because nobody is standing by. Which branches the cron
-  touches is data — `site_setting.google_reviews_auto_sync`, toggled in ניהול ביקורות
-  (currently Kiryat Ono alone). The schedule lives in `vercel.json`; `CRON_SECRET` is the
+  Two callers — the admin's "סנכרון עכשיו" button and the nightly cron
+  `app/api/cron/google-reviews` — and both publish the same way, so pressing the button
+  never produces a different site than waiting for the job would. That behaviour is the
+  branch's own `site_setting.google_reviews_auto_sync` (toggled in ניהול ביקורות,
+  currently Kiryat Ono alone): off, imports arrive unpublished for an editor to approve;
+  on, 4-star-and-up reviews go live on import because nobody is standing by. The schedule lives in `vercel.json`; `CRON_SECRET` is the
   bearer token Vercel sends, and without it the endpoint 401s rather than running open.
 - Because that cron publishes unattended, the home page reviews section caps itself at
   `HOME_REVIEWS_LIMIT` (`lib/db/queries/site.ts`) — otherwise the masonry would gain a

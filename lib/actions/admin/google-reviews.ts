@@ -18,10 +18,10 @@ export type SyncResult =
 /**
  * The admin's "sync now" button.
  *
- * Imported reviews arrive unpublished: an editor decides what appears on the
- * site, and Google is only a source, not the publisher. The nightly cron
- * (`/api/cron/google-reviews`) runs the same sync with auto-publish on for
- * branches that opted in.
+ * It publishes exactly what the nightly cron would: on a branch with automatic
+ * sync off, imports arrive unpublished for an editor to approve, and on one
+ * that opted in, 4-star-and-up reviews go live immediately. Pressing the button
+ * should never produce a different site than waiting for the job would.
  *
  * The sync writes straight to the database, which would leave the open form
  * showing a stale list — so the refreshed rows come back with the result and
@@ -43,6 +43,7 @@ export async function syncGoogleReviews(
   const result = await syncLocationReviews({
     locationId: location.id,
     placeId: settings.googlePlaceId,
+    autoPublish: settings.googleReviewsAutoSync,
   })
   if (!result.ok) return result
 
