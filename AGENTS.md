@@ -131,6 +131,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
   otherwise publish the page. Two things build on it:
   - `<AdminModal>` — a row's full form. No save button: it edits the draft in place and
     the header publishes, so closing is always safe.
+  - **Never open a dialog from inside a dialog.** `AdminDialog` marks its subtree, and
+    `useInDialog()` reads it, so a component decides for itself rather than every call
+    site remembering. `RowTable` uses this: at the top of a section a row opens in a
+    dialog, and inside one (a tier's rows, a category's items, a field's options) the
+    same `renderRow` expands in place under the row, delete confirmation included.
   - `<ConfirmModal>` — "are you sure?" before anything destructive. **Every delete in
     the admin goes through it; there are no `window.confirm()` calls left.** The caller
     passes the message because the consequence differs: a row removed from a draft list

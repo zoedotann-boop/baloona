@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite"
 import { useState } from "react"
 
+import { AdminModal } from "./admin-modal"
 import { AdminField, AdminFlag, AdminInput, AdminToggle } from "./admin-ui"
 import { RowTable } from "./row-table"
 
@@ -48,6 +49,20 @@ export const Default: Story = {
 /** The empty state an editor lands on before adding the first row. */
 export const Empty: Story = {
   render: () => <Example initial={[]} />,
+  args: noop,
+}
+
+/**
+ * The same table inside a dialog — a price tier's rows, a menu category's
+ * items. The pencil expands the row in place rather than opening a second
+ * dialog over the first, and so does the delete confirmation.
+ */
+export const InsideADialog: Story = {
+  render: () => (
+    <AdminModal open onClose={() => {}} title="חבילת יום הולדת">
+      <Example />
+    </AdminModal>
+  ),
   args: noop,
 }
 
