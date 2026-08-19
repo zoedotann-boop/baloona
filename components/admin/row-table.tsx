@@ -23,7 +23,7 @@ import {
 import { CSS } from "@dnd-kit/utilities"
 import { useTranslations } from "next-intl"
 import { GripVertical, Pencil, Plus, Trash2 } from "lucide-react"
-import { Fragment, useState } from "react"
+import { Fragment, useId, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -84,10 +84,6 @@ interface RowTableProps<T> {
 const iconButton =
   "flex size-8 items-center justify-center rounded-lg text-muted-foreground transition disabled:opacity-30"
 
-/** dnd-kit needs a stable, truthy id per row; position is what ordering means. */
-const rowId = (index: number) => `row-${index}`
-const rowIndex = (id: string | number) => Number(String(id).replace("row-", ""))
-
 function RowTable<T>({
   items,
   onChange,
@@ -100,8 +96,36 @@ function RowTable<T>({
 }: RowTableProps<T>) {
   const t = useTranslations("admin.common")
   const inDialog = useInDialog()
+  // dnd-kit derives ids for its aria wiring from an internal counter, which
+  // differs between the server and client renders and trips hydration. Handing
+  // it a React id keeps both sides identical.
+  const dndId = useId()
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
+
+  // dnd-kit needs an id that follows the row, not its position: with
+  // positional ids every id still points at the same slot after a reorder, so
+  // the dragged row has nothing to travel to and snaps back. Draft rows have no
+  // database id yet (and keep none until publish), so identity is minted here
+  // and moved in step with the data.
+  const [rows, setRows] = useState(() => ({
+    ids: items.map((_, index) => `row-${index}`),
+    next: items.length,
+  }))
+
+  // Re-sync when the list is replaced from outside — adding a row, or the
+  // Google sync swapping the whole array. Existing rows keep their id so a
+  // drag in flight still resolves.
+  if (rows.ids.length !== items.length) {
+    setRows((current) => {
+      let next = current.next
+      return {
+        ids: items.map((_, index) => current.ids[index] ?? `row-${next++}`),
+        next,
+      }
+    })
+  }
+  const ids = rows.ids
 
   // A pointer drag only starts past a few pixels, so clicking the handle (or
   // any button beside it) still registers as a click.
@@ -117,17 +141,35 @@ function RowTable<T>({
 
   const remove = (index: number) => {
     onChange(items.filter((_, i) => i !== index))
+    setRows((current) => ({
+      ...current,
+      ids: current.ids.filter((_, i) => i !== index),
+    }))
     setRemoving(null)
   }
 
   function handleDragEnd({ active, over }: DragEndEvent) {
     if (!over || active.id === over.id) return
-    const next = arrayMove(items, rowIndex(active.id), rowIndex(over.id))
-    onChange(next)
+
+    const from = ids.indexOf(String(active.id))
+    const to = ids.indexOf(String(over.id))
+    if (from === -1 || to === -1) return
+
+    onChange(arrayMove(items, from, to))
+    setRows((current) => ({
+      ...current,
+      ids: arrayMove(current.ids, from, to),
+    }))
     // The open editor follows its row rather than staying on whatever now sits
     // at that position.
     setEditing((current) =>
-      current === null ? null : next.indexOf(items[current])
+      current === null
+        ? null
+        : arrayMove(
+            items.map((_, index) => index),
+            from,
+            to
+          ).indexOf(current)
     )
   }
 
@@ -135,6 +177,10 @@ function RowTable<T>({
   // editing straight away rather than making the editor hunt for the new line.
   function add() {
     onChange([...items, createItem()])
+    setRows((current) => ({
+      ids: [...current.ids, `row-${current.next}`],
+      next: current.next + 1,
+    }))
     setEditing(items.length)
   }
 
@@ -142,10 +188,10 @@ function RowTable<T>({
   const removingItem = removing === null ? undefined : items[removing]
   // Columns plus the drag handle and the actions cell.
   const span = columns.length + 2
-  const ids = items.map((_, index) => rowId(index))
 
   return (
     <DndContext
+      id={dndId}
       sensors={sensors}
       collisionDetection={closestCenter}
       modifiers={[restrictToVerticalAxis, restrictToParentElement]}
@@ -154,12 +200,20 @@ function RowTable<T>({
         screenReaderInstructions: { draggable: t("reorderInstructions") },
         announcements: {
           onDragStart: ({ active }) =>
-            t("reorderStarted", { position: rowIndex(active.id) + 1 }),
+            t("reorderStarted", {
+              position: ids.indexOf(String(active.id)) + 1,
+            }),
           onDragOver: ({ over }) =>
-            over ? t("reorderMoved", { position: rowIndex(over.id) + 1 }) : "",
+            over
+              ? t("reorderMoved", {
+                  position: ids.indexOf(String(over.id)) + 1,
+                })
+              : "",
           onDragEnd: ({ over }) =>
             over
-              ? t("reorderEnded", { position: rowIndex(over.id) + 1 })
+              ? t("reorderEnded", {
+                  position: ids.indexOf(String(over.id)) + 1,
+                })
               : t("reorderCancelled"),
           onDragCancel: () => t("reorderCancelled"),
         },
@@ -183,8 +237,8 @@ function RowTable<T>({
 
           <SortableContext items={ids} strategy={verticalListSortingStrategy}>
             {items.map((item, index) => (
-              <Fragment key={index}>
-                <SortableRow id={rowId(index)}>
+              <Fragment key={ids[index]}>
+                <SortableRow id={ids[index]}>
                   {columns.map((column) => (
                     <td
                       key={column.header}
