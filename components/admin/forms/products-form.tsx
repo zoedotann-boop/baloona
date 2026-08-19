@@ -62,19 +62,26 @@ function ProductsForm({
           addLabel={t("addProduct")}
           emptyLabel={common("empty")}
           columns={[
-            { header: t("name"), cell: (product) => product.name.he },
+            {
+              header: t("name"),
+              tooltip: t("nameTip"),
+              cell: (product) => product.name.he,
+            },
             {
               header: t("entries"),
+              tooltip: t("entriesTip"),
               cell: (product) => product.entries,
               className: "w-24",
             },
             {
               header: t("price"),
+              tooltip: t("priceTip"),
               cell: (product) => product.price,
               className: "w-24",
             },
             {
               header: t("active"),
+              tooltip: t("activeTip"),
               cell: (product) => (
                 <AdminFlag on={product.isActive} label={t("active")} />
               ),
@@ -82,6 +89,7 @@ function ProductsForm({
             },
             {
               header: t("featured"),
+              tooltip: t("featuredTip"),
               cell: (product) => (
                 <AdminFlag on={product.isFeatured} label={t("featured")} />
               ),

@@ -107,13 +107,13 @@ export function SectionForm<T>({
         {/* Title on one side, every action on the other. Sticky so publishing
             stays one click away on a long section, and stretched past the
             content gutter so it covers what scrolls underneath it. */}
-        <header className="sticky top-0 z-30 -mx-4 -mt-6 mb-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-border bg-white/95 px-4 pt-6 pb-3 backdrop-blur md:-mx-6 md:px-6">
+        <header className="sticky top-0 z-30 -mx-4 -mt-4 mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border bg-white/95 px-4 pt-4 pb-2.5 backdrop-blur md:-mx-6 md:px-6">
           <div className="min-w-0">
-            <h1 className="font-heading text-[24px] font-black text-brand-plum">
+            <h1 className="font-heading text-[20px] font-black text-brand-plum">
               {title}
             </h1>
             {description && (
-              <p className="mt-0.5 text-[14px] text-muted-foreground">
+              <p className="mt-0.5 text-[13px] text-muted-foreground">
                 {description}
               </p>
             )}
@@ -174,7 +174,7 @@ export function SectionForm<T>({
           </div>
         </header>
 
-        <div className="space-y-5 pb-10">{children}</div>
+        <div className="space-y-4 pb-8">{children}</div>
       </form>
     </Context.Provider>
   )

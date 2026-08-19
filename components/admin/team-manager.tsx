@@ -83,10 +83,14 @@ function TeamManager({
       <div className="mt-5">
         <AdminTable
           headers={[
-            t("name"),
-            t("email"),
-            { label: t("role"), className: "w-36" },
-            { label: t("assignedLocations"), className: "w-48" },
+            { label: t("name"), tooltip: t("nameTip") },
+            { label: t("email"), tooltip: t("emailTip") },
+            { label: t("role"), className: "w-36", tooltip: t("roleTip") },
+            {
+              label: t("assignedLocations"),
+              className: "w-48",
+              tooltip: t("assignedLocationsTip"),
+            },
             { label: common("actions"), className: "w-px sr-only" },
           ]}
         >

@@ -40,6 +40,8 @@ interface RowColumn<T> {
   cell: (item: T, index: number) => React.ReactNode
   /** Width and alignment utilities, applied to the header and its cells. */
   className?: string
+  /** Explains the column on an info icon beside its header. */
+  tooltip?: string
 }
 
 interface RowTableProps<T> {
@@ -96,6 +98,7 @@ function RowTable<T>({
           ...columns.map((column) => ({
             label: column.header,
             className: column.className,
+            tooltip: column.tooltip,
           })),
           { label: t("actions"), className: "w-px sr-only" },
         ]}

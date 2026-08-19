@@ -176,9 +176,14 @@ function HomeContentForm({
           addLabel={common("add")}
           emptyLabel={common("empty")}
           columns={[
-            { header: t("featureHeading"), cell: (item) => item.title.he },
+            {
+              header: t("featureHeading"),
+              tooltip: t("featureHeadingTip"),
+              cell: (item) => item.title.he,
+            },
             {
               header: t("featureDescription"),
+              tooltip: t("featureDescriptionTip"),
               cell: (item) => (
                 <span className="line-clamp-1 text-muted-foreground">
                   {item.description.he}
@@ -272,7 +277,11 @@ function HomeContentForm({
               addLabel={common("add")}
               emptyLabel={common("empty")}
               columns={[
-                { header: t("subjectLabel"), cell: (item) => item.label.he },
+                {
+                  header: t("subjectLabel"),
+                  tooltip: t("teaserTileTip"),
+                  cell: (item) => item.label.he,
+                },
               ]}
               editTitle={(item) => item.label.he || common("add")}
               renderRow={(item, _index, update) => (

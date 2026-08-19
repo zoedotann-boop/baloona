@@ -94,11 +94,11 @@ function LeadsInbox({ slug, leads }: { slug: string; leads: InboxLead[] }) {
 
       <AdminTable
         headers={[
-          { label: t("kind"), className: "w-28" },
+          { label: t("kind"), className: "w-28", tooltip: t("kindTip") },
           t("name"),
           { label: t("phone"), className: "w-36" },
           { label: t("createdAt"), className: "w-32" },
-          { label: t("status"), className: "w-40" },
+          { label: t("status"), className: "w-40", tooltip: t("statusTip") },
           { label: common("actions"), className: "w-px sr-only" },
         ]}
       >

@@ -74,10 +74,18 @@ function LocationsManager({ locations }: { locations: ManagedLocation[] }) {
       <div className="mt-5">
         <AdminTable
           headers={[
-            t("nameLabel"),
-            { label: t("slug"), className: "w-40" },
-            { label: general("city"), className: "w-36" },
-            { label: t("published"), className: "w-32" },
+            { label: t("nameLabel"), tooltip: t("nameLabelTip") },
+            { label: t("slug"), className: "w-40", tooltip: t("slugTip") },
+            {
+              label: general("city"),
+              className: "w-36",
+              tooltip: general("cityTip"),
+            },
+            {
+              label: t("published"),
+              className: "w-32",
+              tooltip: t("publishedTip"),
+            },
             { label: common("actions"), className: "w-px sr-only" },
           ]}
         >

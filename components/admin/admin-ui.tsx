@@ -37,18 +37,15 @@ function AdminCard({
 }) {
   return (
     <section
-      className={cn(
-        "rounded-[22px] border border-border bg-white p-5",
-        className
-      )}
+      className={cn("rounded-2xl border border-border bg-white p-4", className)}
     >
       {title && (
-        <div className="mb-4">
-          <h2 className="font-heading text-[19px] font-black text-brand-plum">
+        <div className="mb-3">
+          <h2 className="font-heading text-[16px] font-black text-brand-plum">
             {title}
           </h2>
           {description && (
-            <p className="mt-1 text-[14px] text-muted-foreground">
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
               {description}
             </p>
           )}
@@ -113,7 +110,7 @@ function AdminInput({
   return (
     <input
       id={useControlId(props.id, props["aria-label"])}
-      className={cn(controlClass, "h-11", className)}
+      className={cn(controlClass, "h-10", className)}
       {...props}
     />
   )
@@ -139,7 +136,7 @@ function AdminSelect({
   return (
     <select
       id={useControlId(props.id, props["aria-label"])}
-      className={cn(controlClass, "h-11", className)}
+      className={cn(controlClass, "h-10", className)}
       {...props}
     />
   )

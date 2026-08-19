@@ -144,7 +144,7 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 right-0 z-50 flex w-[264px] shrink-0 flex-col border-e border-border bg-white transition-transform duration-200 md:static md:translate-x-0",
+          "fixed inset-y-0 right-0 z-50 flex w-[232px] shrink-0 flex-col border-e border-border bg-white transition-transform duration-200 md:static md:translate-x-0",
           open ? "translate-x-0" : "translate-x-full md:translate-x-0"
         )}
       >
@@ -211,7 +211,7 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
               href={`/${active.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-9 items-center gap-2.5 rounded-xl px-3 text-[14px] font-bold text-muted-foreground transition hover:bg-muted"
+              className="flex h-8 items-center gap-2.5 rounded-xl px-3 text-[13px] font-bold text-muted-foreground transition hover:bg-muted"
             >
               <ExternalLink className="size-4" />
               {t("viewSite")}
@@ -220,7 +220,7 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
           <button
             type="button"
             onClick={signOut}
-            className="flex h-9 w-full items-center gap-2.5 rounded-xl px-3 text-start text-[14px] font-bold text-muted-foreground transition hover:bg-muted"
+            className="flex h-8 w-full items-center gap-2.5 rounded-xl px-3 text-start text-[13px] font-bold text-muted-foreground transition hover:bg-muted"
           >
             <LogOut className="size-4 shrink-0" />
             <span className="truncate text-brand-plum">{user.name}</span>
@@ -245,7 +245,7 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
 
         {/* The only scroll container on the page. */}
         <div className="min-w-0 flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-6xl px-4 py-6 md:px-6">{children}</div>
+          <div className="mx-auto max-w-6xl px-4 py-4 md:px-6">{children}</div>
         </div>
       </div>
     </div>
@@ -280,7 +280,7 @@ function NavGroup({
               onClick={onNavigate}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex h-9 items-center gap-2.5 rounded-xl px-3 text-[14px] transition",
+                "flex h-8 items-center gap-2.5 rounded-xl px-3 text-[13px] transition",
                 isActive
                   ? "bg-brand-pink font-extrabold text-brand-plum"
                   : "font-bold text-muted-foreground hover:bg-muted"

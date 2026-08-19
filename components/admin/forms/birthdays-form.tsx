@@ -190,9 +190,14 @@ function BirthdaysForm({
             addLabel={t("addStep")}
             emptyLabel={common("empty")}
             columns={[
-              { header: t("stepTitle"), cell: (step) => step.title.he },
+              {
+                header: t("stepTitle"),
+                tooltip: t("stepTitleTip"),
+                cell: (step) => step.title.he,
+              },
               {
                 header: t("stepSubtitle"),
+                tooltip: t("stepSubtitleTip"),
                 cell: (step) => (
                   <span className="line-clamp-1 text-muted-foreground">
                     {step.subtitle.he}
@@ -283,7 +288,11 @@ function BirthdaysForm({
               addLabel={t("addLine")}
               emptyLabel={common("empty")}
               columns={[
-                { header: t("lineText"), cell: (line) => line.text.he },
+                {
+                  header: t("lineText"),
+                  tooltip: t("lineTextTip"),
+                  cell: (line) => line.text.he,
+                },
               ]}
               editTitle={(line) => line.text.he || t("addLine")}
               renderRow={(line, _index, update) => (
@@ -320,10 +329,12 @@ function BirthdaysForm({
             columns={[
               {
                 header: t("upgradeLabel"),
+                tooltip: t("upgradeLabelTip"),
                 cell: (upgrade) => upgrade.label.he,
               },
               {
                 header: t("upgradeAmount"),
+                tooltip: t("upgradeAmountTip"),
                 cell: (upgrade) => upgrade.amount,
                 className: "w-24",
               },
@@ -481,10 +492,12 @@ function BirthdaysForm({
           columns={[
             {
               header: t("fieldLabel"),
+              tooltip: t("fieldLabelTip"),
               cell: (field) => field.label.he,
             },
             {
               header: t("fieldKey"),
+              tooltip: t("fieldKeyTip"),
               cell: (field) => (
                 <span
                   dir="ltr"
@@ -497,6 +510,7 @@ function BirthdaysForm({
             },
             {
               header: t("fieldType"),
+              tooltip: t("fieldTypeTip"),
               cell: (field) => field.type,
               className: "w-24",
             },
@@ -572,6 +586,7 @@ function BirthdaysForm({
                     columns={[
                       {
                         header: t("optionValue"),
+                        tooltip: t("optionValueTip"),
                         cell: (option) => (
                           <span dir="ltr" className="block text-start">
                             {option.value}
@@ -581,6 +596,7 @@ function BirthdaysForm({
                       },
                       {
                         header: t("optionLabel"),
+                        tooltip: t("optionLabelTip"),
                         cell: (option) => option.label.he,
                       },
                     ]}

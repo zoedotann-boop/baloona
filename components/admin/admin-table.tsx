@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils"
 
+import { InfoTooltip } from "./info-tooltip"
+
 /**
  * Shared chrome for the admin's tables.
  *
@@ -8,15 +10,18 @@ import { cn } from "@/lib/utils"
  * where each row is its own server action. They disagree about saving but not
  * about how a table should look, so only the chrome is shared.
  *
- * A header may be a bare string or a `{ label, className }` pair when the
- * column needs a width — the same utilities then apply to its cells, which is
- * why callers use {@link adminCell} rather than styling every `<td>`.
+ * A header may be a bare string or a `{ label, className, tooltip }` object when
+ * the column needs a width or an explanation — the same utilities then apply to
+ * its cells, which is why callers use {@link adminCell} rather than styling
+ * every `<td>`. `tooltip` follows the same rule as `AdminField`: a column says
+ * what it holds without the table carrying always-on help text.
  */
 
-type AdminTableHeader = string | { label: string; className?: string }
+type AdminTableHeader =
+  string | { label: string; className?: string; tooltip?: string }
 
 /** Cell padding every table in the admin shares. */
-export const adminCell = "px-3 py-2 align-middle"
+export const adminCell = "px-3 py-1.5 align-middle"
 
 function AdminTable({
   headers,
@@ -38,17 +43,23 @@ function AdminTable({
         <thead>
           <tr className="border-b border-border bg-muted/60">
             {headers.map((header, index) => {
-              const { label, className: cell } =
-                typeof header === "string" ? { label: header } : header
+              const {
+                label,
+                className: cell,
+                tooltip,
+              } = typeof header === "string" ? { label: header } : header
               return (
                 <th
                   key={`${label}-${index}`}
                   className={cn(
-                    "px-3 py-2 text-start text-[12px] font-black text-muted-foreground uppercase",
+                    "px-3 py-1.5 text-start text-[12px] font-black text-muted-foreground uppercase",
                     cell
                   )}
                 >
-                  {label}
+                  <span className="inline-flex items-center gap-1">
+                    {label}
+                    {tooltip && <InfoTooltip text={tooltip} />}
+                  </span>
                 </th>
               )
             })}

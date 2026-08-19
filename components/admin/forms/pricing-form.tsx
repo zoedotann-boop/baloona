@@ -96,9 +96,14 @@ function PricingForm({
           addLabel={t("addTier")}
           emptyLabel={common("empty")}
           columns={[
-            { header: t("tierTitle"), cell: (tier) => tier.title.he },
+            {
+              header: t("tierTitle"),
+              tooltip: t("tierTitleTip"),
+              cell: (tier) => tier.title.he,
+            },
             {
               header: t("tierSubtitle"),
+              tooltip: t("tierSubtitleTip"),
               cell: (tier) => (
                 <span className="line-clamp-1 text-muted-foreground">
                   {tier.subtitle.he}
@@ -146,9 +151,14 @@ function PricingForm({
                 createItem={() => ({ label: emptyLocalized(), amount: 0 })}
                 addLabel={t("addRow")}
                 columns={[
-                  { header: t("rowLabel"), cell: (row) => row.label.he },
+                  {
+                    header: t("rowLabel"),
+                    tooltip: t("rowLabelTip"),
+                    cell: (row) => row.label.he,
+                  },
                   {
                     header: t("rowAmount"),
+                    tooltip: t("rowAmountTip"),
                     cell: (row) => row.amount,
                     className: "w-24",
                   },

@@ -47,10 +47,12 @@ function MediaForm({ slug, initial }: { slug: string; initial: MediaDraft }) {
           columns={[
             {
               header: t("alt"),
+              tooltip: t("altTip"),
               cell: (image) => image.alt.he,
             },
             {
               header: t("dropzone"),
+              tooltip: t("dropzoneTip"),
               cell: (image) => (
                 <span
                   dir="ltr"

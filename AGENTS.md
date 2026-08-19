@@ -130,10 +130,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
   header publishes. Note it renders inside the section's `<form>`, so it suppresses
   Enter to stop a stray keystroke publishing the page.
 - Every editable field explains itself. Pass `tooltip` to `AdminField` /
-  `LocalizedField` / `LocalizedListField` / `ImageField` and it renders an
-  `<InfoTooltip>` info icon beside the label (hover or keyboard focus reveals it).
-  Copy lives in `messages/*.json` under the section, keyed `<field>Tip`; keep `he`
-  and `en` in sync.
+  `LocalizedField` / `LocalizedListField` / `ImageField` / a table column and it
+  renders an `<InfoTooltip>` info icon beside the label or column header (hover or
+  keyboard focus reveals it). Copy lives in `messages/*.json` under the section, keyed
+  `<field>Tip`; keep `he` and `en` in sync. A missing key throws at runtime, so check
+  the key exists before wiring a new tooltip.
+- **The admin is deliberately dense.** It is a tool, not a landing page: cards are
+  `p-4` with 16px headings, table cells `py-1.5`, controls `h-10`, sidebar rows `h-8`.
+  Change these in the shared components (`admin-ui`, `admin-table`, `section-form`,
+  `admin-shell`) so every page moves together — never by adding spacing overrides to
+  one form.
 - Saving a list submits the whole array. `syncCollection` in
   `lib/actions/admin/shared.ts` turns that snapshot into inserts, updates and deletes.
 - The birthday booking form is editor-defined: `birthday_form_field` rows compile to a

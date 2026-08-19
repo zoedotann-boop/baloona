@@ -70,12 +70,22 @@ function Example({
       addLabel="הוספת תוספת"
       emptyLabel="עדיין אין פריטים כאן."
       columns={[
-        { header: "שם התוספת", cell: (item) => item.label },
-        { header: "מחיר", cell: (item) => item.amount, className: "w-24" },
+        {
+          header: "שם התוספת",
+          cell: (item) => item.label,
+          tooltip: "השם שההורים רואים ברשימת התוספות של יום ההולדת.",
+        },
+        {
+          header: "מחיר",
+          cell: (item) => item.amount,
+          className: "w-24",
+          tooltip: "מחיר התוספת בשקלים, מתווסף לסכום החבילה.",
+        },
         {
           header: "מוצג",
           cell: (item) => <AdminFlag on={item.isVisible} label="מוצג" />,
           className: "w-28",
+          tooltip: "האם התוספת מוצעת כרגע בטופס ההזמנה.",
         },
       ]}
       editTitle={(item) => item.label || "הוספת תוספת"}

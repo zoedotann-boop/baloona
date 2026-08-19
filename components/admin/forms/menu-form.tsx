@@ -90,6 +90,7 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
           columns={[
             {
               header: t("categoryLabel"),
+              tooltip: t("categoryLabelTip"),
               cell: (category) => category.label.he,
             },
             {
@@ -130,9 +131,14 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
                 })}
                 addLabel={t("addItem")}
                 columns={[
-                  { header: t("itemName"), cell: (item) => item.name.he },
+                  {
+                    header: t("itemName"),
+                    tooltip: t("itemNameTip"),
+                    cell: (item) => item.name.he,
+                  },
                   {
                     header: t("itemAmount"),
+                    tooltip: t("itemAmountTip"),
                     cell: (item) => item.amount,
                     className: "w-24",
                   },
