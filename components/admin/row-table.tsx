@@ -1,19 +1,35 @@
 "use client"
 
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core"
+import {
+  restrictToParentElement,
+  restrictToVerticalAxis,
+} from "@dnd-kit/modifiers"
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { useTranslations } from "next-intl"
-import { ChevronDown, ChevronUp, Pencil, Plus, Trash2 } from "lucide-react"
+import { GripVertical, Pencil, Plus, Trash2 } from "lucide-react"
 import { Fragment, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
 import { useInDialog } from "./admin-dialog"
 import { AdminModal } from "./admin-modal"
-import {
-  adminCell,
-  AdminTable,
-  AdminTableEmpty,
-  AdminTableRow,
-} from "./admin-table"
+import { adminCell, AdminTable, AdminTableEmpty } from "./admin-table"
 import { ConfirmModal } from "./confirm-modal"
 
 /**
@@ -31,18 +47,11 @@ import { ConfirmModal } from "./confirm-modal"
  * asks {@link useInDialog} rather than taking a prop, so a call site cannot
  * forget, and the same `columns` and `renderRow` serve both.
  *
- * Order is expressed by the array itself and turned into `sortOrder` on save,
- * so "move up" is a plain array swap and every list in the admin behaves the
- * same way.
+ * Order is the array's own order, turned into `sortOrder` on save. Rows are
+ * dragged by their handle (dnd-kit), which also reorders from the keyboard —
+ * space to lift, arrows to move, space to drop — so replacing the old up/down
+ * buttons did not cost keyboard users the ability to reorder.
  */
-
-function moveItem<T>(items: T[], from: number, to: number): T[] {
-  if (to < 0 || to >= items.length) return items
-  const next = [...items]
-  const [moved] = next.splice(from, 1)
-  next.splice(to, 0, moved)
-  return next
-}
 
 interface RowColumn<T> {
   header: string
@@ -75,6 +84,10 @@ interface RowTableProps<T> {
 const iconButton =
   "flex size-8 items-center justify-center rounded-lg text-muted-foreground transition disabled:opacity-30"
 
+/** dnd-kit needs a stable, truthy id per row; position is what ordering means. */
+const rowId = (index: number) => `row-${index}`
+const rowIndex = (id: string | number) => Number(String(id).replace("row-", ""))
+
 function RowTable<T>({
   items,
   onChange,
@@ -90,12 +103,32 @@ function RowTable<T>({
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
 
+  // A pointer drag only starts past a few pixels, so clicking the handle (or
+  // any button beside it) still registers as a click.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
   const update = (index: number, item: T) =>
     onChange(items.map((current, i) => (i === index ? item : current)))
 
   const remove = (index: number) => {
     onChange(items.filter((_, i) => i !== index))
     setRemoving(null)
+  }
+
+  function handleDragEnd({ active, over }: DragEndEvent) {
+    if (!over || active.id === over.id) return
+    const next = arrayMove(items, rowIndex(active.id), rowIndex(over.id))
+    onChange(next)
+    // The open editor follows its row rather than staying on whatever now sits
+    // at that position.
+    setEditing((current) =>
+      current === null ? null : next.indexOf(items[current])
+    )
   }
 
   // A new row is blank, so there is nothing to scan in the table — open it for
@@ -107,169 +140,232 @@ function RowTable<T>({
 
   const editingItem = editing === null ? undefined : items[editing]
   const removingItem = removing === null ? undefined : items[removing]
-  const span = columns.length + 1
+  // Columns plus the drag handle and the actions cell.
+  const span = columns.length + 2
+  const ids = items.map((_, index) => rowId(index))
 
   return (
-    <div className="space-y-3">
-      <AdminTable
-        headers={[
-          ...columns.map((column) => ({
-            label: column.header,
-            className: column.className,
-            tooltip: column.tooltip,
-          })),
-          { label: t("actions"), className: "w-px sr-only" },
-        ]}
-      >
-        {items.length === 0 && (
-          <AdminTableEmpty colSpan={span} label={emptyLabel ?? t("empty")} />
-        )}
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+      onDragEnd={handleDragEnd}
+      accessibility={{
+        screenReaderInstructions: { draggable: t("reorderInstructions") },
+        announcements: {
+          onDragStart: ({ active }) =>
+            t("reorderStarted", { position: rowIndex(active.id) + 1 }),
+          onDragOver: ({ over }) =>
+            over ? t("reorderMoved", { position: rowIndex(over.id) + 1 }) : "",
+          onDragEnd: ({ over }) =>
+            over
+              ? t("reorderEnded", { position: rowIndex(over.id) + 1 })
+              : t("reorderCancelled"),
+          onDragCancel: () => t("reorderCancelled"),
+        },
+      }}
+    >
+      <div className="space-y-3">
+        <AdminTable
+          headers={[
+            { label: t("reorder"), className: "w-px sr-only" },
+            ...columns.map((column) => ({
+              label: column.header,
+              className: column.className,
+              tooltip: column.tooltip,
+            })),
+            { label: t("actions"), className: "w-px sr-only" },
+          ]}
+        >
+          {items.length === 0 && (
+            <AdminTableEmpty colSpan={span} label={emptyLabel ?? t("empty")} />
+          )}
 
-        {items.map((item, index) => (
-          <Fragment key={index}>
-            <AdminTableRow>
-              {columns.map((column) => (
-                <td
-                  key={column.header}
-                  className={cn(adminCell, column.className)}
-                >
-                  {column.cell(item, index)}
-                </td>
-              ))}
-              <td className="px-2 py-1.5">
-                <div className="flex items-center justify-end gap-0.5">
-                  <button
-                    type="button"
-                    onClick={() => onChange(moveItem(items, index, index - 1))}
-                    disabled={index === 0}
-                    aria-label={t("moveUp")}
-                    className={cn(iconButton, "hover:bg-white")}
-                  >
-                    <ChevronUp className="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onChange(moveItem(items, index, index + 1))}
-                    disabled={index === items.length - 1}
-                    aria-label={t("moveDown")}
-                    className={cn(iconButton, "hover:bg-white")}
-                  >
-                    <ChevronDown className="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditing(editing === index ? null : index)}
-                    aria-label={t("edit")}
-                    aria-expanded={inDialog ? editing === index : undefined}
-                    className={cn(
-                      iconButton,
-                      "text-brand-plum hover:bg-white",
-                      inDialog && editing === index && "bg-white"
-                    )}
-                  >
-                    <Pencil className="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRemoving(index)}
-                    aria-label={t("remove")}
-                    className={cn(
-                      iconButton,
-                      "hover:bg-destructive/10 hover:text-destructive"
-                    )}
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-                </div>
-              </td>
-            </AdminTableRow>
-
-            {/* In-place editor, used instead of a dialog when this table is
-                itself inside one. */}
-            {inDialog && editing === index && (
-              <tr className="border-b border-border bg-muted/30 last:border-0">
-                <td colSpan={span} className="px-3 py-3">
-                  <div className="space-y-3">
-                    {renderRow(item, index, (next) => update(index, next))}
-                  </div>
-                </td>
-              </tr>
-            )}
-
-            {/* Likewise the delete confirmation: a second dialog over the first
-                would hide the list the row belongs to. */}
-            {inDialog && removing === index && (
-              <tr className="border-b border-border bg-destructive/5 last:border-0">
-                <td colSpan={span} className="px-3 py-2">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="text-[13px] text-muted-foreground">
-                      {t("removeRowMessage")}
-                    </span>
-                    <div className="flex items-center gap-2">
+          <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+            {items.map((item, index) => (
+              <Fragment key={index}>
+                <SortableRow id={rowId(index)}>
+                  {columns.map((column) => (
+                    <td
+                      key={column.header}
+                      className={cn(adminCell, column.className)}
+                    >
+                      {column.cell(item, index)}
+                    </td>
+                  ))}
+                  <td className="px-2 py-1.5">
+                    <div className="flex items-center justify-end gap-0.5">
                       <button
                         type="button"
-                        onClick={() => setRemoving(null)}
-                        className="inline-flex h-8 items-center rounded-full px-3 text-[13px] font-bold text-muted-foreground transition hover:bg-white"
+                        onClick={() =>
+                          setEditing(editing === index ? null : index)
+                        }
+                        aria-label={t("edit")}
+                        aria-expanded={inDialog ? editing === index : undefined}
+                        className={cn(
+                          iconButton,
+                          "text-brand-plum hover:bg-white",
+                          inDialog && editing === index && "bg-white"
+                        )}
                       >
-                        {t("cancel")}
+                        <Pencil className="size-4" />
                       </button>
                       <button
                         type="button"
-                        onClick={() => remove(index)}
-                        className="inline-flex h-8 items-center rounded-full bg-destructive px-3 text-[13px] font-extrabold text-white transition hover:brightness-110"
+                        onClick={() => setRemoving(index)}
+                        aria-label={t("remove")}
+                        className={cn(
+                          iconButton,
+                          "hover:bg-destructive/10 hover:text-destructive"
+                        )}
                       >
-                        {t("remove")}
+                        <Trash2 className="size-4" />
                       </button>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </Fragment>
-        ))}
-      </AdminTable>
+                  </td>
+                </SortableRow>
 
-      <button
-        type="button"
-        onClick={add}
-        className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border text-[14px] font-bold text-muted-foreground transition hover:border-primary hover:text-brand-plum"
-      >
-        <Plus className="size-4" />
-        {addLabel}
-      </button>
+                {/* In-place editor, used instead of a dialog when this table is
+                    itself inside one. */}
+                {inDialog && editing === index && (
+                  <tr className="border-b border-border bg-muted/30 last:border-0">
+                    <td colSpan={span} className="px-3 py-3">
+                      <div className="space-y-3">
+                        {renderRow(item, index, (next) => update(index, next))}
+                      </div>
+                    </td>
+                  </tr>
+                )}
 
-      {!inDialog && (
-        <>
-          <AdminModal
-            open={editingItem !== undefined}
-            onClose={() => setEditing(null)}
-            title={
-              editingItem !== undefined && editing !== null
-                ? editTitle(editingItem, editing)
-                : ""
-            }
-          >
-            {editingItem !== undefined &&
-              editing !== null &&
-              renderRow(editingItem, editing, (next) => update(editing, next))}
-          </AdminModal>
+                {/* Likewise the delete confirmation: a second dialog over the
+                    first would hide the list the row belongs to. */}
+                {inDialog && removing === index && (
+                  <tr className="border-b border-border bg-destructive/5 last:border-0">
+                    <td colSpan={span} className="px-3 py-2">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <span className="text-[13px] text-muted-foreground">
+                          {t("removeRowMessage")}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setRemoving(null)}
+                            className="inline-flex h-8 items-center rounded-full px-3 text-[13px] font-bold text-muted-foreground transition hover:bg-white"
+                          >
+                            {t("cancel")}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="inline-flex h-8 items-center rounded-full bg-destructive px-3 text-[13px] font-extrabold text-white transition hover:brightness-110"
+                          >
+                            {t("remove")}
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            ))}
+          </SortableContext>
+        </AdminTable>
 
-          <ConfirmModal
-            open={removingItem !== undefined}
-            onClose={() => setRemoving(null)}
-            onConfirm={() => removing !== null && remove(removing)}
-            title={
-              removingItem !== undefined && removing !== null
-                ? editTitle(removingItem, removing)
-                : ""
-            }
-            // A row leaves the list now but the deletion only reaches the
-            // database on publish, so this must not claim to be final.
-            message={t("removeRowMessage")}
-          />
-        </>
+        <button
+          type="button"
+          onClick={add}
+          className="flex h-10 w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border text-[14px] font-bold text-muted-foreground transition hover:border-primary hover:text-brand-plum"
+        >
+          <Plus className="size-4" />
+          {addLabel}
+        </button>
+
+        {!inDialog && (
+          <>
+            <AdminModal
+              open={editingItem !== undefined}
+              onClose={() => setEditing(null)}
+              title={
+                editingItem !== undefined && editing !== null
+                  ? editTitle(editingItem, editing)
+                  : ""
+              }
+            >
+              {editingItem !== undefined &&
+                editing !== null &&
+                renderRow(editingItem, editing, (next) =>
+                  update(editing, next)
+                )}
+            </AdminModal>
+
+            <ConfirmModal
+              open={removingItem !== undefined}
+              onClose={() => setRemoving(null)}
+              onConfirm={() => removing !== null && remove(removing)}
+              title={
+                removingItem !== undefined && removing !== null
+                  ? editTitle(removingItem, removing)
+                  : ""
+              }
+              // A row leaves the list now but the deletion only reaches the
+              // database on publish, so this must not claim to be final.
+              message={t("removeRowMessage")}
+            />
+          </>
+        )}
+      </div>
+    </DndContext>
+  )
+}
+
+/**
+ * One draggable row. The handle carries the drag listeners rather than the
+ * whole row, so the cells stay selectable and the buttons stay clickable.
+ */
+function SortableRow({
+  id,
+  children,
+}: {
+  id: string
+  children: React.ReactNode
+}) {
+  const t = useTranslations("admin.common")
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id })
+
+  return (
+    <tr
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cn(
+        "border-b border-border transition-colors last:border-0 hover:bg-muted/30",
+        isDragging && "relative z-10 bg-white shadow-md"
       )}
-    </div>
+    >
+      <td className="w-px ps-2">
+        <button
+          ref={setActivatorNodeRef}
+          type="button"
+          aria-label={t("reorder")}
+          {...attributes}
+          {...listeners}
+          className={cn(
+            iconButton,
+            "cursor-grab touch-none hover:bg-white active:cursor-grabbing"
+          )}
+        >
+          <GripVertical className="size-4" />
+        </button>
+      </td>
+      {children}
+    </tr>
   )
 }
 

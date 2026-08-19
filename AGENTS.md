@@ -121,6 +121,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
   save). It takes `columns` — the compact summary — alongside the `renderRow` editor
   that now renders inside the dialog. Adding a row opens its dialog straight away,
   since a blank row has nothing to show in the table.
+- Rows are reordered by dragging their handle, using **dnd-kit** (`@dnd-kit/core`,
+  `/sortable`, `/modifiers`, `/utilities`). Keep the `KeyboardSensor` wired: it is what
+  lets a keyboard user reorder (space to lift, arrows to move, space to drop) now that
+  the up/down buttons are gone, and the Hebrew announcements it reads come from
+  `admin.common.reorder*`. `DndContext` sits outside `<table>` and `SortableContext`
+  inside `<tbody>` on purpose — dnd-kit's live region renders inline by default, and a
+  `<div>` inside `<tbody>` is invalid HTML.
 - `components/admin/admin-table.tsx` holds only the chrome (`AdminTable`,
   `AdminTableRow`, `AdminTableEmpty`, `adminCell`). `RowTable` sits on it for draft
   arrays; the managers — branches, team, enquiries — sit on it directly because each of

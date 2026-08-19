@@ -39,7 +39,9 @@ const noop = {
 
 /**
  * Ordered rows as a compact table — the shape used for menu items, upgrades,
- * tiers and reviews. Press a row's pencil to open its full form in a dialog.
+ * tiers and reviews. Press a row's pencil to open its full form in a dialog,
+ * and drag its handle to reorder. The handle also works from the keyboard:
+ * space to lift, arrows to move, space to drop.
  */
 export const Default: Story = {
   render: () => <Example />,
