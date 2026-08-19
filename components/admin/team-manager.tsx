@@ -1,9 +1,16 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Plus, Trash2 } from "lucide-react"
+import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 
+import { AdminModal } from "@/components/admin/admin-modal"
+import {
+  adminCell,
+  AdminTable,
+  AdminTableEmpty,
+  AdminTableRow,
+} from "@/components/admin/admin-table"
 import {
   AdminCard,
   AdminField,
@@ -47,6 +54,7 @@ function TeamManager({
   locations: TeamLocation[]
 }) {
   const t = useTranslations("admin.team")
+  const common = useTranslations("admin.common")
   const [adding, setAdding] = useState(false)
 
   return (
@@ -72,10 +80,23 @@ function TeamManager({
         <NewMemberForm locations={locations} onDone={() => setAdding(false)} />
       )}
 
-      <div className="mt-5 space-y-4">
-        {members.map((member) => (
-          <MemberCard key={member.id} member={member} locations={locations} />
-        ))}
+      <div className="mt-5">
+        <AdminTable
+          headers={[
+            t("name"),
+            t("email"),
+            { label: t("role"), className: "w-36" },
+            { label: t("assignedLocations"), className: "w-48" },
+            { label: common("actions"), className: "w-px sr-only" },
+          ]}
+        >
+          {members.length === 0 && (
+            <AdminTableEmpty colSpan={5} label={common("empty")} />
+          )}
+          {members.map((member) => (
+            <MemberRow key={member.id} member={member} locations={locations} />
+          ))}
+        </AdminTable>
       </div>
     </div>
   )
@@ -242,7 +263,7 @@ function NewMemberForm({
   )
 }
 
-function MemberCard({
+function MemberRow({
   member,
   locations,
 }: {
@@ -253,6 +274,7 @@ function MemberCard({
   const common = useTranslations("admin.common")
   const [role, setRole] = useState(member.role)
   const [locationIds, setLocationIds] = useState(member.locationIds)
+  const [editing, setEditing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, start] = useTransition()
 
@@ -272,85 +294,111 @@ function MemberCard({
         )
     })
 
+  // Owners reach every branch, so listing branches for them would be a lie.
+  const branchNames =
+    role === "owner"
+      ? t("allLocations")
+      : locations
+          .filter((location) => locationIds.includes(location.id))
+          .map((location) => location.name)
+          .join(", ")
+
   return (
-    <AdminCard>
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="font-heading text-[18px] font-black text-brand-plum">
-            {member.name}
-            {member.isSelf && (
-              <span className="ms-2 rounded-full bg-muted px-2 py-0.5 text-[12px] font-bold text-muted-foreground">
-                {t("you")}
-              </span>
-            )}
-          </div>
-          <div
-            dir="ltr"
-            className="text-start text-[14px] text-muted-foreground"
-          >
-            {member.email}
-          </div>
-        </div>
-
-        <RolePicker
-          value={role}
-          onChange={(next) => {
-            setRole(next)
-            setLocationIds(next === "owner" ? [] : locationIds)
-          }}
-          className="w-44"
-        />
-
-        <PillButton
-          type="button"
-          size="md"
-          variant="outline"
-          onClick={save}
-          disabled={pending}
-        >
-          {pending ? common("saving") : t("update")}
-        </PillButton>
-
-        {!member.isSelf && (
+    <AdminTableRow>
+      <td className={adminCell}>
+        <span className="font-bold text-brand-plum">{member.name}</span>
+        {member.isSelf && (
+          <span className="ms-2 rounded-full bg-muted px-2 py-0.5 text-[12px] font-bold text-muted-foreground">
+            {t("you")}
+          </span>
+        )}
+      </td>
+      <td className={adminCell}>
+        <span dir="ltr" className="block text-start text-muted-foreground">
+          {member.email}
+        </span>
+      </td>
+      <td className={cn(adminCell, "w-36")}>
+        {role === "owner" ? t("owner") : t("manager")}
+      </td>
+      <td className={cn(adminCell, "w-48")}>
+        <span className="line-clamp-1 text-muted-foreground">
+          {branchNames || "—"}
+        </span>
+      </td>
+      <td className="px-2 py-1.5">
+        <div className="flex items-center justify-end gap-0.5">
           <button
             type="button"
-            disabled={pending}
-            onClick={() =>
-              start(async () => {
-                setError(null)
-                const result = await deleteTeamMember(member.id)
-                if (!result.ok)
-                  setError(
-                    result.error === "cannot-delete-self"
-                      ? t("cannotDeleteSelf")
-                      : result.error
-                  )
-              })
-            }
-            aria-label={t("delete")}
-            className="flex size-10 items-center justify-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+            onClick={() => setEditing(true)}
+            aria-label={common("edit")}
+            className="flex size-8 items-center justify-center rounded-lg text-brand-plum transition hover:bg-white"
           >
-            <Trash2 className="size-4" />
+            <Pencil className="size-4" />
           </button>
-        )}
-      </div>
-
-      {role === "manager" && (
-        <div className="mt-4">
-          <LocationPicker
-            locations={locations}
-            selected={locationIds}
-            onChange={setLocationIds}
-          />
+          {!member.isSelf && (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() =>
+                start(async () => {
+                  setError(null)
+                  const result = await deleteTeamMember(member.id)
+                  if (!result.ok)
+                    setError(
+                      result.error === "cannot-delete-self"
+                        ? t("cannotDeleteSelf")
+                        : result.error
+                    )
+                })
+              }
+              aria-label={t("delete")}
+              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
+            >
+              <Trash2 className="size-4" />
+            </button>
+          )}
         </div>
-      )}
 
-      {error && (
-        <p role="alert" className="mt-3 text-[14px] font-bold text-destructive">
-          {error}
-        </p>
-      )}
-    </AdminCard>
+        <AdminModal
+          open={editing}
+          onClose={() => setEditing(false)}
+          title={member.name}
+        >
+          <RolePicker
+            value={role}
+            onChange={(next) => {
+              setRole(next)
+              setLocationIds(next === "owner" ? [] : locationIds)
+            }}
+          />
+
+          {role === "manager" && (
+            <LocationPicker
+              locations={locations}
+              selected={locationIds}
+              onChange={setLocationIds}
+            />
+          )}
+
+          {error && (
+            <p role="alert" className="text-[14px] font-bold text-destructive">
+              {error}
+            </p>
+          )}
+
+          <PillButton
+            type="button"
+            size="md"
+            variant="outline"
+            onClick={save}
+            disabled={pending}
+          >
+            {pending ? common("saving") : t("update")}
+          </PillButton>
+        </AdminModal>
+      </td>
+    </AdminTableRow>
   )
 }
 

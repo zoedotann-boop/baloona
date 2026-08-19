@@ -7,29 +7,21 @@ import { useState, useTransition } from "react"
 import {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminToggle,
 } from "@/components/admin/admin-ui"
 import { LocalizedField } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
+import type { ReviewDraft } from "@/lib/admin/drafts"
 import { saveReviews } from "@/lib/actions/admin/content"
 import { syncGoogleReviews } from "@/lib/actions/admin/google-reviews"
-import type { ReviewSource } from "@/lib/db/schema"
-import { emptyLocalized, type Localized } from "@/lib/localized"
+import { emptyLocalized } from "@/lib/localized"
 
 interface ReviewsDraft {
   autoSync: boolean
-  reviews: {
-    id?: string
-    authorName: string
-    rating: number
-    text: Localized
-    isPublished: boolean
-    /** `YYYY-MM-DD`, what a date input round-trips. */
-    publishedAt: string
-    source: ReviewSource
-  }[]
+  reviews: ReviewDraft[]
 }
 
 /** ניהול ביקורות — hand-written reviews plus a Google Places import. */
@@ -53,6 +45,9 @@ function ReviewsForm({
     startSync(async () => {
       const result = await syncGoogleReviews({ slug })
       if (result.ok) {
+        // The sync already wrote to the database, so adopt what it returned
+        // rather than leaving the table showing the pre-sync list.
+        setDraft((current) => ({ ...current, reviews: result.reviews }))
         setSyncMessage(
           t("syncResult", {
             imported: result.imported,
@@ -125,7 +120,7 @@ function ReviewsForm({
       </AdminCard>
 
       <AdminCard>
-        <RowList
+        <RowTable
           items={draft.reviews}
           onChange={(reviews) => setDraft({ ...draft, reviews })}
           createItem={() => ({
@@ -134,19 +129,53 @@ function ReviewsForm({
             text: emptyLocalized(),
             isPublished: true,
             publishedAt: new Date().toISOString().slice(0, 10),
-            source: "manual" as ReviewSource,
+            source: "manual" as const,
           })}
           addLabel={t("addReview")}
           emptyLabel={common("empty")}
+          columns={[
+            {
+              header: t("author"),
+              cell: (review) => review.authorName,
+              className: "w-40",
+            },
+            {
+              header: t("rating"),
+              cell: (review) => "★".repeat(review.rating),
+              className: "w-24 text-brand-plum",
+            },
+            {
+              header: t("text"),
+              cell: (review) => (
+                <span className="line-clamp-1 text-muted-foreground">
+                  {review.text.he}
+                </span>
+              ),
+            },
+            {
+              header: t("date"),
+              cell: (review) => review.publishedAt,
+              className: "w-28 whitespace-nowrap",
+            },
+            {
+              header: t("source"),
+              cell: (review) =>
+                review.source === "google"
+                  ? t("sourceGoogle")
+                  : t("sourceManual"),
+              className: "w-24",
+            },
+            {
+              header: t("published"),
+              cell: (review) => (
+                <AdminFlag on={review.isPublished} label={t("published")} />
+              ),
+              className: "w-32",
+            },
+          ]}
+          editTitle={(review) => review.authorName || t("addReview")}
           renderRow={(review, _index, update) => (
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-muted px-2.5 py-0.5 text-[12px] font-black text-muted-foreground">
-                  {review.source === "google"
-                    ? t("sourceGoogle")
-                    : t("sourceManual")}
-                </span>
-              </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 <AdminField label={t("author")} tooltip={t("authorTip")}>
                   <AdminInput

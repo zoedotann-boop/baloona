@@ -107,8 +107,24 @@ This version has breaking changes — APIs, conventions, and file structure may 
   `server-only`, so client components import route constants from `lib/admin/routes.ts`.
 - Each section is one `<SectionForm>`: it holds the whole draft in state, publishes it
   in one action, and provides the language switch plus the AI translate shortcut
-  through context. Editable lists use `<RowList>`; order is the array order and
-  becomes `sortOrder` on save.
+  through context.
+- **Every admin page wears the same layout.** The title sits on one side of a sticky
+  header and every action — language switch, translate, publish, "add" — on the other.
+  Lists are tables, never stacks of cards: the table is the summary an editor scans and
+  a row's full form opens behind its pencil, in an `<AdminModal>`. That is what keeps a
+  section with twenty rows on one screen.
+- Editable lists use `<RowTable>` (order is the array order and becomes `sortOrder` on
+  save). It takes `columns` — the compact summary — alongside the `renderRow` editor
+  that now renders inside the dialog. Adding a row opens its dialog straight away,
+  since a blank row has nothing to show in the table.
+- `components/admin/admin-table.tsx` holds only the chrome (`AdminTable`,
+  `AdminTableRow`, `AdminTableEmpty`, `adminCell`). `RowTable` sits on it for draft
+  arrays; the managers — branches, team, enquiries — sit on it directly because each of
+  their rows is its own server action rather than part of one publish.
+- `<AdminModal>` is the native `<dialog>`, so focus trapping, Escape and the backdrop
+  come from the platform. It has no save button: it edits the draft in place and the
+  header publishes. Note it renders inside the section's `<form>`, so it suppresses
+  Enter to stop a stray keystroke publishing the page.
 - Every editable field explains itself. Pass `tooltip` to `AdminField` /
   `LocalizedField` / `LocalizedListField` / `ImageField` and it renders an
   `<InfoTooltip>` info icon beside the label (hover or keyboard focus reveals it).

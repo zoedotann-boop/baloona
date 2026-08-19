@@ -104,24 +104,22 @@ export function SectionForm<T>({
   return (
     <Context.Provider value={{ slug, locale }}>
       <form onSubmit={submit}>
-        <header className="mb-6">
-          <h1 className="font-heading text-[28px] font-black text-brand-plum">
-            {title}
-          </h1>
-          {description && (
-            <p className="mt-1 text-[15px] text-muted-foreground">
-              {description}
-            </p>
-          )}
-        </header>
+        {/* Title on one side, every action on the other. Sticky so publishing
+            stays one click away on a long section, and stretched past the
+            content gutter so it covers what scrolls underneath it. */}
+        <header className="sticky top-0 z-30 -mx-4 -mt-6 mb-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-b border-border bg-white/95 px-4 pt-6 pb-3 backdrop-blur md:-mx-6 md:px-6">
+          <div className="min-w-0">
+            <h1 className="font-heading text-[24px] font-black text-brand-plum">
+              {title}
+            </h1>
+            {description && (
+              <p className="mt-0.5 text-[14px] text-muted-foreground">
+                {description}
+              </p>
+            )}
+          </div>
 
-        <div className="space-y-5">{children}</div>
-
-        {/* Publish bar. Sticky rather than fixed: it pins to the bottom of the
-            content column while there is more form below, then settles at the
-            end — and it needs no knowledge of the sidebar's width. */}
-        <div className="sticky bottom-0 z-30 -mx-6 mt-5 -mb-8 border-t border-border bg-white/95 backdrop-blur">
-          <div className="flex flex-wrap items-center gap-3 px-6 py-3">
+          <div className="flex flex-wrap items-center gap-2">
             <div
               className="flex items-center gap-1 rounded-full bg-muted p-1"
               role="group"
@@ -170,16 +168,13 @@ export function SectionForm<T>({
               </span>
             )}
 
-            <PillButton
-              type="submit"
-              size="md"
-              disabled={saving}
-              className="ms-auto"
-            >
+            <PillButton type="submit" size="md" disabled={saving}>
               {saving ? t("saving") : t("save")}
             </PillButton>
           </div>
-        </div>
+        </header>
+
+        <div className="space-y-5 pb-10">{children}</div>
       </form>
     </Context.Provider>
   )

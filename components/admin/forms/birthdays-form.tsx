@@ -6,6 +6,7 @@ import { useState } from "react"
 import {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminSelect,
   AdminToggle,
@@ -15,7 +16,7 @@ import {
   LocalizedField,
   LocalizedListField,
 } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { saveBirthdays } from "@/lib/actions/admin/content"
 import type { FormFieldType } from "@/lib/db/schema"
@@ -178,7 +179,7 @@ function BirthdaysForm({
             value={draft.content.stepsNote}
             onChange={(value) => content("stepsNote", value)}
           />
-          <RowList
+          <RowTable
             items={draft.steps}
             onChange={(steps) => setDraft((d) => ({ ...d, steps }))}
             createItem={() => ({
@@ -188,6 +189,18 @@ function BirthdaysForm({
             })}
             addLabel={t("addStep")}
             emptyLabel={common("empty")}
+            columns={[
+              { header: t("stepTitle"), cell: (step) => step.title.he },
+              {
+                header: t("stepSubtitle"),
+                cell: (step) => (
+                  <span className="line-clamp-1 text-muted-foreground">
+                    {step.subtitle.he}
+                  </span>
+                ),
+              },
+            ]}
+            editTitle={(step) => step.title.he || t("addStep")}
             renderRow={(step, _index, update) => (
               <div className="space-y-3">
                 <LocalizedField
@@ -261,7 +274,7 @@ function BirthdaysForm({
             <div className="mb-2 text-[13px] font-bold text-brand-plum">
               {t("packageLines")}
             </div>
-            <RowList
+            <RowTable
               items={draft.packageLines}
               onChange={(packageLines) =>
                 setDraft((d) => ({ ...d, packageLines }))
@@ -269,6 +282,10 @@ function BirthdaysForm({
               createItem={() => ({ text: emptyLocalized() })}
               addLabel={t("addLine")}
               emptyLabel={common("empty")}
+              columns={[
+                { header: t("lineText"), cell: (line) => line.text.he },
+              ]}
+              editTitle={(line) => line.text.he || t("addLine")}
               renderRow={(line, _index, update) => (
                 <LocalizedField
                   label={t("lineText")}
@@ -290,7 +307,7 @@ function BirthdaysForm({
             value={draft.content.upgradesTitle}
             onChange={(value) => content("upgradesTitle", value)}
           />
-          <RowList
+          <RowTable
             items={draft.upgrades}
             onChange={(upgrades) => setDraft((d) => ({ ...d, upgrades }))}
             createItem={() => ({
@@ -300,6 +317,25 @@ function BirthdaysForm({
             })}
             addLabel={t("addUpgrade")}
             emptyLabel={common("empty")}
+            columns={[
+              {
+                header: t("upgradeLabel"),
+                cell: (upgrade) => upgrade.label.he,
+              },
+              {
+                header: t("upgradeAmount"),
+                cell: (upgrade) => upgrade.amount,
+                className: "w-24",
+              },
+              {
+                header: t("fieldVisible"),
+                cell: (upgrade) => (
+                  <AdminFlag on={upgrade.isVisible} label={t("fieldVisible")} />
+                ),
+                className: "w-32",
+              },
+            ]}
+            editTitle={(upgrade) => upgrade.label.he || t("addUpgrade")}
             renderRow={(upgrade, _index, update) => (
               <div className="space-y-3">
                 <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
@@ -428,7 +464,7 @@ function BirthdaysForm({
       </AdminCard>
 
       <AdminCard title={t("fieldsTitle")} description={t("fieldsDescription")}>
-        <RowList
+        <RowTable
           items={draft.formFields}
           onChange={(formFields) => setDraft((d) => ({ ...d, formFields }))}
           createItem={() => ({
@@ -442,6 +478,44 @@ function BirthdaysForm({
           })}
           addLabel={t("addField")}
           emptyLabel={common("empty")}
+          columns={[
+            {
+              header: t("fieldLabel"),
+              cell: (field) => field.label.he,
+            },
+            {
+              header: t("fieldKey"),
+              cell: (field) => (
+                <span
+                  dir="ltr"
+                  className="block text-start text-muted-foreground"
+                >
+                  {field.key}
+                </span>
+              ),
+              className: "w-36",
+            },
+            {
+              header: t("fieldType"),
+              cell: (field) => field.type,
+              className: "w-24",
+            },
+            {
+              header: t("fieldRequired"),
+              cell: (field) => (
+                <AdminFlag on={field.isRequired} label={t("fieldRequired")} />
+              ),
+              className: "w-28",
+            },
+            {
+              header: t("fieldVisible"),
+              cell: (field) => (
+                <AdminFlag on={field.isVisible} label={t("fieldVisible")} />
+              ),
+              className: "w-28",
+            },
+          ]}
+          editTitle={(field) => field.label.he || t("addField")}
           renderRow={(field, _index, update) => (
             <div className="space-y-3">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -490,11 +564,29 @@ function BirthdaysForm({
                   <div className="mb-2 text-[13px] font-bold text-brand-plum">
                     {t("fieldOptions")}
                   </div>
-                  <RowList
+                  <RowTable
                     items={field.options}
                     onChange={(options) => update({ ...field, options })}
                     createItem={() => ({ value: "", label: emptyLocalized() })}
                     addLabel={t("addOption")}
+                    columns={[
+                      {
+                        header: t("optionValue"),
+                        cell: (option) => (
+                          <span dir="ltr" className="block text-start">
+                            {option.value}
+                          </span>
+                        ),
+                        className: "w-40",
+                      },
+                      {
+                        header: t("optionLabel"),
+                        cell: (option) => option.label.he,
+                      },
+                    ]}
+                    editTitle={(option) =>
+                      option.label.he || option.value || common("add")
+                    }
                     renderRow={(option, _optionIndex, updateOption) => (
                       <div className="grid gap-3 sm:grid-cols-2">
                         <AdminField

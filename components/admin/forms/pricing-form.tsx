@@ -6,6 +6,7 @@ import { useState } from "react"
 import {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminToggle,
 } from "@/components/admin/admin-ui"
@@ -13,7 +14,7 @@ import {
   LocalizedField,
   LocalizedListField,
 } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { savePricing } from "@/lib/actions/admin/content"
 import {
@@ -83,7 +84,7 @@ function PricingForm({
       </AdminCard>
 
       <AdminCard title={t("tiers")}>
-        <RowList
+        <RowTable
           items={draft.tiers}
           onChange={(tiers) => setDraft((d) => ({ ...d, tiers }))}
           createItem={() => ({
@@ -94,6 +95,30 @@ function PricingForm({
           })}
           addLabel={t("addTier")}
           emptyLabel={common("empty")}
+          columns={[
+            { header: t("tierTitle"), cell: (tier) => tier.title.he },
+            {
+              header: t("tierSubtitle"),
+              cell: (tier) => (
+                <span className="line-clamp-1 text-muted-foreground">
+                  {tier.subtitle.he}
+                </span>
+              ),
+            },
+            {
+              header: common("items"),
+              cell: (tier) => tier.rows.length,
+              className: "w-24",
+            },
+            {
+              header: t("featured"),
+              cell: (tier) => (
+                <AdminFlag on={tier.isFeatured} label={t("featured")} />
+              ),
+              className: "w-28",
+            },
+          ]}
+          editTitle={(tier) => tier.title.he || t("addTier")}
           renderRow={(tier, _index, update) => (
             <div className="space-y-3">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -115,11 +140,20 @@ function PricingForm({
                 checked={tier.isFeatured}
                 onChange={(isFeatured) => update({ ...tier, isFeatured })}
               />
-              <RowList
+              <RowTable
                 items={tier.rows}
                 onChange={(rows) => update({ ...tier, rows })}
                 createItem={() => ({ label: emptyLocalized(), amount: 0 })}
                 addLabel={t("addRow")}
+                columns={[
+                  { header: t("rowLabel"), cell: (row) => row.label.he },
+                  {
+                    header: t("rowAmount"),
+                    cell: (row) => row.amount,
+                    className: "w-24",
+                  },
+                ]}
+                editTitle={(row) => row.label.he || t("addRow")}
                 renderRow={(row, _rowIndex, updateRow) => (
                   <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">
                     <LocalizedField

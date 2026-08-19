@@ -187,9 +187,37 @@ function AdminToggle({
   )
 }
 
+/**
+ * Compact on/off marker for a table cell.
+ *
+ * A row's toggles live in its dialog, so the table needs to say "is this live?"
+ * in the width of a word rather than repeat the switch.
+ */
+function AdminFlag({ on, label }: { on: boolean; label: string }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[12px] font-bold whitespace-nowrap",
+        on
+          ? "bg-brand-green/15 text-brand-green"
+          : "bg-muted text-muted-foreground"
+      )}
+    >
+      <span
+        className={cn(
+          "size-1.5 rounded-full",
+          on ? "bg-brand-green" : "bg-muted-foreground/50"
+        )}
+      />
+      {label}
+    </span>
+  )
+}
+
 export {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminSelect,
   AdminTextarea,

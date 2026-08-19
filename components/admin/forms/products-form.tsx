@@ -6,11 +6,12 @@ import { useState } from "react"
 import {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminToggle,
 } from "@/components/admin/admin-ui"
 import { LocalizedField } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { saveProducts } from "@/lib/actions/admin/shop"
 import { emptyLocalized, type Localized } from "@/lib/localized"
@@ -48,7 +49,7 @@ function ProductsForm({
       onSave={(value) => saveProducts({ slug, ...value })}
     >
       <AdminCard title={t("products")}>
-        <RowList
+        <RowTable
           items={draft.products}
           onChange={(products) => setDraft({ products })}
           createItem={() => ({
@@ -60,6 +61,34 @@ function ProductsForm({
           })}
           addLabel={t("addProduct")}
           emptyLabel={common("empty")}
+          columns={[
+            { header: t("name"), cell: (product) => product.name.he },
+            {
+              header: t("entries"),
+              cell: (product) => product.entries,
+              className: "w-24",
+            },
+            {
+              header: t("price"),
+              cell: (product) => product.price,
+              className: "w-24",
+            },
+            {
+              header: t("active"),
+              cell: (product) => (
+                <AdminFlag on={product.isActive} label={t("active")} />
+              ),
+              className: "w-28",
+            },
+            {
+              header: t("featured"),
+              cell: (product) => (
+                <AdminFlag on={product.isFeatured} label={t("featured")} />
+              ),
+              className: "w-28",
+            },
+          ]}
+          editTitle={(product) => product.name.he || t("addProduct")}
           renderRow={(product, _index, update) => (
             <div className="space-y-3">
               <LocalizedField

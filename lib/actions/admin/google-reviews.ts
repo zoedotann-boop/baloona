@@ -1,19 +1,19 @@
 "use server"
 
-import { eq } from "drizzle-orm"
+import { asc, eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { requireLocationAccess } from "@/lib/admin/access"
+import { toReviewDraft, type ReviewDraft } from "@/lib/admin/drafts"
 import { db } from "@/lib/db"
-import { siteSettings } from "@/lib/db/schema"
-import {
-  syncLocationReviews,
-  type ReviewSyncResult,
-} from "@/lib/google/sync-reviews"
+import { reviews, siteSettings } from "@/lib/db/schema"
+import { syncLocationReviews } from "@/lib/google/sync-reviews"
 
 const schema = z.object({ slug: z.string().min(1) })
 
-export type SyncResult = ReviewSyncResult
+export type SyncResult =
+  | { ok: true; imported: number; updated: number; reviews: ReviewDraft[] }
+  | { ok: false; error: string }
 
 /**
  * The admin's "sync now" button.
@@ -22,6 +22,10 @@ export type SyncResult = ReviewSyncResult
  * site, and Google is only a source, not the publisher. The nightly cron
  * (`/api/cron/google-reviews`) runs the same sync with auto-publish on for
  * branches that opted in.
+ *
+ * The sync writes straight to the database, which would leave the open form
+ * showing a stale list — so the refreshed rows come back with the result and
+ * the table re-renders on what was actually imported.
  */
 export async function syncGoogleReviews(
   input: z.input<typeof schema>
@@ -36,8 +40,16 @@ export async function syncGoogleReviews(
   })
   if (!settings?.googlePlaceId) return { ok: false, error: "missing-place-id" }
 
-  return syncLocationReviews({
+  const result = await syncLocationReviews({
     locationId: location.id,
     placeId: settings.googlePlaceId,
   })
+  if (!result.ok) return result
+
+  const rows = await db.query.reviews.findMany({
+    where: eq(reviews.locationId, location.id),
+    orderBy: (row) => [asc(row.sortOrder)],
+  })
+
+  return { ...result, reviews: rows.map(toReviewDraft) }
 }
