@@ -53,6 +53,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   prices, menu, reviews and SEO are admin-editable rows. Button labels, aria-labels,
   weekday names and admin UI strings stay in `messages/he.json` / `en.json` and are
   read with `useTranslations`. Never hard-code either kind in a component.
+- **A new branch seeds no reviews, and a review is never translated.** Everything else
+  in `seed-content.ts` is generic Baloona copy an editor rewrites, but a review is a
+  statement attributed to a named customer — inventing one, or rewording it into another
+  language, puts words in a stranger's mouth on a live site. `review.text` is therefore a
+  plain column rather than `localized()`, shown as-is in every locale, and the reviews
+  section renders nothing until real reviews are written or synced.
 - **Translatable values are `jsonb` `{ he, en }`** (`Localized`) or `{ he: string[] }`
   (`LocalizedList`). Hebrew is the source language; read through `pickLocale` /
   `pickLocaleList` so a missing translation falls back to Hebrew.
@@ -107,13 +113,61 @@ This version has breaking changes — APIs, conventions, and file structure may 
   `server-only`, so client components import route constants from `lib/admin/routes.ts`.
 - Each section is one `<SectionForm>`: it holds the whole draft in state, publishes it
   in one action, and provides the language switch plus the AI translate shortcut
-  through context. Editable lists use `<RowList>`; order is the array order and
-  becomes `sortOrder` on save.
+  through context.
+- **Every admin page wears the same layout.** The title sits on one side of a sticky
+  header and every action — language switch, translate, publish, "add" — on the other.
+  Lists are tables, never stacks of cards: the table is the summary an editor scans and
+  a row's full form opens behind its pencil, in an `<AdminModal>`. That is what keeps a
+  section with twenty rows on one screen.
+- Editable lists use `<RowTable>` (order is the array order and becomes `sortOrder` on
+  save). It takes `columns` — the compact summary — alongside the `renderRow` editor
+  that now renders inside the dialog. Adding a row opens its dialog straight away,
+  since a blank row has nothing to show in the table.
+- Rows are reordered by dragging their handle, using **dnd-kit** (`@dnd-kit/core`,
+  `/sortable`, `/modifiers`, `/utilities`). Keep the `KeyboardSensor` wired: it is what
+  lets a keyboard user reorder (space to lift, arrows to move, space to drop) now that
+  the up/down buttons are gone, and the Hebrew announcements it reads come from
+  `admin.common.reorder*`. `DndContext` sits outside `<table>` and `SortableContext`
+  inside `<tbody>` on purpose — dnd-kit's live region renders inline by default, and a
+  `<div>` inside `<tbody>` is invalid HTML.
+- `components/admin/admin-table.tsx` holds only the chrome (`AdminTable`,
+  `AdminTableRow`, `AdminTableEmpty`, `adminCell`). `RowTable` sits on it for draft
+  arrays; the managers — branches, team, enquiries — sit on it directly because each of
+  their rows is its own server action rather than part of one publish.
+- `<AdminDialog>` wraps the native `<dialog>`, so focus trapping, Escape, the backdrop
+  and stacking come from the platform. It also closes on a backdrop click and swallows
+  Enter — these render inside a section's `<form>`, where a stray keystroke would
+  otherwise publish the page. Two things build on it:
+  - `<AdminModal>` — a row's full form. No save button: it edits the draft in place and
+    the header publishes, so closing is always safe.
+  - **Never open a dialog from inside a dialog.** `AdminDialog` marks its subtree, and
+    `useInDialog()` reads it, so a component decides for itself rather than every call
+    site remembering. `RowTable` uses this: at the top of a section a row opens in a
+    dialog, and inside one (a tier's rows, a category's items, a field's options) the
+    same `renderRow` expands in place under the row, delete confirmation included.
+  - `<ConfirmModal>` — "are you sure?" before anything destructive. **Every delete in
+    the admin goes through it; there are no `window.confirm()` calls left.** The caller
+    passes the message because the consequence differs: a row removed from a draft list
+    is undone by not publishing (`removeRowMessage`), while deleting a branch, team
+    member, enquiry or punch card is immediate (`removeNowMessage`). Cancel takes focus,
+    so Enter on an accidental open backs out.
 - Every editable field explains itself. Pass `tooltip` to `AdminField` /
-  `LocalizedField` / `LocalizedListField` / `ImageField` and it renders an
-  `<InfoTooltip>` info icon beside the label (hover or keyboard focus reveals it).
-  Copy lives in `messages/*.json` under the section, keyed `<field>Tip`; keep `he`
-  and `en` in sync.
+  `LocalizedField` / `LocalizedListField` / `ImageField` / a table column and it
+  renders an `<InfoTooltip>` info icon beside the label or column header (hover or
+  keyboard focus reveals it). Copy lives in `messages/*.json` under the section, keyed
+  `<field>Tip`; keep `he` and `en` in sync. A missing key throws at runtime, so check
+  the key exists before wiring a new tooltip.
+- **Action results are toasts, not inline text.** `useToast()` (provided by `AdminShell`,
+  so every dashboard page has it) reports "published", "synced" and their failures. Two
+  things deliberately stay inline: an error bound to a field the editor is fixing
+  (`slug-taken`, `email-taken`, a failed upload, the login error), and **anything raised
+  inside an `AdminDialog`** — a native `<dialog>` sits in the browser's top layer, above
+  any z-index, so a toast fired from one would be hidden behind it.
+- **The admin is deliberately dense.** It is a tool, not a landing page: cards are
+  `p-4` with 16px headings, table cells `py-1.5`, controls `h-10`, sidebar rows `h-8`.
+  Change these in the shared components (`admin-ui`, `admin-table`, `section-form`,
+  `admin-shell`) so every page moves together — never by adding spacing overrides to
+  one form.
 - Saving a list submits the whole array. `syncCollection` in
   `lib/actions/admin/shared.ts` turns that snapshot into inserts, updates and deletes.
 - The birthday booking form is editor-defined: `birthday_form_field` rows compile to a
@@ -133,7 +187,31 @@ See `.env.example`.
   dev falls back to local disk (`public/uploads`, PUT to `app/api/admin/media/[...key]`).
 - **Gemini** — drafts translations for the "מלא עם AI" buttons. Output is always
   editable, never published blind.
-- **Google Places** — imports reviews per branch, unpublished, for an editor to approve.
+- **SerpApi** — imports Google reviews per branch, through SerpApi's Google Maps Reviews
+  API rather than Google's own Places API: Places caps a response at five reviews and
+  needs a billed Google Cloud project, while SerpApi takes the same Place ID we already
+  store and returns eight. `lib/google/serpapi.ts` fetches exactly one page and never
+  paginates — one sync is one billed search, which is what keeps a nightly branch inside
+  the free tier of 250 searches a month. Don't add `num`: SerpApi rejects it on a first
+  page, which always returns 8.
+- **A review's text is not translatable** — `review.text` is a plain column, not
+  `localized()`, and is shown as-is in every locale. It is someone else's words, so
+  there is nothing to translate into: a machine translation under a real person's name
+  would be putting words in their mouth. Same principle as seeding no reviews at all.
+- `lib/google/sync-reviews.ts` is the one sync implementation, matching on Google's
+  review id so a re-sync refreshes wording in place
+  and never overrules an editor's publish decision on a review that already exists.
+  Two callers — the admin's "סנכרון עכשיו" button and the nightly cron
+  `app/api/cron/google-reviews` — and both publish the same way, so pressing the button
+  never produces a different site than waiting for the job would. That behaviour is the
+  branch's own `site_setting.google_reviews_auto_sync` (toggled in ניהול ביקורות,
+  currently Kiryat Ono alone): off, imports arrive unpublished for an editor to approve;
+  on, 4-star-and-up reviews go live on import because nobody is standing by. The schedule lives in `vercel.json`; `CRON_SECRET` is the
+  bearer token Vercel sends, and without it the endpoint 401s rather than running open.
+- Because that cron publishes unattended, the home page reviews section caps itself at
+  `HOME_REVIEWS_LIMIT` (`lib/db/queries/site.ts`) — otherwise the masonry would gain a
+  few cards every night, forever. Ordering is `sortOrder` then newest, so an editor can
+  still pin a favourite above the synced ones.
 
 ## Code quality
 

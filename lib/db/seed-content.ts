@@ -530,32 +530,15 @@ export const galleryImageRows = [
   },
 ]
 
-export const reviewRows = [
-  {
-    authorName: "מיכל ל.",
-    rating: 5,
-    text: l(
-      "המקום מהמם, הילדים לא רצו לצאת! נקי, בטוח והצוות פשוט מקסים. כבר קבענו יום הולדת.",
-      "The place is amazing, the kids didn't want to leave! Clean, safe and the staff are simply lovely. We already booked a birthday."
-    ),
-  },
-  {
-    authorName: "דנה כ.",
-    rating: 5,
-    text: l(
-      "סוף סוף מקום שגם ההורים נהנים בו. הקפה מעולה והילדים משתוללים בבטחה. ממליצה בחום!",
-      "Finally a place parents enjoy too. The coffee is great and the kids play safely. Highly recommend!"
-    ),
-  },
-  {
-    authorName: "יוסי א.",
-    rating: 5,
-    text: l(
-      "חגגנו יום הולדת לבן והכל היה מושלם — חדר פרטי, פיצה וטקס עוגה. תודה לצוות בלונה!",
-      "We celebrated our son's birthday and everything was perfect — private room, pizza and a cake ceremony. Thank you, Baloona team!"
-    ),
-  },
-]
+/*
+ * There are deliberately no starter reviews.
+ *
+ * Every other row here is generic copy about Baloona that an editor rewrites.
+ * A review is different in kind: it is a statement attributed to a named
+ * customer, and inventing one puts words in a stranger's mouth on a live site.
+ * A new branch starts with an empty reviews section — which renders nothing —
+ * until real ones are written in ניהול ביקורות or synced from Google.
+ */
 
 export const announcementContent = {
   isActive: false,

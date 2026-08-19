@@ -7,28 +7,21 @@ import { useState, useTransition } from "react"
 import {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
+  AdminTextarea,
   AdminToggle,
 } from "@/components/admin/admin-ui"
-import { LocalizedField } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
+import { useToast } from "@/components/admin/toast"
+import type { ReviewDraft } from "@/lib/admin/drafts"
 import { saveReviews } from "@/lib/actions/admin/content"
 import { syncGoogleReviews } from "@/lib/actions/admin/google-reviews"
-import type { ReviewSource } from "@/lib/db/schema"
-import { emptyLocalized, type Localized } from "@/lib/localized"
 
 interface ReviewsDraft {
-  reviews: {
-    id?: string
-    authorName: string
-    rating: number
-    text: Localized
-    isPublished: boolean
-    /** `YYYY-MM-DD`, what a date input round-trips. */
-    publishedAt: string
-    source: ReviewSource
-  }[]
+  autoSync: boolean
+  reviews: ReviewDraft[]
 }
 
 /** ניהול ביקורות — hand-written reviews plus a Google Places import. */
@@ -43,16 +36,18 @@ function ReviewsForm({
 }) {
   const t = useTranslations("admin.reviews")
   const common = useTranslations("admin.common")
+  const toast = useToast()
   const [draft, setDraft] = useState(initial)
-  const [syncMessage, setSyncMessage] = useState<string | null>(null)
   const [syncing, startSync] = useTransition()
 
   function sync() {
-    setSyncMessage(null)
     startSync(async () => {
       const result = await syncGoogleReviews({ slug })
       if (result.ok) {
-        setSyncMessage(
+        // The sync already wrote to the database, so adopt what it returned
+        // rather than leaving the table showing the pre-sync list.
+        setDraft((current) => ({ ...current, reviews: result.reviews }))
+        toast(
           t("syncResult", {
             imported: result.imported,
             updated: result.updated,
@@ -60,12 +55,13 @@ function ReviewsForm({
         )
         return
       }
-      setSyncMessage(
+      toast(
         result.error === "missing-place-id"
           ? t("syncMissingPlaceId")
           : result.error === "missing-key"
             ? t("syncMissingKey")
-            : t("syncError")
+            : t("syncError"),
+        "error"
       )
     })
   }
@@ -80,6 +76,7 @@ function ReviewsForm({
       onSave={(value) =>
         saveReviews({
           slug,
+          autoSync: value.autoSync,
           reviews: value.reviews.map(
             ({ source: _source, ...review }) => review
           ),
@@ -87,55 +84,95 @@ function ReviewsForm({
       }
     >
       <AdminCard title={t("googleTitle")} description={t("googleDescription")}>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           <button
             type="button"
             onClick={sync}
             disabled={syncing || !hasPlaceId}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-border px-4 text-[14px] font-bold text-brand-plum transition hover:bg-muted disabled:opacity-50"
+            className="inline-flex h-9 items-center gap-2 rounded-full border border-border px-3.5 text-[13px] font-bold text-brand-plum transition hover:bg-muted disabled:opacity-50"
           >
             <RefreshCw className="size-4" />
             {syncing ? t("syncing") : t("sync")}
           </button>
+
+          <AdminToggle
+            label={t("autoSync")}
+            tooltip={t("autoSyncTip")}
+            checked={draft.autoSync}
+            onChange={(autoSync) => setDraft({ ...draft, autoSync })}
+          />
+
           {!hasPlaceId && (
-            <span className="text-[14px] text-muted-foreground">
+            <span className="text-[13px] text-muted-foreground">
               {t("syncMissingPlaceId")}
-            </span>
-          )}
-          {syncMessage && (
-            <span
-              role="status"
-              className="text-[14px] font-bold text-brand-plum"
-            >
-              {syncMessage}
             </span>
           )}
         </div>
       </AdminCard>
 
       <AdminCard>
-        <RowList
+        <RowTable
           items={draft.reviews}
-          onChange={(reviews) => setDraft({ reviews })}
+          onChange={(reviews) => setDraft({ ...draft, reviews })}
           createItem={() => ({
             authorName: "",
             rating: 5,
-            text: emptyLocalized(),
+            text: "",
             isPublished: true,
             publishedAt: new Date().toISOString().slice(0, 10),
-            source: "manual" as ReviewSource,
+            source: "manual" as const,
           })}
           addLabel={t("addReview")}
           emptyLabel={common("empty")}
+          columns={[
+            {
+              header: t("author"),
+              tooltip: t("authorTip"),
+              cell: (review) => review.authorName,
+              className: "w-40",
+            },
+            {
+              header: t("rating"),
+              tooltip: t("ratingTip"),
+              cell: (review) => "★".repeat(review.rating),
+              className: "w-24 text-brand-plum",
+            },
+            {
+              header: t("text"),
+              tooltip: t("textTip"),
+              cell: (review) => (
+                <span className="line-clamp-1 text-muted-foreground">
+                  {review.text}
+                </span>
+              ),
+            },
+            {
+              header: t("date"),
+              tooltip: t("dateTip"),
+              cell: (review) => review.publishedAt,
+              className: "w-28 whitespace-nowrap",
+            },
+            {
+              header: t("source"),
+              tooltip: t("sourceTip"),
+              cell: (review) =>
+                review.source === "google"
+                  ? t("sourceGoogle")
+                  : t("sourceManual"),
+              className: "w-24",
+            },
+            {
+              header: t("published"),
+              tooltip: t("publishedTip"),
+              cell: (review) => (
+                <AdminFlag on={review.isPublished} label={t("published")} />
+              ),
+              className: "w-32",
+            },
+          ]}
+          editTitle={(review) => review.authorName || t("addReview")}
           renderRow={(review, _index, update) => (
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="rounded-full bg-muted px-2.5 py-0.5 text-[12px] font-black text-muted-foreground">
-                  {review.source === "google"
-                    ? t("sourceGoogle")
-                    : t("sourceManual")}
-                </span>
-              </div>
               <div className="grid gap-3 sm:grid-cols-3">
                 <AdminField label={t("author")} tooltip={t("authorTip")}>
                   <AdminInput
@@ -169,13 +206,15 @@ function ReviewsForm({
                   />
                 </AdminField>
               </div>
-              <LocalizedField
-                label={t("text")}
-                tooltip={t("textTip")}
-                multiline
-                value={review.text}
-                onChange={(text) => update({ ...review, text })}
-              />
+              <AdminField label={t("text")} tooltip={t("textTip")}>
+                <AdminTextarea
+                  rows={4}
+                  value={review.text}
+                  onChange={(event) =>
+                    update({ ...review, text: event.target.value })
+                  }
+                />
+              </AdminField>
               <AdminToggle
                 label={t("published")}
                 checked={review.isPublished}
