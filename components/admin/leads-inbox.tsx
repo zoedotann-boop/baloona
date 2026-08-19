@@ -5,6 +5,7 @@ import { Eye, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 
 import { AdminModal } from "@/components/admin/admin-modal"
+import { ConfirmModal } from "@/components/admin/confirm-modal"
 import {
   adminCell,
   AdminTable,
@@ -47,6 +48,7 @@ function LeadsInbox({ slug, leads }: { slug: string; leads: InboxLead[] }) {
   const common = useTranslations("admin.common")
   const [filter, setFilter] = useState<LeadStatus | "all">("all")
   const [openLead, setOpenLead] = useState<string | null>(null)
+  const [removingLead, setRemovingLead] = useState<string | null>(null)
   const [pending, start] = useTransition()
 
   const visible =
@@ -177,17 +179,26 @@ function LeadsInbox({ slug, leads }: { slug: string; leads: InboxLead[] }) {
                 <button
                   type="button"
                   disabled={pending}
-                  onClick={() =>
-                    start(async () => {
-                      await deleteLead({ slug, leadId: lead.id })
-                    })
-                  }
+                  onClick={() => setRemovingLead(lead.id)}
                   aria-label={t("delete")}
                   className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
                 >
                   <Trash2 className="size-4" />
                 </button>
               </div>
+
+              <ConfirmModal
+                open={removingLead === lead.id}
+                onClose={() => setRemovingLead(null)}
+                onConfirm={() =>
+                  start(async () => {
+                    await deleteLead({ slug, leadId: lead.id })
+                  })
+                }
+                title={lead.fullName || t("kindContact")}
+                message={common("removeNowMessage")}
+                confirmLabel={t("delete")}
+              />
 
               <AdminModal
                 open={openLead === lead.id}

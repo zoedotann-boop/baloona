@@ -13,6 +13,7 @@ import {
   AdminTableEmpty,
   AdminTableRow,
 } from "./admin-table"
+import { ConfirmModal } from "./confirm-modal"
 
 /**
  * An editable, ordered list of rows, shown as a compact table.
@@ -78,6 +79,7 @@ function RowTable<T>({
 }: RowTableProps<T>) {
   const t = useTranslations("admin.common")
   const [editing, setEditing] = useState<number | null>(null)
+  const [removing, setRemoving] = useState<number | null>(null)
 
   const update = (index: number, item: T) =>
     onChange(items.map((current, i) => (i === index ? item : current)))
@@ -90,6 +92,7 @@ function RowTable<T>({
   }
 
   const editingItem = editing === null ? undefined : items[editing]
+  const removingItem = removing === null ? undefined : items[removing]
 
   return (
     <div className="space-y-3">
@@ -150,7 +153,7 @@ function RowTable<T>({
                 </button>
                 <button
                   type="button"
-                  onClick={() => onChange(items.filter((_, i) => i !== index))}
+                  onClick={() => setRemoving(index)}
                   aria-label={t("remove")}
                   className={cn(
                     iconButton,
@@ -187,6 +190,22 @@ function RowTable<T>({
           editing !== null &&
           renderRow(editingItem, editing, (next) => update(editing, next))}
       </AdminModal>
+
+      <ConfirmModal
+        open={removingItem !== undefined}
+        onClose={() => setRemoving(null)}
+        onConfirm={() =>
+          onChange(items.filter((_, index) => index !== removing))
+        }
+        title={
+          removingItem !== undefined && removing !== null
+            ? editTitle(removingItem, removing)
+            : ""
+        }
+        // A row leaves the list now but the deletion only reaches the database
+        // when the section is published, so this must not claim to be final.
+        message={t("removeRowMessage")}
+      />
     </div>
   )
 }

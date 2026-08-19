@@ -330,6 +330,8 @@
       "done": "Done",
       "edit": "Edit",
       "actions": "Actions",
+      "removeRowMessage": "The row leaves the list. The deletion takes effect when you publish your changes.",
+      "removeNowMessage": "This happens immediately and cannot be undone.",
       "items": "Items"
     },
     "general": {

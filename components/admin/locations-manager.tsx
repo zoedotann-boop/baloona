@@ -6,6 +6,7 @@ import { Pencil, Plus, Settings, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 
 import { AdminModal } from "@/components/admin/admin-modal"
+import { ConfirmModal } from "@/components/admin/confirm-modal"
 import {
   adminCell,
   AdminTable,
@@ -203,6 +204,7 @@ function LocationRow({ location }: { location: ManagedLocation }) {
   const common = useTranslations("admin.common")
   const [draft, setDraft] = useState(location)
   const [editing, setEditing] = useState(false)
+  const [removing, setRemoving] = useState(false)
   const [pending, start] = useTransition()
 
   const save = (next: ManagedLocation) => {
@@ -256,18 +258,26 @@ function LocationRow({ location }: { location: ManagedLocation }) {
           <button
             type="button"
             disabled={pending}
-            onClick={() => {
-              if (!confirm(t("deleteConfirm"))) return
-              start(async () => {
-                await deleteLocation(draft.slug)
-              })
-            }}
+            onClick={() => setRemoving(true)}
             aria-label={t("delete")}
             className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
           >
             <Trash2 className="size-4" />
           </button>
         </div>
+
+        <ConfirmModal
+          open={removing}
+          onClose={() => setRemoving(false)}
+          onConfirm={() =>
+            start(async () => {
+              await deleteLocation(draft.slug)
+            })
+          }
+          title={draft.name.he || draft.slug}
+          message={t("deleteConfirm")}
+          confirmLabel={t("delete")}
+        />
 
         <AdminModal
           open={editing}

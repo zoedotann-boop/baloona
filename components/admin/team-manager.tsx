@@ -5,6 +5,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 
 import { AdminModal } from "@/components/admin/admin-modal"
+import { ConfirmModal } from "@/components/admin/confirm-modal"
 import {
   adminCell,
   AdminTable,
@@ -279,6 +280,7 @@ function MemberRow({
   const [role, setRole] = useState(member.role)
   const [locationIds, setLocationIds] = useState(member.locationIds)
   const [editing, setEditing] = useState(false)
+  const [removing, setRemoving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, start] = useTransition()
 
@@ -344,18 +346,7 @@ function MemberRow({
             <button
               type="button"
               disabled={pending}
-              onClick={() =>
-                start(async () => {
-                  setError(null)
-                  const result = await deleteTeamMember(member.id)
-                  if (!result.ok)
-                    setError(
-                      result.error === "cannot-delete-self"
-                        ? t("cannotDeleteSelf")
-                        : result.error
-                    )
-                })
-              }
+              onClick={() => setRemoving(true)}
               aria-label={t("delete")}
               className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
             >
@@ -363,6 +354,26 @@ function MemberRow({
             </button>
           )}
         </div>
+
+        <ConfirmModal
+          open={removing}
+          onClose={() => setRemoving(false)}
+          onConfirm={() =>
+            start(async () => {
+              setError(null)
+              const result = await deleteTeamMember(member.id)
+              if (!result.ok)
+                setError(
+                  result.error === "cannot-delete-self"
+                    ? t("cannotDeleteSelf")
+                    : result.error
+                )
+            })
+          }
+          title={member.name}
+          message={common("removeNowMessage")}
+          confirmLabel={t("delete")}
+        />
 
         <AdminModal
           open={editing}

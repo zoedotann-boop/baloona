@@ -125,10 +125,18 @@ This version has breaking changes — APIs, conventions, and file structure may 
   `AdminTableRow`, `AdminTableEmpty`, `adminCell`). `RowTable` sits on it for draft
   arrays; the managers — branches, team, enquiries — sit on it directly because each of
   their rows is its own server action rather than part of one publish.
-- `<AdminModal>` is the native `<dialog>`, so focus trapping, Escape and the backdrop
-  come from the platform. It has no save button: it edits the draft in place and the
-  header publishes. Note it renders inside the section's `<form>`, so it suppresses
-  Enter to stop a stray keystroke publishing the page.
+- `<AdminDialog>` wraps the native `<dialog>`, so focus trapping, Escape, the backdrop
+  and stacking come from the platform. It also closes on a backdrop click and swallows
+  Enter — these render inside a section's `<form>`, where a stray keystroke would
+  otherwise publish the page. Two things build on it:
+  - `<AdminModal>` — a row's full form. No save button: it edits the draft in place and
+    the header publishes, so closing is always safe.
+  - `<ConfirmModal>` — "are you sure?" before anything destructive. **Every delete in
+    the admin goes through it; there are no `window.confirm()` calls left.** The caller
+    passes the message because the consequence differs: a row removed from a draft list
+    is undone by not publishing (`removeRowMessage`), while deleting a branch, team
+    member, enquiry or punch card is immediate (`removeNowMessage`). Cancel takes focus,
+    so Enter on an accidental open backs out.
 - Every editable field explains itself. Pass `tooltip` to `AdminField` /
   `LocalizedField` / `LocalizedListField` / `ImageField` / a table column and it
   renders an `<InfoTooltip>` info icon beside the label or column header (hover or
