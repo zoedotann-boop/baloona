@@ -133,7 +133,7 @@ export function SectionForm<T>({
                   onClick={() => setLocale(option)}
                   aria-pressed={locale === option}
                   className={cn(
-                    "h-8 rounded-full px-3 text-[13px] font-bold uppercase transition",
+                    "h-7 rounded-full px-3 text-[13px] font-bold uppercase transition",
                     locale === option
                       ? "bg-white text-brand-plum"
                       : "text-muted-foreground"
@@ -168,7 +168,7 @@ export function SectionForm<T>({
               </span>
             )}
 
-            <PillButton type="submit" size="md" disabled={saving}>
+            <PillButton type="submit" size="sm" disabled={saving}>
               {saving ? t("saving") : t("save")}
             </PillButton>
           </div>

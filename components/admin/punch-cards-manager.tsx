@@ -112,7 +112,7 @@ function PunchCardsManager({
         </div>
         <PillButton
           type="button"
-          size="md"
+          size="sm"
           onClick={() => setShowIssue((value) => !value)}
         >
           <Plus className="size-4" />
@@ -333,7 +333,7 @@ function CardRowView({
           <div className="flex flex-wrap items-center justify-end gap-1">
             <PillButton
               type="button"
-              size="md"
+              size="sm"
               disabled={pending || remaining === 0}
               onClick={() =>
                 start(async () => {
@@ -422,10 +422,9 @@ function CardRowView({
             <div className="mt-3 flex items-center gap-2">
               <PillButton
                 type="button"
-                size="md"
+                size="sm"
                 disabled={pending}
                 onClick={saveEdit}
-                className="h-9"
               >
                 {t("save")}
               </PillButton>
@@ -574,7 +573,7 @@ function IssueForm({
         </AdminField>
 
         <div className="flex items-center gap-3 sm:col-span-2 lg:col-span-3">
-          <PillButton type="submit" size="md" disabled={pending}>
+          <PillButton type="submit" size="sm" disabled={pending}>
             {t("issueButton")}
           </PillButton>
           {error && (

@@ -62,7 +62,7 @@ function LocationsManager({ locations }: { locations: ManagedLocation[] }) {
           </p>
         </div>
         {!adding && (
-          <PillButton type="button" size="md" onClick={() => setAdding(true)}>
+          <PillButton type="button" size="sm" onClick={() => setAdding(true)}>
             <Plus className="size-4" />
             {t("add")}
           </PillButton>
@@ -182,7 +182,7 @@ function NewLocationForm({ onCancel }: { onCancel: () => void }) {
         )}
 
         <div className="flex gap-3">
-          <PillButton type="submit" size="md" disabled={pending}>
+          <PillButton type="submit" size="sm" disabled={pending}>
             {pending ? t("creating") : t("create")}
           </PillButton>
           <button

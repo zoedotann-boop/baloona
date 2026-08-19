@@ -75,7 +75,7 @@ function AdminModal({
       </div>
 
       <div className="flex justify-end border-t border-border px-5 py-3">
-        <PillButton type="button" size="md" onClick={onClose}>
+        <PillButton type="button" size="sm" onClick={onClose}>
           {t("done")}
         </PillButton>
       </div>

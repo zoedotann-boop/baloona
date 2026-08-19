@@ -31,7 +31,7 @@ function Example() {
 
   return (
     <div className="w-[560px] max-w-full">
-      <PillButton type="button" size="md" onClick={() => setOpen(true)}>
+      <PillButton type="button" size="sm" onClick={() => setOpen(true)}>
         עריכת תוספת
       </PillButton>
 

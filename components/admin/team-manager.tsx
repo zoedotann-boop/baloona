@@ -69,7 +69,7 @@ function TeamManager({
           </p>
         </div>
         {!adding && (
-          <PillButton type="button" size="md" onClick={() => setAdding(true)}>
+          <PillButton type="button" size="sm" onClick={() => setAdding(true)}>
             <Plus className="size-4" />
             {t("addMember")}
           </PillButton>
@@ -251,7 +251,7 @@ function NewMemberForm({
         )}
 
         <div className="flex gap-3">
-          <PillButton type="submit" size="md" disabled={pending}>
+          <PillButton type="submit" size="sm" disabled={pending}>
             {t("create")}
           </PillButton>
           <button
@@ -393,7 +393,7 @@ function MemberRow({
 
           <PillButton
             type="button"
-            size="md"
+            size="sm"
             variant="outline"
             onClick={save}
             disabled={pending}
