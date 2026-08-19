@@ -14,6 +14,8 @@ import { PillButton } from "@/components/brand/pill-button"
 import { defaultLocale, type Locale } from "@/i18n/routing"
 import { translateForLocation } from "@/lib/actions/admin-tools"
 import { translateDraft } from "@/lib/admin/translate-draft"
+
+import { useToast } from "./toast"
 import { cn } from "@/lib/utils"
 
 const EDITABLE_LOCALES: Locale[] = ["he", "en"]
@@ -61,14 +63,12 @@ export function SectionForm<T>({
   children,
 }: SectionFormProps<T>) {
   const t = useTranslations("admin.common")
+  const toast = useToast()
   const [locale, setLocale] = useState<Locale>(defaultLocale)
-  const [status, setStatus] = useState<"idle" | "saved" | "error">("idle")
-  const [message, setMessage] = useState<string | null>(null)
   const [saving, startSaving] = useTransition()
   const [translating, startTranslating] = useTransition()
 
   const translateAll = useCallback(() => {
-    setMessage(null)
     startTranslating(async () => {
       const next = await translateDraft(draft, locale, async (values) => {
         const result = await translateForLocation({
@@ -78,10 +78,11 @@ export function SectionForm<T>({
           to: locale,
         })
         if (!result.ok) {
-          setMessage(
+          toast(
             result.error === "missing-key"
               ? t("translateMissingKey")
-              : t("translateError")
+              : t("translateError"),
+            "error"
           )
           return null
         }
@@ -89,15 +90,14 @@ export function SectionForm<T>({
       })
       if (next) onDraftChange(next)
     })
-  }, [draft, locale, onDraftChange, slug, t])
+  }, [draft, locale, onDraftChange, slug, t, toast])
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setMessage(null)
     startSaving(async () => {
       const result = await onSave(draft)
-      setStatus(result.ok ? "saved" : "error")
-      setMessage(result.ok ? t("saved") : (result.error ?? t("saveError")))
+      if (result.ok) toast(t("saved"))
+      else toast(result.error ?? t("saveError"), "error")
     })
   }
 
@@ -154,18 +154,6 @@ export function SectionForm<T>({
                 <Sparkles className="size-4" />
                 {translating ? t("translating") : t("translateAll")}
               </button>
-            )}
-
-            {message && (
-              <span
-                role="status"
-                className={cn(
-                  "text-[14px] font-bold",
-                  status === "error" ? "text-destructive" : "text-brand-green"
-                )}
-              >
-                {message}
-              </span>
             )}
 
             <PillButton type="submit" size="sm" disabled={saving}>

@@ -14,6 +14,7 @@ import {
 import { LocalizedField } from "@/components/admin/localized-field"
 import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
+import { useToast } from "@/components/admin/toast"
 import type { ReviewDraft } from "@/lib/admin/drafts"
 import { saveReviews } from "@/lib/actions/admin/content"
 import { syncGoogleReviews } from "@/lib/actions/admin/google-reviews"
@@ -36,19 +37,18 @@ function ReviewsForm({
 }) {
   const t = useTranslations("admin.reviews")
   const common = useTranslations("admin.common")
+  const toast = useToast()
   const [draft, setDraft] = useState(initial)
-  const [syncMessage, setSyncMessage] = useState<string | null>(null)
   const [syncing, startSync] = useTransition()
 
   function sync() {
-    setSyncMessage(null)
     startSync(async () => {
       const result = await syncGoogleReviews({ slug })
       if (result.ok) {
         // The sync already wrote to the database, so adopt what it returned
         // rather than leaving the table showing the pre-sync list.
         setDraft((current) => ({ ...current, reviews: result.reviews }))
-        setSyncMessage(
+        toast(
           t("syncResult", {
             imported: result.imported,
             updated: result.updated,
@@ -56,12 +56,13 @@ function ReviewsForm({
         )
         return
       }
-      setSyncMessage(
+      toast(
         result.error === "missing-place-id"
           ? t("syncMissingPlaceId")
           : result.error === "missing-key"
             ? t("syncMissingKey")
-            : t("syncError")
+            : t("syncError"),
+        "error"
       )
     })
   }
@@ -105,14 +106,6 @@ function ReviewsForm({
           {!hasPlaceId && (
             <span className="text-[13px] text-muted-foreground">
               {t("syncMissingPlaceId")}
-            </span>
-          )}
-          {syncMessage && (
-            <span
-              role="status"
-              className="text-[13px] font-bold text-brand-plum"
-            >
-              {syncMessage}
             </span>
           )}
         </div>

@@ -14,6 +14,7 @@ import {
 import { useRef, useState, useTransition } from "react"
 
 import { ConfirmModal } from "@/components/admin/confirm-modal"
+import { useToast } from "@/components/admin/toast"
 import { AdminCard, AdminField, AdminInput } from "@/components/admin/admin-ui"
 import { PillButton } from "@/components/brand/pill-button"
 import {
@@ -529,7 +530,7 @@ function IssueForm({
 }) {
   const t = useTranslations("admin.punchCards")
   const [pending, start] = useTransition()
-  const [error, setError] = useState(false)
+  const toast = useToast()
 
   return (
     <AdminCard title={t("issueTitle")} description={t("issueDescription")}>
@@ -543,7 +544,6 @@ function IssueForm({
           const remainingRaw = String(data.get("remaining") ?? "").trim()
           const remaining = remainingRaw === "" ? total : Number(remainingRaw)
 
-          setError(false)
           start(async () => {
             const result = await issuePunchCard({
               slug,
@@ -558,7 +558,7 @@ function IssueForm({
               form.reset()
               onIssued(phone)
             } else {
-              setError(true)
+              toast(t("issueError"), "error")
             }
           })
         }}
@@ -599,11 +599,6 @@ function IssueForm({
           <PillButton type="submit" size="sm" disabled={pending}>
             {t("issueButton")}
           </PillButton>
-          {error && (
-            <span className="text-[14px] font-bold text-destructive">
-              {t("issueError")}
-            </span>
-          )}
         </div>
       </form>
     </AdminCard>

@@ -162,6 +162,12 @@
     animation: baloonaFloat 6s ease-in-out infinite;
   }
 
+  /* Admin toasts: rise into place once and stay. Unlike `.reveal` below this is
+     a one-shot animation with no observer, so it is visible on its own. */
+  .toast-in {
+    animation: baloonaToastIn 0.2s ease-out;
+  }
+
   /* Scroll-reveal: fade-in + slide-up, toggled via data-visible by <Reveal>.
      Only vertical translate is used, so it is RTL-safe. */
   .reveal {
@@ -227,12 +233,26 @@
   }
 }
 
+@keyframes baloonaToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Respect reduced-motion: reveal content instantly, no transform/transition. */
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .toast-in {
+    animation: none;
   }
 }
 

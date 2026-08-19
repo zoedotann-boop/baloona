@@ -143,6 +143,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   keyboard focus reveals it). Copy lives in `messages/*.json` under the section, keyed
   `<field>Tip`; keep `he` and `en` in sync. A missing key throws at runtime, so check
   the key exists before wiring a new tooltip.
+- **Action results are toasts, not inline text.** `useToast()` (provided by `AdminShell`,
+  so every dashboard page has it) reports "published", "synced" and their failures. Two
+  things deliberately stay inline: an error bound to a field the editor is fixing
+  (`slug-taken`, `email-taken`, a failed upload, the login error), and **anything raised
+  inside an `AdminDialog`** — a native `<dialog>` sits in the browser's top layer, above
+  any z-index, so a toast fired from one would be hidden behind it.
 - **The admin is deliberately dense.** It is a tool, not a landing page: cards are
   `p-4` with 16px headings, table cells `py-1.5`, controls `h-10`, sidebar rows `h-8`.
   Change these in the shared components (`admin-ui`, `admin-table`, `section-form`,
