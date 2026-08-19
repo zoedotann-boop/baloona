@@ -160,7 +160,7 @@ function BirthdayLeadForm({
                         >
                           <span
                             className={cn(
-                              "flex size-5 flex-none items-center justify-center rounded-md border transition",
+                              "flex size-5 flex-none items-center justify-center rounded-none border transition",
                               checked
                                 ? "border-primary bg-primary text-primary-foreground"
                                 : "border-border bg-white"

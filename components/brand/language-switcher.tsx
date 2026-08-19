@@ -1,6 +1,7 @@
 "use client"
 
 import { useLocale } from "next-intl"
+import { Check, ChevronDown, Globe } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
 
@@ -42,9 +43,15 @@ function LanguageSwitcher({ className }: { className?: string }) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex h-10 items-center gap-1.5 rounded-full bg-brand-pink-soft px-3.5 text-sm font-extrabold text-secondary-foreground transition hover:brightness-95"
+        aria-label={current.label}
+        className="flex h-9 items-center gap-1.5 rounded-full border border-brand-pink bg-brand-pink-soft ps-3 pe-2.5 text-[13px] font-extrabold text-secondary-foreground transition hover:brightness-95"
       >
-        {current.short} ▾
+        <Globe className="size-4 opacity-70" aria-hidden />
+        {current.short}
+        <ChevronDown
+          className={cn("size-3.5 transition-transform", open && "rotate-180")}
+          aria-hidden
+        />
       </button>
 
       {open && (
@@ -59,29 +66,32 @@ function LanguageSwitcher({ className }: { className?: string }) {
           />
           <ul
             role="listbox"
-            className="absolute end-0 z-50 mt-2 min-w-[132px] overflow-hidden rounded-2xl border border-border bg-white py-1"
+            className="absolute end-0 z-50 mt-2 min-w-[150px] overflow-hidden rounded-2xl border border-border bg-white p-1 shadow-lg shadow-brand-plum/10"
           >
-            {LANGUAGES.map((lang) => (
-              <li
-                key={lang.code}
-                role="option"
-                aria-selected={lang.code === locale}
-              >
-                <button
-                  type="button"
-                  onClick={() => select(lang.code)}
-                  className={cn(
-                    "flex w-full items-center justify-between px-4 py-2 text-base transition",
-                    lang.code === locale
-                      ? "bg-brand-pink font-extrabold text-foreground"
-                      : "font-bold text-muted-foreground hover:bg-brand-pink/40"
-                  )}
-                >
-                  {lang.label}
-                  <span className="text-[13px] opacity-60">{lang.short}</span>
-                </button>
-              </li>
-            ))}
+            {LANGUAGES.map((lang) => {
+              const active = lang.code === locale
+              return (
+                <li key={lang.code} role="option" aria-selected={active}>
+                  <button
+                    type="button"
+                    onClick={() => select(lang.code)}
+                    className={cn(
+                      "flex w-full items-center gap-2 rounded-xl px-3 py-2 text-[15px] transition",
+                      active
+                        ? "bg-brand-pink-soft font-extrabold text-brand-plum"
+                        : "font-bold text-muted-foreground hover:bg-muted"
+                    )}
+                  >
+                    <Check
+                      className={cn("size-4 flex-none", !active && "opacity-0")}
+                      aria-hidden
+                    />
+                    <span className="flex-1 text-start">{lang.label}</span>
+                    <span className="text-[12px] opacity-60">{lang.short}</span>
+                  </button>
+                </li>
+              )
+            })}
           </ul>
         </>
       )}

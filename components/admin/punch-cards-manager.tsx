@@ -33,7 +33,11 @@ interface CardRow {
 }
 
 /**
- * כרטיסיות — the front-desk console, as a searchable table.
+ * כרטיסיות — the front-desk console, as a searchable card list.
+ *
+ * A card-per-customer layout (rather than a table) so it stays usable on the
+ * phone a clerk actually holds at the counter; each card's actions are labeled,
+ * not icon-only, so a first-time user can tell what every button does.
  *
  * Cards are brand-global, so this searches every customer regardless of branch;
  * the `slug` it carries is only the acting branch, recorded on each punch. Search
@@ -143,69 +147,54 @@ function PunchCardsManager({
         />
       </div>
 
-      {selected.size > 0 && (
-        <div className="flex items-center justify-between rounded-xl bg-brand-lavender-soft px-4 py-2">
-          <span className="text-[14px] font-bold text-brand-plum">
-            {t("selectedCount", { count: selected.size })}
-          </span>
-          <button
-            type="button"
-            onClick={deleteSelected}
-            disabled={pending}
-            className="flex h-8 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-destructive transition hover:bg-destructive/10 disabled:opacity-40"
-          >
-            <Trash2 className="size-4" />
-            {t("deleteSelected")}
-          </button>
-        </div>
-      )}
-
       {rows.length === 0 ? (
         <p className="py-12 text-center text-[15px] text-muted-foreground">
           {t("noResults")}
         </p>
       ) : (
-        <div className="overflow-x-auto rounded-[22px] border border-border bg-white">
-          <table className="w-full text-[14px]">
-            <thead>
-              <tr className="border-b border-border text-[13px] text-muted-foreground">
-                <th className="w-10 px-3 py-3">
-                  <input
-                    type="checkbox"
-                    checked={allSelected}
-                    onChange={toggleAll}
-                    aria-label={t("selectAll")}
-                    className="size-4 accent-primary"
-                  />
-                </th>
-                <th className="px-3 py-3 text-start font-bold">
-                  {t("colCustomer")}
-                </th>
-                <th className="px-3 py-3 text-start font-bold">
-                  {t("colCard")}
-                </th>
-                <th className="px-3 py-3 text-start font-bold">
-                  {t("colBranch")}
-                </th>
-                <th className="px-3 py-3 text-end font-bold">
-                  {t("colActions")}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(({ customer, card }) => (
-                <CardRowView
-                  key={card.id}
-                  slug={slug}
-                  customer={customer}
-                  card={card}
-                  selected={selected.has(card.id)}
-                  onToggle={() => toggleRow(card.id)}
-                  onChanged={refresh}
-                />
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label className="flex items-center gap-2 text-[14px] font-bold text-brand-plum">
+              <input
+                type="checkbox"
+                checked={allSelected}
+                onChange={toggleAll}
+                aria-label={t("selectAll")}
+                className="size-4 accent-primary"
+              />
+              {t("selectAll")}
+            </label>
+            {selected.size > 0 && (
+              <div className="flex items-center gap-3">
+                <span className="text-[14px] font-bold text-brand-plum">
+                  {t("selectedCount", { count: selected.size })}
+                </span>
+                <button
+                  type="button"
+                  onClick={deleteSelected}
+                  disabled={pending}
+                  className="flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-destructive transition hover:bg-destructive/10 disabled:opacity-40"
+                >
+                  <Trash2 className="size-4" />
+                  {t("deleteSelected")}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            {rows.map(({ customer, card }) => (
+              <CardRowView
+                key={card.id}
+                slug={slug}
+                customer={customer}
+                card={card}
+                selected={selected.has(card.id)}
+                onToggle={() => toggleRow(card.id)}
+                onChanged={refresh}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -287,35 +276,30 @@ function CardRowView({
   }
 
   return (
-    <>
-      <tr className="border-b border-border last:border-0">
-        <td className="px-3 py-3 align-top">
-          <input
-            type="checkbox"
-            checked={selected}
-            onChange={onToggle}
-            aria-label={t("selectRow")}
-            className="mt-1 size-4 accent-primary"
-          />
-        </td>
-        <td className="px-3 py-3 align-top">
-          <div className="font-bold text-brand-plum">
-            {customer.fullName || "—"}
+    <AdminCard className="p-4">
+      <div className="flex items-start gap-3">
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={onToggle}
+          aria-label={t("selectRow")}
+          className="mt-1.5 size-4 flex-none accent-primary"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5">
+            <span className="font-heading text-[17px] font-black text-brand-plum">
+              {customer.fullName || "—"}
+            </span>
+            <span dir="ltr" className="text-[13px] text-muted-foreground">
+              {customer.phone}
+            </span>
+            {customer.email && (
+              <span dir="ltr" className="text-[13px] text-muted-foreground">
+                {customer.email}
+              </span>
+            )}
           </div>
-          <div dir="ltr" className="text-end text-[13px] text-muted-foreground">
-            {customer.phone}
-          </div>
-          {customer.email && (
-            <div
-              dir="ltr"
-              className="text-end text-[13px] text-muted-foreground"
-            >
-              {customer.email}
-            </div>
-          )}
-        </td>
-        <td className="px-3 py-3 align-top">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-[14px]">
             <span className="font-bold text-brand-plum">
               {t("cardSummary", { remaining, total: card.totalPunches })}
             </span>
@@ -324,148 +308,168 @@ function CardRowView({
                 {t("completedBadge")}
               </span>
             )}
+            {card.issuedByLocationName && (
+              <span className="text-[13px] text-muted-foreground">
+                {card.issuedByLocationName}
+              </span>
+            )}
           </div>
-        </td>
-        <td className="px-3 py-3 align-top text-[13px] text-muted-foreground">
-          {card.issuedByLocationName ?? "—"}
-        </td>
-        <td className="px-3 py-3 align-top">
-          <div className="flex flex-wrap items-center justify-end gap-1">
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <PillButton
+          type="button"
+          size="md"
+          disabled={pending || remaining === 0}
+          title={t("punchTip")}
+          onClick={() =>
+            start(async () => {
+              await punchCard({ slug, cardId: card.id })
+              onChanged()
+            })
+          }
+          className="h-9 px-5 text-[14px]"
+        >
+          {remaining === 0 ? t("cardFull") : t("punch")}
+        </PillButton>
+        <ActionChip
+          icon={<Minus className="size-4" />}
+          label={t("undo")}
+          tooltip={t("undoTip")}
+          onClick={() =>
+            start(async () => {
+              await undoLastPunch({ slug, cardId: card.id })
+              onChanged()
+            })
+          }
+          disabled={pending || card.usedPunches === 0}
+        />
+        <ActionChip
+          icon={
+            copied ? <Check className="size-4" /> : <Copy className="size-4" />
+          }
+          label={copied ? t("copied") : t("copyLink")}
+          tooltip={t("copyLinkTip")}
+          onClick={copyLink}
+        />
+        <ActionChip
+          icon={<ExternalLink className="size-4" />}
+          label={t("openCard")}
+          tooltip={t("openCardTip")}
+          href={cardPath}
+        />
+        <ActionChip
+          icon={<Pencil className="size-4" />}
+          label={t("edit")}
+          tooltip={t("editTip")}
+          onClick={startEdit}
+          active={editing}
+        />
+        <ActionChip
+          icon={<Trash2 className="size-4" />}
+          label={t("deleteCard")}
+          tooltip={t("deleteCardTip")}
+          onClick={remove}
+          danger
+        />
+      </div>
+
+      {editing && (
+        <div className="mt-4 border-t border-border pt-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <AdminField label={t("fullName")}>
+              <AdminInput
+                value={form.fullName}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, fullName: event.target.value }))
+                }
+              />
+            </AdminField>
+            <AdminField label={t("email")}>
+              <AdminInput
+                type="email"
+                dir="ltr"
+                value={form.email}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, email: event.target.value }))
+                }
+              />
+            </AdminField>
+            <AdminField label={t("total")} tooltip={t("editTotalTip")}>
+              <AdminInput
+                type="number"
+                min={1}
+                max={100}
+                value={form.total}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, total: event.target.value }))
+                }
+              />
+            </AdminField>
+            <AdminField label={t("note")} tooltip={t("noteTip")}>
+              <AdminInput
+                value={form.note}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, note: event.target.value }))
+                }
+              />
+            </AdminField>
+          </div>
+          <div className="mt-3 flex items-center gap-2">
             <PillButton
               type="button"
               size="md"
-              disabled={pending || remaining === 0}
-              onClick={() =>
-                start(async () => {
-                  await punchCard({ slug, cardId: card.id })
-                  onChanged()
-                })
-              }
-              className="h-8 px-4 text-[13px]"
+              disabled={pending}
+              onClick={saveEdit}
+              className="h-9"
             >
-              {remaining === 0 ? t("cardFull") : t("punch")}
+              {t("save")}
             </PillButton>
-            <IconButton
-              label={t("undo")}
-              onClick={() =>
-                start(async () => {
-                  await undoLastPunch({ slug, cardId: card.id })
-                  onChanged()
-                })
-              }
-              disabled={pending || card.usedPunches === 0}
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="flex h-9 items-center rounded-full px-3 text-[14px] font-bold text-muted-foreground transition hover:bg-muted"
             >
-              <Minus className="size-4" />
-            </IconButton>
-            <IconButton label={t("copyLink")} onClick={copyLink}>
-              {copied ? (
-                <Check className="size-4" />
-              ) : (
-                <Copy className="size-4" />
-              )}
-            </IconButton>
-            <IconButton label={t("openCard")} href={cardPath}>
-              <ExternalLink className="size-4" />
-            </IconButton>
-            <IconButton label={t("edit")} onClick={startEdit} active={editing}>
-              <Pencil className="size-4" />
-            </IconButton>
-            <IconButton label={t("deleteCard")} onClick={remove} danger>
-              <Trash2 className="size-4" />
-            </IconButton>
+              {t("cancel")}
+            </button>
           </div>
-        </td>
-      </tr>
-
-      {editing && (
-        <tr className="border-b border-border bg-muted/30 last:border-0">
-          <td colSpan={5} className="px-4 py-4">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <AdminField label={t("fullName")}>
-                <AdminInput
-                  value={form.fullName}
-                  onChange={(event) =>
-                    setForm((f) => ({ ...f, fullName: event.target.value }))
-                  }
-                />
-              </AdminField>
-              <AdminField label={t("email")}>
-                <AdminInput
-                  type="email"
-                  dir="ltr"
-                  value={form.email}
-                  onChange={(event) =>
-                    setForm((f) => ({ ...f, email: event.target.value }))
-                  }
-                />
-              </AdminField>
-              <AdminField label={t("total")} tooltip={t("editTotalTip")}>
-                <AdminInput
-                  type="number"
-                  min={1}
-                  max={100}
-                  value={form.total}
-                  onChange={(event) =>
-                    setForm((f) => ({ ...f, total: event.target.value }))
-                  }
-                />
-              </AdminField>
-              <AdminField label={t("note")} tooltip={t("noteTip")}>
-                <AdminInput
-                  value={form.note}
-                  onChange={(event) =>
-                    setForm((f) => ({ ...f, note: event.target.value }))
-                  }
-                />
-              </AdminField>
-            </div>
-            <div className="mt-3 flex items-center gap-2">
-              <PillButton
-                type="button"
-                size="md"
-                disabled={pending}
-                onClick={saveEdit}
-                className="h-9"
-              >
-                {t("save")}
-              </PillButton>
-              <button
-                type="button"
-                onClick={() => setEditing(false)}
-                className="flex h-9 items-center rounded-full px-3 text-[14px] font-bold text-muted-foreground transition hover:bg-muted"
-              >
-                {t("cancel")}
-              </button>
-            </div>
-          </td>
-        </tr>
+        </div>
       )}
-    </>
+    </AdminCard>
   )
 }
 
-/** A compact square action button (or link when `href` is given). */
-function IconButton({
+/**
+ * A labeled action button (or link when `href` is given).
+ *
+ * The `icon` and `label` are both shown, so each action reads clearly without
+ * needing to be learned — the fix for a row of ambiguous icon-only buttons.
+ * `tooltip` adds a longer one-line explanation on hover via a native `title`.
+ */
+function ActionChip({
+  icon,
   label,
+  tooltip,
   onClick,
   href,
   disabled,
   danger,
   active,
-  children,
 }: {
+  icon: React.ReactNode
   label: string
+  tooltip?: string
   onClick?: () => void
   href?: string
   disabled?: boolean
   danger?: boolean
   active?: boolean
-  children: React.ReactNode
 }) {
   const className = cn(
-    "flex size-8 items-center justify-center rounded-lg transition disabled:opacity-40",
+    "inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[13px] font-bold transition disabled:opacity-40",
     danger
-      ? "text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+      ? "text-destructive hover:bg-destructive/10"
       : "text-brand-plum hover:bg-muted",
     active && "bg-muted"
   )
@@ -476,10 +480,11 @@ function IconButton({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={label}
+        title={tooltip}
         className={className}
       >
-        {children}
+        {icon}
+        {label}
       </a>
     )
   }
@@ -489,10 +494,11 @@ function IconButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={label}
+      title={tooltip}
       className={className}
     >
-      {children}
+      {icon}
+      {label}
     </button>
   )
 }
