@@ -156,7 +156,15 @@ export const reviews = pgTable("review", {
     .references(() => locations.id, { onDelete: "cascade" }),
   authorName: text().notNull(),
   rating: smallint().notNull().default(5),
-  text: localized().notNull(),
+  /**
+   * The review as its author wrote it, in whatever language that was.
+   *
+   * Not `localized()` like the rest of the site's copy: a review is someone
+   * else's words, so there is nothing to translate into — rendering a machine
+   * translation under a real person's name would be putting words in their
+   * mouth. It is stored once and shown as-is in every locale.
+   */
+  text: text().notNull(),
   source: reviewSource().notNull().default("manual"),
   /** Google's review id, used to upsert on re-sync. Null for manual reviews. */
   externalId: text(),

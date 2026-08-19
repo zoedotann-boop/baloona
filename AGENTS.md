@@ -53,10 +53,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   prices, menu, reviews and SEO are admin-editable rows. Button labels, aria-labels,
   weekday names and admin UI strings stay in `messages/he.json` / `en.json` and are
   read with `useTranslations`. Never hard-code either kind in a component.
-- **A new branch seeds no reviews.** Everything else in `seed-content.ts` is generic
-  Baloona copy an editor rewrites, but a review is a statement attributed to a named
-  customer — inventing one puts words in a stranger's mouth on a live site. The reviews
-  section renders nothing until real ones are written or synced.
+- **A new branch seeds no reviews, and a review is never translated.** Everything else
+  in `seed-content.ts` is generic Baloona copy an editor rewrites, but a review is a
+  statement attributed to a named customer — inventing one, or rewording it into another
+  language, puts words in a stranger's mouth on a live site. `review.text` is therefore a
+  plain column rather than `localized()`, shown as-is in every locale, and the reviews
+  section renders nothing until real reviews are written or synced.
 - **Translatable values are `jsonb` `{ he, en }`** (`Localized`) or `{ he: string[] }`
   (`LocalizedList`). Hebrew is the source language; read through `pickLocale` /
   `pickLocaleList` so a missing translation falls back to Hebrew.
@@ -192,10 +194,10 @@ See `.env.example`.
   paginates — one sync is one billed search, which is what keeps a nightly branch inside
   the free tier of 250 searches a month. Don't add `num`: SerpApi rejects it on a first
   page, which always returns 8.
-- Google serves reviews in Hebrew, so the sync drafts their English through Gemini
-  (`draftEnglish` in `lib/google/sync-reviews.ts`) in one batched call — new reviews and
-  any whose Hebrew changed. It is best-effort: no Gemini key or a failed call leaves
-  English untouched rather than failing the sync, and `pickLocale` falls back to Hebrew.
+- **A review's text is not translatable** — `review.text` is a plain column, not
+  `localized()`, and is shown as-is in every locale. It is someone else's words, so
+  there is nothing to translate into: a machine translation under a real person's name
+  would be putting words in their mouth. Same principle as seeding no reviews at all.
 - `lib/google/sync-reviews.ts` is the one sync implementation, matching on Google's
   review id so a re-sync refreshes wording in place
   and never overrules an editor's publish decision on a review that already exists.

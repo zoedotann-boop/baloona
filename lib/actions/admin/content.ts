@@ -575,7 +575,7 @@ const reviewsSchema = z.object({
       id: rowIdSchema,
       authorName: z.string().trim().min(1).max(120),
       rating: z.number().int().min(1).max(5),
-      text: localizedSchema,
+      text: z.string().trim().min(1).max(5000),
       isPublished: z.boolean(),
       publishedAt: z.string(),
     })

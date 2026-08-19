@@ -2,7 +2,6 @@ import "server-only"
 
 import { and, eq } from "drizzle-orm"
 
-import { translateValues } from "@/lib/ai/translate"
 import { db } from "@/lib/db"
 import { reviews } from "@/lib/db/schema"
 
@@ -19,22 +18,6 @@ export type ReviewSyncResult =
 const AUTO_PUBLISH_MIN_RATING = 4
 
 /**
- * Draft English for reviews that need it, in one Gemini call for the batch.
- *
- * Best-effort by design: a review arrives in Hebrew, and English is a nicety.
- * Without a Gemini key — or if the call fails — this returns `null` and the
- * sync stores the reviews with English untouched, exactly as a hand-written
- * review starts out. `pickLocale` then falls back to Hebrew, so the site reads
- * correctly either way. Nothing here is allowed to fail a sync.
- */
-async function draftEnglish(texts: string[]): Promise<string[] | null> {
-  if (texts.length === 0) return null
-
-  const result = await translateValues(texts, "he", "en")
-  return result.ok ? result.values : null
-}
-
-/**
  * Pull one branch's Google reviews into the `review` table.
  *
  * Reviews are matched on Google's own id, so a re-sync refreshes wording and
@@ -47,9 +30,8 @@ async function draftEnglish(texts: string[]): Promise<string[] | null> {
  * cron publishes {@link AUTO_PUBLISH_MIN_RATING}-star reviews and up, because
  * nobody is standing by to approve them.
  *
- * Google serves the review in Hebrew, so {@link draftEnglish} fills the English
- * side on the way in and the reviews section reads in both locales without an
- * editor retyping anything.
+ * The review text is stored exactly as its author wrote it and never
+ * translated — see the `text` column in `lib/db/schema/content.ts`.
  */
 export async function syncLocationReviews({
   locationId,
@@ -75,28 +57,6 @@ export async function syncLocationReviews({
     )
   )
 
-  const fresh = result.reviews.filter(
-    (review) => !byExternalId.has(review.externalId)
-  )
-
-  // A review whose Hebrew changed needs its English redrafted too — leaving the
-  // old translation in place would have the two languages saying different
-  // things. Everything that needs English goes into one batched call.
-  const rephrased = result.reviews.filter((review) => {
-    const match = byExternalId.get(review.externalId)
-    return match !== undefined && match.text.he !== review.text
-  })
-
-  const pending = [...fresh, ...rephrased]
-  const drafted = await draftEnglish(pending.map((review) => review.text))
-  const englishByExternalId = new Map(
-    drafted
-      ? pending.map(
-          (review, index) => [review.externalId, drafted[index]] as const
-        )
-      : []
-  )
-
   for (const review of result.reviews) {
     const match = byExternalId.get(review.externalId)
     if (!match) continue
@@ -106,17 +66,15 @@ export async function syncLocationReviews({
       .set({
         authorName: review.authorName,
         rating: review.rating,
-        text: {
-          ...match.text,
-          he: review.text,
-          // Falsy rather than nullish: a failed or empty draft must keep the
-          // English already stored, not blank it.
-          en: englishByExternalId.get(review.externalId) || match.text.en,
-        },
+        text: review.text,
         publishedAt: review.publishedAt,
       })
       .where(eq(reviews.id, match.id))
   }
+
+  const fresh = result.reviews.filter(
+    (review) => !byExternalId.has(review.externalId)
+  )
 
   if (fresh.length > 0) {
     await db.insert(reviews).values(
@@ -124,10 +82,7 @@ export async function syncLocationReviews({
         locationId,
         authorName: review.authorName,
         rating: review.rating,
-        text: {
-          he: review.text,
-          en: englishByExternalId.get(review.externalId) ?? "",
-        },
+        text: review.text,
         source: "google" as const,
         externalId: review.externalId,
         publishedAt: review.publishedAt,

@@ -9,16 +9,15 @@ import {
   AdminField,
   AdminFlag,
   AdminInput,
+  AdminTextarea,
   AdminToggle,
 } from "@/components/admin/admin-ui"
-import { LocalizedField } from "@/components/admin/localized-field"
 import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { useToast } from "@/components/admin/toast"
 import type { ReviewDraft } from "@/lib/admin/drafts"
 import { saveReviews } from "@/lib/actions/admin/content"
 import { syncGoogleReviews } from "@/lib/actions/admin/google-reviews"
-import { emptyLocalized } from "@/lib/localized"
 
 interface ReviewsDraft {
   autoSync: boolean
@@ -118,7 +117,7 @@ function ReviewsForm({
           createItem={() => ({
             authorName: "",
             rating: 5,
-            text: emptyLocalized(),
+            text: "",
             isPublished: true,
             publishedAt: new Date().toISOString().slice(0, 10),
             source: "manual" as const,
@@ -143,7 +142,7 @@ function ReviewsForm({
               tooltip: t("textTip"),
               cell: (review) => (
                 <span className="line-clamp-1 text-muted-foreground">
-                  {review.text.he}
+                  {review.text}
                 </span>
               ),
             },
@@ -207,13 +206,15 @@ function ReviewsForm({
                   />
                 </AdminField>
               </div>
-              <LocalizedField
-                label={t("text")}
-                tooltip={t("textTip")}
-                multiline
-                value={review.text}
-                onChange={(text) => update({ ...review, text })}
-              />
+              <AdminField label={t("text")} tooltip={t("textTip")}>
+                <AdminTextarea
+                  rows={4}
+                  value={review.text}
+                  onChange={(event) =>
+                    update({ ...review, text: event.target.value })
+                  }
+                />
+              </AdminField>
               <AdminToggle
                 label={t("published")}
                 checked={review.isPublished}

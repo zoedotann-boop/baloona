@@ -152,7 +152,7 @@ export default async function Page({ params }: PageProps<"/[location]">) {
         title={pickLocale(home.reviewsTitle, locale)}
         items={data.reviews.map((review) => ({
           id: review.id,
-          text: pickLocale(review.text, locale),
+          text: review.text,
           name: review.authorName,
           initials: initialsOf(review.authorName),
           ago: format.relativeTime(review.publishedAt),

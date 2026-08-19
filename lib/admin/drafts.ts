@@ -25,7 +25,8 @@ export interface ReviewDraft {
   id?: string
   authorName: string
   rating: number
-  text: Localized
+  /** The author's own words, in their own language. Never translated. */
+  text: string
   isPublished: boolean
   /** `YYYY-MM-DD`, what a date input round-trips. */
   publishedAt: string
@@ -44,7 +45,7 @@ export function toReviewDraft(row: typeof reviews.$inferSelect): ReviewDraft {
     id: row.id,
     authorName: row.authorName,
     rating: row.rating,
-    text: toLocalized(row.text),
+    text: row.text,
     isPublished: row.isPublished,
     publishedAt: row.publishedAt.toISOString().slice(0, 10),
     source: row.source,
