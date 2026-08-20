@@ -77,6 +77,11 @@ export const siteSettings = pgTable("site_setting", {
     .references(() => locations.id, { onDelete: "cascade" }),
   /** Used by the reviews sync to pull this branch's Google reviews. */
   googlePlaceId: text(),
+  /**
+   * Opts this branch into the nightly Google reviews cron. Off by default, so
+   * a new branch never publishes reviews before someone asks it to.
+   */
+  googleReviewsAutoSync: boolean().notNull().default(false),
   gaMeasurementId: text(),
   metaPixelId: text(),
   gtmContainerId: text(),

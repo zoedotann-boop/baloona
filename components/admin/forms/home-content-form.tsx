@@ -6,7 +6,7 @@ import { useState } from "react"
 import { AdminCard } from "@/components/admin/admin-ui"
 import { ImageField } from "@/components/admin/image-field"
 import { LocalizedField } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { saveHomeContent } from "@/lib/actions/admin/content"
 import { emptyLocalized, type Localized } from "@/lib/localized"
@@ -164,7 +164,7 @@ function HomeContentForm({
       </AdminCard>
 
       <AdminCard title={t("featuresTitle")}>
-        <RowList
+        <RowTable
           items={draft.features}
           onChange={(features) =>
             setDraft((current) => ({ ...current, features }))
@@ -175,6 +175,23 @@ function HomeContentForm({
           })}
           addLabel={common("add")}
           emptyLabel={common("empty")}
+          columns={[
+            {
+              header: t("featureHeading"),
+              tooltip: t("featureHeadingTip"),
+              cell: (item) => item.title.he,
+            },
+            {
+              header: t("featureDescription"),
+              tooltip: t("featureDescriptionTip"),
+              cell: (item) => (
+                <span className="line-clamp-1 text-muted-foreground">
+                  {item.description.he}
+                </span>
+              ),
+            },
+          ]}
+          editTitle={(item) => item.title.he || common("add")}
           renderRow={(item, _index, update) => (
             <div className="space-y-3">
               <LocalizedField
@@ -251,7 +268,7 @@ function HomeContentForm({
             <div className="mb-2 text-[13px] font-bold text-brand-plum">
               {t("teaserTiles")}
             </div>
-            <RowList
+            <RowTable
               items={draft.teaserTiles}
               onChange={(teaserTiles) =>
                 setDraft((current) => ({ ...current, teaserTiles }))
@@ -259,6 +276,14 @@ function HomeContentForm({
               createItem={() => ({ label: emptyLocalized() })}
               addLabel={common("add")}
               emptyLabel={common("empty")}
+              columns={[
+                {
+                  header: t("subjectLabel"),
+                  tooltip: t("teaserTileTip"),
+                  cell: (item) => item.label.he,
+                },
+              ]}
+              editTitle={(item) => item.label.he || common("add")}
               renderRow={(item, _index, update) => (
                 <LocalizedField
                   label={t("subjectLabel")}
@@ -348,7 +373,7 @@ function HomeContentForm({
             <div className="mb-2 text-[13px] font-bold text-brand-plum">
               {t("subjectsTitle")}
             </div>
-            <RowList
+            <RowTable
               items={draft.contactSubjects}
               onChange={(contactSubjects) =>
                 setDraft((current) => ({ ...current, contactSubjects }))
@@ -356,6 +381,10 @@ function HomeContentForm({
               createItem={() => ({ label: emptyLocalized() })}
               addLabel={common("add")}
               emptyLabel={common("empty")}
+              columns={[
+                { header: t("subjectLabel"), cell: (item) => item.label.he },
+              ]}
+              editTitle={(item) => item.label.he || common("add")}
               renderRow={(item, _index, update) => (
                 <LocalizedField
                   label={t("subjectLabel")}

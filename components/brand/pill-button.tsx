@@ -17,6 +17,10 @@ const pillButtonVariants = cva(
         soft: "bg-brand-cloud text-foreground",
       },
       size: {
+        // Matches the admin's control height (h-9), so it lines up with the
+        // language switch and the outline buttons beside it. The site's own
+        // CTAs stay on `md`/`lg`.
+        sm: "h-9 px-4 text-[14px]",
         md: "h-[46px] px-6 text-base",
         lg: "h-[54px] px-7 text-[17px]",
       },

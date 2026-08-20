@@ -24,3 +24,13 @@ export const Default: Story = {}
 export const SingleBranch: Story = {
   args: { showBranchSwitch: false, statusLabel: undefined },
 }
+
+/** Brand-global variant: wordmark + language switcher only, no branch nav. */
+export const BrandGlobal: Story = {
+  args: {
+    paths: undefined,
+    whatsappHref: undefined,
+    statusLabel: undefined,
+    showBranchSwitch: false,
+  },
+}

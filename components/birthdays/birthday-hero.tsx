@@ -4,6 +4,8 @@ import { AccentSquare } from "@/components/brand/accent-square"
 import { PillButton } from "@/components/brand/pill-button"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 
 interface BirthdayHeroProps {
   title: string
@@ -16,8 +18,8 @@ function BirthdayHero({ title, description, imageUrl }: BirthdayHeroProps) {
   const t = useTranslations("birthdays")
 
   return (
-    <section className="px-5 py-20 md:px-9 md:py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+    <Section>
+      <Container className="grid items-center gap-12 md:grid-cols-2">
         <Reveal>
           <h1 className="mb-5 font-heading text-[clamp(38px,5vw,56px)] leading-tight font-black text-brand-plum">
             {title}
@@ -45,8 +47,8 @@ function BirthdayHero({ title, description, imageUrl }: BirthdayHeroProps) {
             className="h-80"
           />
         </Reveal>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

@@ -2,16 +2,26 @@
 
 import Link from "next/link"
 import { useTranslations } from "next-intl"
-import { Plus, Settings, Trash2 } from "lucide-react"
+import { Pencil, Plus, Settings, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 
+import { AdminModal } from "@/components/admin/admin-modal"
+import { ConfirmModal } from "@/components/admin/confirm-modal"
+import {
+  adminCell,
+  AdminTable,
+  AdminTableEmpty,
+  AdminTableRow,
+} from "@/components/admin/admin-table"
 import {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminToggle,
 } from "@/components/admin/admin-ui"
 import { PillButton } from "@/components/brand/pill-button"
+import { cn } from "@/lib/utils"
 import {
   createLocation,
   deleteLocation,
@@ -37,6 +47,8 @@ interface ManagedLocation {
  */
 function LocationsManager({ locations }: { locations: ManagedLocation[] }) {
   const t = useTranslations("admin.locations")
+  const common = useTranslations("admin.common")
+  const general = useTranslations("admin.general")
   const [adding, setAdding] = useState(locations.length === 0)
 
   return (
@@ -51,7 +63,7 @@ function LocationsManager({ locations }: { locations: ManagedLocation[] }) {
           </p>
         </div>
         {!adding && (
-          <PillButton type="button" size="md" onClick={() => setAdding(true)}>
+          <PillButton type="button" size="sm" onClick={() => setAdding(true)}>
             <Plus className="size-4" />
             {t("add")}
           </PillButton>
@@ -60,15 +72,31 @@ function LocationsManager({ locations }: { locations: ManagedLocation[] }) {
 
       {adding && <NewLocationForm onCancel={() => setAdding(false)} />}
 
-      <div className="mt-5 space-y-4">
-        {locations.length === 0 && !adding && (
-          <p className="py-16 text-center text-[15px] text-muted-foreground">
-            {t("empty")}
-          </p>
-        )}
-        {locations.map((location) => (
-          <LocationCard key={location.slug} location={location} />
-        ))}
+      <div className="mt-5">
+        <AdminTable
+          headers={[
+            { label: t("nameLabel"), tooltip: t("nameLabelTip") },
+            { label: t("slug"), className: "w-40", tooltip: t("slugTip") },
+            {
+              label: general("city"),
+              className: "w-36",
+              tooltip: general("cityTip"),
+            },
+            {
+              label: t("published"),
+              className: "w-32",
+              tooltip: t("publishedTip"),
+            },
+            { label: common("actions"), className: "w-px sr-only" },
+          ]}
+        >
+          {locations.length === 0 && (
+            <AdminTableEmpty colSpan={5} label={t("empty")} />
+          )}
+          {locations.map((location) => (
+            <LocationRow key={location.slug} location={location} />
+          ))}
+        </AdminTable>
       </div>
     </div>
   )
@@ -155,7 +183,7 @@ function NewLocationForm({ onCancel }: { onCancel: () => void }) {
         )}
 
         <div className="flex gap-3">
-          <PillButton type="submit" size="md" disabled={pending}>
+          <PillButton type="submit" size="sm" disabled={pending}>
             {pending ? t("creating") : t("create")}
           </PillButton>
           <button
@@ -171,10 +199,12 @@ function NewLocationForm({ onCancel }: { onCancel: () => void }) {
   )
 }
 
-function LocationCard({ location }: { location: ManagedLocation }) {
+function LocationRow({ location }: { location: ManagedLocation }) {
   const t = useTranslations("admin.locations")
   const common = useTranslations("admin.common")
   const [draft, setDraft] = useState(location)
+  const [editing, setEditing] = useState(false)
+  const [removing, setRemoving] = useState(false)
   const [pending, start] = useTransition()
 
   const save = (next: ManagedLocation) => {
@@ -190,85 +220,115 @@ function LocationCard({ location }: { location: ManagedLocation }) {
   }
 
   return (
-    <AdminCard>
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="font-heading text-[19px] font-black text-brand-plum">
-            {draft.name.he}
-          </div>
-          <div className="text-[14px] text-muted-foreground">
-            /{draft.slug} · {draft.city}
-          </div>
+    <AdminTableRow>
+      <td className={adminCell}>
+        <span className="font-bold text-brand-plum">{draft.name.he}</span>
+      </td>
+      <td className={cn(adminCell, "w-40")}>
+        <span dir="ltr" className="block text-start text-muted-foreground">
+          /{draft.slug}
+        </span>
+      </td>
+      <td className={cn(adminCell, "w-36 text-muted-foreground")}>
+        {draft.city}
+      </td>
+      <td className={cn(adminCell, "w-32")}>
+        <AdminFlag
+          on={draft.isPublished}
+          label={draft.isPublished ? t("published") : t("unpublished")}
+        />
+      </td>
+      <td className="px-2 py-1.5">
+        <div className="flex items-center justify-end gap-0.5">
+          <Link
+            href={`/admin/${draft.slug}/general`}
+            aria-label={t("settings")}
+            className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-white"
+          >
+            <Settings className="size-4" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            aria-label={common("edit")}
+            className="flex size-8 items-center justify-center rounded-lg text-brand-plum transition hover:bg-white"
+          >
+            <Pencil className="size-4" />
+          </button>
+          <button
+            type="button"
+            disabled={pending}
+            onClick={() => setRemoving(true)}
+            aria-label={t("delete")}
+            className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
+          >
+            <Trash2 className="size-4" />
+          </button>
         </div>
 
-        <AdminToggle
-          label={draft.isPublished ? t("published") : t("unpublished")}
-          checked={draft.isPublished}
-          onChange={(isPublished) => save({ ...draft, isPublished })}
-        />
-
-        <Link
-          href={`/admin/${draft.slug}/general`}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-border px-4 text-[14px] font-bold text-brand-plum transition hover:bg-muted"
-        >
-          <Settings className="size-4" />
-          {t("settings")}
-        </Link>
-
-        <button
-          type="button"
-          disabled={pending}
-          onClick={() => {
-            if (!confirm(t("deleteConfirm"))) return
+        <ConfirmModal
+          open={removing}
+          onClose={() => setRemoving(false)}
+          onConfirm={() =>
             start(async () => {
               await deleteLocation(draft.slug)
             })
+          }
+          title={draft.name.he || draft.slug}
+          message={t("deleteConfirm")}
+          confirmLabel={t("delete")}
+        />
+
+        <AdminModal
+          open={editing}
+          onClose={() => {
+            save(draft)
+            setEditing(false)
           }}
-          aria-label={t("delete")}
-          className="flex size-10 items-center justify-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+          title={draft.name.he || draft.slug}
         >
-          <Trash2 className="size-4" />
-        </button>
-      </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <AdminField label={`${t("nameLabel")} (עב)`}>
+              <AdminInput
+                value={draft.name.he}
+                onChange={(event) =>
+                  setDraft({
+                    ...draft,
+                    name: { ...draft.name, he: event.target.value },
+                  })
+                }
+              />
+            </AdminField>
+            <AdminField label={`${t("nameLabel")} (EN)`}>
+              <AdminInput
+                value={draft.name.en ?? ""}
+                dir="ltr"
+                onChange={(event) =>
+                  setDraft({
+                    ...draft,
+                    name: { ...draft.name, en: event.target.value },
+                  })
+                }
+                className="text-start"
+              />
+            </AdminField>
+          </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <AdminField label={`${t("nameLabel")} (עב)`}>
-          <AdminInput
-            value={draft.name.he}
-            onChange={(event) =>
-              setDraft({
-                ...draft,
-                name: { ...draft.name, he: event.target.value },
-              })
-            }
-            onBlur={() => save(draft)}
+          <AdminToggle
+            label={draft.isPublished ? t("published") : t("unpublished")}
+            checked={draft.isPublished}
+            onChange={(isPublished) => save({ ...draft, isPublished })}
           />
-        </AdminField>
-        <AdminField label={`${t("nameLabel")} (EN)`}>
-          <AdminInput
-            value={draft.name.en ?? ""}
-            dir="ltr"
-            onChange={(event) =>
-              setDraft({
-                ...draft,
-                name: { ...draft.name, en: event.target.value },
-              })
-            }
-            onBlur={() => save(draft)}
-            className="text-start"
-          />
-        </AdminField>
-      </div>
 
-      <p className="mt-3 text-[13px] text-muted-foreground">
-        {t("deleteHint")}
-      </p>
-      {pending && (
-        <p className="mt-1 text-[13px] text-muted-foreground">
-          {common("saving")}
-        </p>
-      )}
-    </AdminCard>
+          <p className="text-[13px] text-muted-foreground">{t("deleteHint")}</p>
+          {pending && (
+            <p className="text-[13px] text-muted-foreground">
+              {common("saving")}
+            </p>
+          )}
+        </AdminModal>
+      </td>
+    </AdminTableRow>
   )
 }
 

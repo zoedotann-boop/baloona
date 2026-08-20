@@ -1,6 +1,6 @@
 {
-  "id": "858ab373-e44f-4266-a45e-5cdf42e50ba4",
-  "prevId": "d68660b3-f48f-4c99-8b99-69c9652442de",
+  "id": "841a1313-b26c-4730-9910-93fc8a46bd89",
+  "prevId": "462198b0-a859-473c-bdf0-4534236a1bdc",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1640,7 +1640,7 @@
         },
         "text": {
           "name": "text",
-          "type": "jsonb",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -2439,6 +2439,13 @@
           "primaryKey": false,
           "notNull": false
         },
+        "google_reviews_auto_sync": {
+          "name": "google_reviews_auto_sync",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "ga_measurement_id": {
           "name": "ga_measurement_id",
           "type": "text",
@@ -3118,150 +3125,6 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-    },
-    "public.punch_card_order": {
-      "name": "punch_card_order",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "full_name": {
-          "name": "full_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "''"
-        },
-        "phone": {
-          "name": "phone",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "''"
-        },
-        "from_location_id": {
-          "name": "from_location_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "entries": {
-          "name": "entries",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "amount": {
-          "name": "amount",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "shop_order_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'pending'"
-        },
-        "payme_sale_id": {
-          "name": "payme_sale_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "card_id": {
-          "name": "card_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "paid_at": {
-          "name": "paid_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "punch_card_order_product_id_product_id_fk": {
-          "name": "punch_card_order_product_id_product_id_fk",
-          "tableFrom": "punch_card_order",
-          "tableTo": "product",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "punch_card_order_from_location_id_location_id_fk": {
-          "name": "punch_card_order_from_location_id_location_id_fk",
-          "tableFrom": "punch_card_order",
-          "tableTo": "location",
-          "columnsFrom": [
-            "from_location_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "punch_card_order_card_id_punch_card_id_fk": {
-          "name": "punch_card_order_card_id_punch_card_id_fk",
-          "tableFrom": "punch_card_order",
-          "tableTo": "punch_card",
-          "columnsFrom": [
-            "card_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -3328,15 +3191,6 @@
       "values": [
         "active",
         "completed"
-      ]
-    },
-    "public.shop_order_status": {
-      "name": "shop_order_status",
-      "schema": "public",
-      "values": [
-        "pending",
-        "paid",
-        "failed"
       ]
     }
   },

@@ -2,6 +2,7 @@ import { AccentSquare } from "@/components/brand/accent-square"
 import { Panel } from "@/components/brand/panel"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
+import { Section } from "@/components/layout/section"
 
 interface VisionPanelProps {
   title: string
@@ -12,7 +13,7 @@ interface VisionPanelProps {
 /** Vision — a lavender panel with flowing text beside a photo. */
 function VisionPanel({ title, body, imageUrl }: VisionPanelProps) {
   return (
-    <section className="px-5 py-20 md:px-9 md:py-28">
+    <Section>
       <Panel
         tone="lavender"
         className="mx-auto grid max-w-6xl items-center gap-10 overflow-visible md:grid-cols-2"
@@ -41,7 +42,7 @@ function VisionPanel({ title, body, imageUrl }: VisionPanelProps) {
           <Photo src={imageUrl} alt={title} className="aspect-[4/3] w-full" />
         </Reveal>
       </Panel>
-    </section>
+    </Section>
   )
 }
 

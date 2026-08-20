@@ -1,10 +1,17 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Trash2 } from "lucide-react"
+import { Eye, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 
-import { AdminCard } from "@/components/admin/admin-ui"
+import { AdminModal } from "@/components/admin/admin-modal"
+import { ConfirmModal } from "@/components/admin/confirm-modal"
+import {
+  adminCell,
+  AdminTable,
+  AdminTableEmpty,
+  AdminTableRow,
+} from "@/components/admin/admin-table"
 import { deleteLead, updateLeadStatus } from "@/lib/actions/admin/leads"
 import type { LeadKind, LeadStatus } from "@/lib/db/schema"
 import { cn } from "@/lib/utils"
@@ -38,7 +45,10 @@ interface InboxLead {
  */
 function LeadsInbox({ slug, leads }: { slug: string; leads: InboxLead[] }) {
   const t = useTranslations("admin.leads")
+  const common = useTranslations("admin.common")
   const [filter, setFilter] = useState<LeadStatus | "all">("all")
+  const [openLead, setOpenLead] = useState<string | null>(null)
+  const [removingLead, setRemovingLead] = useState<string | null>(null)
   const [pending, start] = useTransition()
 
   const visible =
@@ -54,140 +64,197 @@ function LeadsInbox({ slug, leads }: { slug: string; leads: InboxLead[] }) {
 
   return (
     <div className="pb-10">
-      <header className="mb-6">
-        <h1 className="font-heading text-[28px] font-black text-brand-plum">
-          {t("title")}
-        </h1>
-        <p className="mt-1 text-[15px] text-muted-foreground">
-          {t("description")}
-        </p>
+      <header className="mb-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <div className="min-w-0">
+          <h1 className="font-heading text-[24px] font-black text-brand-plum">
+            {t("title")}
+          </h1>
+          <p className="mt-0.5 text-[14px] text-muted-foreground">
+            {t("description")}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {(["all", ...STATUSES] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setFilter(option)}
+              aria-pressed={filter === option}
+              className={cn(
+                "h-9 rounded-full px-4 text-[14px] font-bold transition",
+                filter === option
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-foreground hover:brightness-95"
+              )}
+            >
+              {option === "all" ? t("filterAll") : statusLabel(option)}
+            </button>
+          ))}
+        </div>
       </header>
 
-      <div className="mb-5 flex flex-wrap gap-2">
-        {(["all", ...STATUSES] as const).map((option) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => setFilter(option)}
-            aria-pressed={filter === option}
-            className={cn(
-              "h-9 rounded-full px-4 text-[14px] font-bold transition",
-              filter === option
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-foreground hover:brightness-95"
-            )}
-          >
-            {option === "all" ? t("filterAll") : statusLabel(option)}
-          </button>
-        ))}
-      </div>
+      <AdminTable
+        headers={[
+          { label: t("kind"), className: "w-28", tooltip: t("kindTip") },
+          t("name"),
+          { label: t("phone"), className: "w-36" },
+          { label: t("createdAt"), className: "w-32" },
+          { label: t("status"), className: "w-40", tooltip: t("statusTip") },
+          { label: common("actions"), className: "w-px sr-only" },
+        ]}
+      >
+        {visible.length === 0 && (
+          <AdminTableEmpty colSpan={6} label={t("empty")} />
+        )}
 
-      {visible.length === 0 ? (
-        <p className="py-16 text-center text-[15px] text-muted-foreground">
-          {t("empty")}
-        </p>
-      ) : (
-        <div className="space-y-4">
-          {visible.map((lead) => (
-            <AdminCard key={lead.id}>
-              <div className="mb-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-brand-pink px-2.5 py-0.5 text-[12px] font-black text-brand-plum">
-                  {lead.kind === "birthday"
-                    ? t("kindBirthday")
-                    : t("kindContact")}
+        {visible.map((lead) => (
+          <AdminTableRow key={lead.id}>
+            <td className={cn(adminCell, "w-28")}>
+              <span className="rounded-full bg-brand-pink px-2.5 py-0.5 text-[12px] font-black whitespace-nowrap text-brand-plum">
+                {lead.kind === "birthday"
+                  ? t("kindBirthday")
+                  : t("kindContact")}
+              </span>
+            </td>
+            <td className={adminCell}>
+              <span className="font-bold text-brand-plum">
+                {lead.fullName || "—"}
+              </span>
+              {lead.notifyError && (
+                <span className="ms-2 text-[12px] font-bold text-destructive">
+                  {t("notifyFailedShort")}
                 </span>
-                <span className="font-heading text-[17px] font-black text-brand-plum">
-                  {lead.fullName || "—"}
-                </span>
-                <span className="text-[13px] text-muted-foreground">
-                  {t("createdAt")}: {lead.createdAt}
-                </span>
-
-                <select
-                  value={lead.status}
-                  disabled={pending}
-                  onChange={(event) =>
-                    start(async () => {
-                      await updateLeadStatus({
-                        slug,
-                        leadId: lead.id,
-                        status: event.target.value as LeadStatus,
-                      })
+              )}
+            </td>
+            <td className={cn(adminCell, "w-36")}>
+              <span
+                dir="ltr"
+                className="block text-start text-muted-foreground"
+              >
+                {lead.phone || "—"}
+              </span>
+            </td>
+            <td
+              className={cn(
+                adminCell,
+                "w-32 whitespace-nowrap text-muted-foreground"
+              )}
+            >
+              {lead.createdAt}
+            </td>
+            <td className={cn(adminCell, "w-40")}>
+              <select
+                value={lead.status}
+                disabled={pending}
+                onChange={(event) =>
+                  start(async () => {
+                    await updateLeadStatus({
+                      slug,
+                      leadId: lead.id,
+                      status: event.target.value as LeadStatus,
                     })
-                  }
-                  className="ms-auto h-9 rounded-xl border border-border bg-white px-2.5 text-[13px] font-bold text-brand-plum focus:border-primary focus:outline-none"
-                  aria-label={t("status")}
+                  })
+                }
+                className="h-9 w-full rounded-xl border border-border bg-white px-2.5 text-[13px] font-bold text-brand-plum focus:border-primary focus:outline-none"
+                aria-label={t("status")}
+              >
+                {STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {statusLabel(status)}
+                  </option>
+                ))}
+              </select>
+            </td>
+            <td className="px-2 py-1.5">
+              <div className="flex items-center justify-end gap-0.5">
+                <button
+                  type="button"
+                  onClick={() => setOpenLead(lead.id)}
+                  aria-label={t("view")}
+                  className="flex size-8 items-center justify-center rounded-lg text-brand-plum transition hover:bg-white"
                 >
-                  {STATUSES.map((status) => (
-                    <option key={status} value={status}>
-                      {statusLabel(status)}
-                    </option>
-                  ))}
-                </select>
-
+                  <Eye className="size-4" />
+                </button>
                 <button
                   type="button"
                   disabled={pending}
-                  onClick={() =>
-                    start(async () => {
-                      await deleteLead({ slug, leadId: lead.id })
-                    })
-                  }
+                  onClick={() => setRemovingLead(lead.id)}
                   aria-label={t("delete")}
-                  className="flex size-9 items-center justify-center rounded-xl text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+                  className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive disabled:opacity-30"
                 >
                   <Trash2 className="size-4" />
                 </button>
               </div>
 
-              <dl className="grid gap-x-6 gap-y-1.5 text-[15px] sm:grid-cols-2">
-                <Row label={t("phone")} value={lead.phone} dir="ltr" />
-                <Row label={t("email")} value={lead.email} dir="ltr" />
-                <Row label={t("subject")} value={lead.subject} />
-                {lead.details.map((detail) => (
-                  <Row
-                    key={detail.label}
-                    label={detail.label}
-                    value={detail.value}
-                  />
-                ))}
-                {lead.upgrades.length > 0 && (
-                  <Row
-                    label={t("upgrades")}
-                    value={lead.upgrades
-                      .map((upgrade) => `${upgrade.label} (${upgrade.price})`)
-                      .join(", ")}
-                  />
+              <ConfirmModal
+                open={removingLead === lead.id}
+                onClose={() => setRemovingLead(null)}
+                onConfirm={() =>
+                  start(async () => {
+                    await deleteLead({ slug, leadId: lead.id })
+                  })
+                }
+                title={lead.fullName || t("kindContact")}
+                message={common("removeNowMessage")}
+                confirmLabel={t("delete")}
+              />
+
+              <AdminModal
+                open={openLead === lead.id}
+                onClose={() => setOpenLead(null)}
+                title={lead.fullName || t("kindContact")}
+              >
+                <dl className="grid gap-x-6 gap-y-1.5 text-[15px] sm:grid-cols-2">
+                  <Row label={t("phone")} value={lead.phone} dir="ltr" />
+                  <Row label={t("email")} value={lead.email} dir="ltr" />
+                  <Row label={t("subject")} value={lead.subject} />
+                  <Row label={t("createdAt")} value={lead.createdAt} />
+                  {lead.details.map((detail) => (
+                    <Row
+                      key={detail.label}
+                      label={detail.label}
+                      value={detail.value}
+                    />
+                  ))}
+                  {lead.upgrades.length > 0 && (
+                    <Row
+                      label={t("upgrades")}
+                      value={lead.upgrades
+                        .map((upgrade) => `${upgrade.label} (${upgrade.price})`)
+                        .join(", ")}
+                    />
+                  )}
+                  <Row label={t("total")} value={lead.total} />
+                </dl>
+
+                {lead.message && (
+                  <p className="rounded-2xl bg-muted p-3 text-[15px] leading-relaxed whitespace-pre-line text-foreground">
+                    {lead.message}
+                  </p>
                 )}
-                <Row label={t("total")} value={lead.total} />
-              </dl>
 
-              {lead.message && (
-                <p className="mt-3 rounded-2xl bg-muted p-3 text-[15px] leading-relaxed whitespace-pre-line text-foreground">
-                  {lead.message}
-                </p>
-              )}
+                {lead.signatureUrl && (
+                  <a
+                    href={lead.signatureUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-[14px] font-bold text-primary underline"
+                  >
+                    {t("viewSignature")}
+                  </a>
+                )}
 
-              {lead.signatureUrl && (
-                <a
-                  href={lead.signatureUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-block text-[14px] font-bold text-primary underline"
-                >
-                  {t("viewSignature")}
-                </a>
-              )}
-
-              {lead.notifyError && (
-                <p className="mt-3 text-[13px] font-bold text-destructive">
-                  {t("notifyFailed", { error: lead.notifyError })}
-                </p>
-              )}
-            </AdminCard>
-          ))}
-        </div>
-      )}
+                {lead.notifyError && (
+                  <p className="text-[13px] font-bold text-destructive">
+                    {t("notifyFailed", { error: lead.notifyError })}
+                  </p>
+                )}
+              </AdminModal>
+            </td>
+          </AdminTableRow>
+        ))}
+      </AdminTable>
     </div>
   )
 }

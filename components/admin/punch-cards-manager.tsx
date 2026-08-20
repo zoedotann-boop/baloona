@@ -13,6 +13,8 @@ import {
 } from "lucide-react"
 import { useRef, useState, useTransition } from "react"
 
+import { ConfirmModal } from "@/components/admin/confirm-modal"
+import { useToast } from "@/components/admin/toast"
 import { AdminCard, AdminField, AdminInput } from "@/components/admin/admin-ui"
 import { PillButton } from "@/components/brand/pill-button"
 import {
@@ -86,18 +88,18 @@ function PunchCardsManager({
   const allSelected =
     rows.length > 0 && rows.every((row) => selected.has(row.card.id))
 
+  const [removingSelected, setRemovingSelected] = useState(false)
+
   const toggleAll = () =>
     setSelected(allSelected ? new Set() : new Set(rows.map((r) => r.card.id)))
 
-  const deleteSelected = () => {
-    if (!window.confirm(t("deleteSelectedConfirm"))) return
+  const deleteSelected = () =>
     start(async () => {
       await Promise.all(
         [...selected].map((cardId) => deleteCard({ slug, cardId }))
       )
       refresh()
     })
-  }
 
   return (
     <div className="space-y-5 pb-10">
@@ -112,7 +114,7 @@ function PunchCardsManager({
         </div>
         <PillButton
           type="button"
-          size="md"
+          size="sm"
           onClick={() => setShowIssue((value) => !value)}
         >
           <Plus className="size-4" />
@@ -150,13 +152,22 @@ function PunchCardsManager({
           </span>
           <button
             type="button"
-            onClick={deleteSelected}
+            onClick={() => setRemovingSelected(true)}
             disabled={pending}
             className="flex h-8 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-destructive transition hover:bg-destructive/10 disabled:opacity-40"
           >
             <Trash2 className="size-4" />
             {t("deleteSelected")}
           </button>
+
+          <ConfirmModal
+            open={removingSelected}
+            onClose={() => setRemovingSelected(false)}
+            onConfirm={deleteSelected}
+            title={t("deleteSelected")}
+            message={t("deleteSelectedConfirm")}
+            confirmLabel={t("deleteCard")}
+          />
         </div>
       )}
 
@@ -278,13 +289,13 @@ function CardRowView({
       setEditing(false)
     })
 
-  const remove = () => {
-    if (!window.confirm(t("deleteConfirm"))) return
+  const [removing, setRemoving] = useState(false)
+
+  const remove = () =>
     start(async () => {
       await deleteCard({ slug, cardId: card.id })
       onChanged()
     })
-  }
 
   return (
     <>
@@ -333,7 +344,7 @@ function CardRowView({
           <div className="flex flex-wrap items-center justify-end gap-1">
             <PillButton
               type="button"
-              size="md"
+              size="sm"
               disabled={pending || remaining === 0}
               onClick={() =>
                 start(async () => {
@@ -370,9 +381,22 @@ function CardRowView({
             <IconButton label={t("edit")} onClick={startEdit} active={editing}>
               <Pencil className="size-4" />
             </IconButton>
-            <IconButton label={t("deleteCard")} onClick={remove} danger>
+            <IconButton
+              label={t("deleteCard")}
+              onClick={() => setRemoving(true)}
+              danger
+            >
               <Trash2 className="size-4" />
             </IconButton>
+
+            <ConfirmModal
+              open={removing}
+              onClose={() => setRemoving(false)}
+              onConfirm={remove}
+              title={customer.fullName || customer.phone}
+              message={t("deleteConfirm")}
+              confirmLabel={t("deleteCard")}
+            />
           </div>
         </td>
       </tr>
@@ -422,10 +446,9 @@ function CardRowView({
             <div className="mt-3 flex items-center gap-2">
               <PillButton
                 type="button"
-                size="md"
+                size="sm"
                 disabled={pending}
                 onClick={saveEdit}
-                className="h-9"
               >
                 {t("save")}
               </PillButton>
@@ -507,7 +530,7 @@ function IssueForm({
 }) {
   const t = useTranslations("admin.punchCards")
   const [pending, start] = useTransition()
-  const [error, setError] = useState(false)
+  const toast = useToast()
 
   return (
     <AdminCard title={t("issueTitle")} description={t("issueDescription")}>
@@ -521,7 +544,6 @@ function IssueForm({
           const remainingRaw = String(data.get("remaining") ?? "").trim()
           const remaining = remainingRaw === "" ? total : Number(remainingRaw)
 
-          setError(false)
           start(async () => {
             const result = await issuePunchCard({
               slug,
@@ -536,7 +558,7 @@ function IssueForm({
               form.reset()
               onIssued(phone)
             } else {
-              setError(true)
+              toast(t("issueError"), "error")
             }
           })
         }}
@@ -574,14 +596,9 @@ function IssueForm({
         </AdminField>
 
         <div className="flex items-center gap-3 sm:col-span-2 lg:col-span-3">
-          <PillButton type="submit" size="md" disabled={pending}>
+          <PillButton type="submit" size="sm" disabled={pending}>
             {t("issueButton")}
           </PillButton>
-          {error && (
-            <span className="text-[14px] font-bold text-destructive">
-              {t("issueError")}
-            </span>
-          )}
         </div>
       </form>
     </AdminCard>

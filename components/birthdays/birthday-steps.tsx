@@ -1,4 +1,6 @@
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 
 interface BirthdayStepContent {
   id: string
@@ -17,8 +19,8 @@ function BirthdaySteps({ title, note, steps }: BirthdayStepsProps) {
   if (steps.length === 0) return null
 
   return (
-    <section className="bg-brand-cloud px-5 py-20 md:px-9 md:py-28">
-      <div className="mx-auto max-w-5xl">
+    <Section className="bg-brand-cloud">
+      <Container size="md">
         <Reveal className="mb-14 text-center">
           <h2 className="font-heading text-[clamp(34px,4.5vw,48px)] font-black text-brand-plum">
             {title}
@@ -56,8 +58,8 @@ function BirthdaySteps({ title, note, steps }: BirthdayStepsProps) {
             {note}
           </p>
         )}
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

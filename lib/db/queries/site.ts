@@ -1,6 +1,6 @@
 import "server-only"
 
-import { asc, eq } from "drizzle-orm"
+import { asc, desc, eq } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import { locations, products, punchCards, type SeoPage } from "@/lib/db/schema"
@@ -48,6 +48,13 @@ export type LocationChrome = NonNullable<
   Awaited<ReturnType<typeof getLocationChrome>>
 >
 
+/**
+ * How many reviews the home page masonry shows. The nightly Google sync
+ * publishes on its own, so the section needs a ceiling of its own — without
+ * one it would grow by a few cards every night, forever.
+ */
+const HOME_REVIEWS_LIMIT = 9
+
 /** Everything the home page renders. */
 export async function getHomePage(slug: string) {
   return db.query.locations.findFirst({
@@ -64,7 +71,11 @@ export async function getHomePage(slug: string) {
       galleryImages: { orderBy: (g) => [asc(g.sortOrder)] },
       reviews: {
         where: (r) => eq(r.isPublished, true),
-        orderBy: (r) => [asc(r.sortOrder)],
+        // `sortOrder` first so an editor can pin a favourite to the top, then
+        // newest, which is what decides the tie between synced Google reviews
+        // (they all arrive at the default 0).
+        orderBy: (r) => [asc(r.sortOrder), desc(r.publishedAt)],
+        limit: HOME_REVIEWS_LIMIT,
       },
     },
   })

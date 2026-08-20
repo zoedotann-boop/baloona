@@ -6,11 +6,12 @@ import { useState } from "react"
 import {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminToggle,
 } from "@/components/admin/admin-ui"
 import { LocalizedField } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { saveMenu } from "@/lib/actions/admin/content"
 import { emptyLocalized, type Localized } from "@/lib/localized"
@@ -76,7 +77,7 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
       </AdminCard>
 
       <AdminCard>
-        <RowList
+        <RowTable
           items={draft.categories}
           onChange={(categories) => setDraft((d) => ({ ...d, categories }))}
           createItem={() => ({
@@ -86,6 +87,26 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
           })}
           addLabel={t("addCategory")}
           emptyLabel={common("empty")}
+          columns={[
+            {
+              header: t("categoryLabel"),
+              tooltip: t("categoryLabelTip"),
+              cell: (category) => category.label.he,
+            },
+            {
+              header: common("items"),
+              cell: (category) => category.items.length,
+              className: "w-24",
+            },
+            {
+              header: t("visible"),
+              cell: (category) => (
+                <AdminFlag on={category.isVisible} label={t("visible")} />
+              ),
+              className: "w-28",
+            },
+          ]}
+          editTitle={(category) => category.label.he || t("addCategory")}
           renderRow={(category, _index, update) => (
             <div className="space-y-3">
               <LocalizedField
@@ -99,7 +120,7 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
                 checked={category.isVisible}
                 onChange={(isVisible) => update({ ...category, isVisible })}
               />
-              <RowList
+              <RowTable
                 items={category.items}
                 onChange={(items) => update({ ...category, items })}
                 createItem={() => ({
@@ -109,6 +130,27 @@ function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
                   isVisible: true,
                 })}
                 addLabel={t("addItem")}
+                columns={[
+                  {
+                    header: t("itemName"),
+                    tooltip: t("itemNameTip"),
+                    cell: (item) => item.name.he,
+                  },
+                  {
+                    header: t("itemAmount"),
+                    tooltip: t("itemAmountTip"),
+                    cell: (item) => item.amount,
+                    className: "w-24",
+                  },
+                  {
+                    header: t("visible"),
+                    cell: (item) => (
+                      <AdminFlag on={item.isVisible} label={t("visible")} />
+                    ),
+                    className: "w-28",
+                  },
+                ]}
+                editTitle={(item) => item.name.he || t("addItem")}
                 renderRow={(item, _itemIndex, updateItem) => (
                   <div className="space-y-3">
                     <div className="grid gap-3 sm:grid-cols-[2fr_1fr]">

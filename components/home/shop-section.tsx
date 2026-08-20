@@ -2,6 +2,8 @@ import { Check, MapPin } from "lucide-react"
 
 import { Confetti } from "@/components/brand/confetti"
 import { Reveal } from "@/components/brand/reveal"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 import { ProductCard } from "@/components/shop/product-card"
 
 interface ShopProduct {
@@ -47,12 +49,9 @@ function ShopSection({
   if (products.length === 0) return null
 
   return (
-    <section
-      id="shop"
-      className="relative scroll-mt-20 overflow-hidden px-5 py-20 md:px-9 md:py-28"
-    >
+    <Section id="shop" className="relative scroll-mt-20 overflow-hidden">
       <Confetti />
-      <div className="mx-auto max-w-6xl">
+      <Container>
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-[clamp(32px,4.5vw,46px)] font-black text-brand-plum">
             {title}
@@ -101,8 +100,8 @@ function ShopSection({
             ))}
           </ul>
         </Reveal>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }
 

@@ -81,12 +81,15 @@ export async function startPunchCardCheckout(
     .returning({ id: punchCardOrders.id })
 
   const origin = await siteOrigin()
+  // Carry `from` back so the success page can wear the same branch chrome the
+  // checkout did.
+  const returnQuery = from ? `&from=${encodeURIComponent(from)}` : ""
   const sale = await generateSale({
     amount: product.price,
     productName: pickLocale(product.name, defaultLocale),
     transactionId: `order:${order.id}`,
     callbackUrl: `${origin}/api/payme`,
-    returnUrl: `${origin}/checkout/success?order=${order.id}`,
+    returnUrl: `${origin}/checkout/success?order=${order.id}${returnQuery}`,
     buyer: { name: fullName, email, phone },
   })
 

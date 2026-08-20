@@ -21,3 +21,13 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
+
+/** Slim brand-global variant shown on pages with no branch behind them. */
+export const BrandGlobal: Story = {
+  args: {
+    paths: undefined,
+    tagline: undefined,
+    contact: undefined,
+    hours: undefined,
+  },
+}
