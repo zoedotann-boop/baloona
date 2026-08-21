@@ -1,0 +1,1 @@
+ALTER TABLE "site_setting" ADD COLUMN "google_reviews_auto_sync" boolean DEFAULT false NOT NULL;

@@ -10,7 +10,7 @@ const meta = {
       control: "inline-radio",
       options: ["primary", "outline", "soft"],
     },
-    size: { control: "inline-radio", options: ["md", "lg"] },
+    size: { control: "inline-radio", options: ["sm", "md", "lg"] },
   },
   args: { children: "נווטו אלינו (Waze)", variant: "primary", size: "lg" },
 } satisfies Meta<typeof PillButton>
@@ -40,6 +40,17 @@ export const Variants: Story = {
       <PillButton variant="primary">ראשי</PillButton>
       <PillButton variant="outline">משני</PillButton>
       <PillButton variant="soft">רך</PillButton>
+    </div>
+  ),
+}
+
+/** `sm` is the admin's scale — it lines up with the h-9 controls beside it. */
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-3">
+      <PillButton size="sm">פרסום שינויים</PillButton>
+      <PillButton size="md">הזמינו תאריך</PillButton>
+      <PillButton size="lg">נווטו אלינו</PillButton>
     </div>
   ),
 }

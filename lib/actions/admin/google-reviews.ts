@@ -1,24 +1,31 @@
 "use server"
 
-import { and, eq } from "drizzle-orm"
+import { asc, eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { requireLocationAccess } from "@/lib/admin/access"
+import { toReviewDraft, type ReviewDraft } from "@/lib/admin/drafts"
 import { db } from "@/lib/db"
 import { reviews, siteSettings } from "@/lib/db/schema"
-import { fetchPlaceReviews } from "@/lib/google/places"
+import { syncLocationReviews } from "@/lib/google/sync-reviews"
 
 const schema = z.object({ slug: z.string().min(1) })
 
 export type SyncResult =
-  { ok: true; imported: number; updated: number } | { ok: false; error: string }
+  | { ok: true; imported: number; updated: number; reviews: ReviewDraft[] }
+  | { ok: false; error: string }
 
 /**
- * Pull the branch's Google reviews into the reviews list.
+ * The admin's "sync now" button.
  *
- * Reviews are matched on Google's own id, so a re-sync refreshes wording and
- * ratings in place. Imported reviews arrive unpublished: an editor decides what
- * appears on the site, and Google is only a source, not the publisher.
+ * It publishes exactly what the nightly cron would: on a branch with automatic
+ * sync off, imports arrive unpublished for an editor to approve, and on one
+ * that opted in, 4-star-and-up reviews go live immediately. Pressing the button
+ * should never produce a different site than waiting for the job would.
+ *
+ * The sync writes straight to the database, which would leave the open form
+ * showing a stale list — so the refreshed rows come back with the result and
+ * the table re-renders on what was actually imported.
  */
 export async function syncGoogleReviews(
   input: z.input<typeof schema>
@@ -33,45 +40,17 @@ export async function syncGoogleReviews(
   })
   if (!settings?.googlePlaceId) return { ok: false, error: "missing-place-id" }
 
-  const result = await fetchPlaceReviews(settings.googlePlaceId)
+  const result = await syncLocationReviews({
+    locationId: location.id,
+    placeId: settings.googlePlaceId,
+    autoPublish: settings.googleReviewsAutoSync,
+  })
   if (!result.ok) return result
 
-  let imported = 0
-  let updated = 0
+  const rows = await db.query.reviews.findMany({
+    where: eq(reviews.locationId, location.id),
+    orderBy: (row) => [asc(row.sortOrder)],
+  })
 
-  for (const review of result.reviews) {
-    const existing = await db.query.reviews.findFirst({
-      where: and(
-        eq(reviews.locationId, location.id),
-        eq(reviews.externalId, review.externalId)
-      ),
-    })
-
-    if (existing) {
-      await db
-        .update(reviews)
-        .set({
-          authorName: review.authorName,
-          rating: review.rating,
-          text: { ...existing.text, he: review.text },
-          publishedAt: review.publishedAt,
-        })
-        .where(eq(reviews.id, existing.id))
-      updated++
-    } else {
-      await db.insert(reviews).values({
-        locationId: location.id,
-        authorName: review.authorName,
-        rating: review.rating,
-        text: { he: review.text, en: "" },
-        source: "google",
-        externalId: review.externalId,
-        publishedAt: review.publishedAt,
-        isPublished: false,
-      })
-      imported++
-    }
-  }
-
-  return { ok: true, imported, updated }
+  return { ...result, reviews: rows.map(toReviewDraft) }
 }

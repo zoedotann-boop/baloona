@@ -3,10 +3,10 @@
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 
-import { AdminCard } from "@/components/admin/admin-ui"
+import { AdminCard, AdminFlag } from "@/components/admin/admin-ui"
 import { ImageField } from "@/components/admin/image-field"
 import { LocalizedField } from "@/components/admin/localized-field"
-import { RowList } from "@/components/admin/row-list"
+import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { saveGallery } from "@/lib/actions/admin/content"
 import { emptyLocalized, type Localized } from "@/lib/localized"
@@ -38,12 +38,38 @@ function MediaForm({ slug, initial }: { slug: string; initial: MediaDraft }) {
       }
     >
       <AdminCard>
-        <RowList
+        <RowTable
           items={draft.images}
           onChange={(images) => setDraft({ images })}
           createItem={() => ({ url: "", alt: emptyLocalized() })}
           addLabel={t("addImage")}
           emptyLabel={common("empty")}
+          columns={[
+            {
+              header: t("alt"),
+              tooltip: t("altTip"),
+              cell: (image) => image.alt.he,
+            },
+            {
+              header: t("dropzone"),
+              tooltip: t("dropzoneTip"),
+              cell: (image) => (
+                <span
+                  dir="ltr"
+                  className="line-clamp-1 text-start text-muted-foreground"
+                >
+                  {image.url}
+                </span>
+              ),
+            },
+            {
+              header: t("cover"),
+              cell: (_image, index) =>
+                index === 0 ? <AdminFlag on label={t("cover")} /> : null,
+              className: "w-28",
+            },
+          ]}
+          editTitle={(image) => image.alt.he || t("addImage")}
           renderRow={(image, index, update) => (
             <div className="space-y-3">
               {index === 0 && (

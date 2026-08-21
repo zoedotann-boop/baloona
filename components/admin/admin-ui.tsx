@@ -37,18 +37,15 @@ function AdminCard({
 }) {
   return (
     <section
-      className={cn(
-        "rounded-[22px] border border-border bg-white p-5",
-        className
-      )}
+      className={cn("rounded-2xl border border-border bg-white p-4", className)}
     >
       {title && (
-        <div className="mb-4">
-          <h2 className="font-heading text-[19px] font-black text-brand-plum">
+        <div className="mb-3">
+          <h2 className="font-heading text-[16px] font-black text-brand-plum">
             {title}
           </h2>
           {description && (
-            <p className="mt-1 text-[14px] text-muted-foreground">
+            <p className="mt-0.5 text-[13px] text-muted-foreground">
               {description}
             </p>
           )}
@@ -113,7 +110,7 @@ function AdminInput({
   return (
     <input
       id={useControlId(props.id, props["aria-label"])}
-      className={cn(controlClass, "h-11", className)}
+      className={cn(controlClass, "h-10", className)}
       {...props}
     />
   )
@@ -139,7 +136,7 @@ function AdminSelect({
   return (
     <select
       id={useControlId(props.id, props["aria-label"])}
-      className={cn(controlClass, "h-11", className)}
+      className={cn(controlClass, "h-10", className)}
       {...props}
     />
   )
@@ -187,9 +184,37 @@ function AdminToggle({
   )
 }
 
+/**
+ * Compact on/off marker for a table cell.
+ *
+ * A row's toggles live in its dialog, so the table needs to say "is this live?"
+ * in the width of a word rather than repeat the switch.
+ */
+function AdminFlag({ on, label }: { on: boolean; label: string }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[12px] font-bold whitespace-nowrap",
+        on
+          ? "bg-brand-green/15 text-brand-green"
+          : "bg-muted text-muted-foreground"
+      )}
+    >
+      <span
+        className={cn(
+          "size-1.5 rounded-full",
+          on ? "bg-brand-green" : "bg-muted-foreground/50"
+        )}
+      />
+      {label}
+    </span>
+  )
+}
+
 export {
   AdminCard,
   AdminField,
+  AdminFlag,
   AdminInput,
   AdminSelect,
   AdminTextarea,

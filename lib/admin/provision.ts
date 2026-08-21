@@ -17,7 +17,6 @@ import {
   menuTeaserTileRows,
   priceTierRows,
   pricingContent,
-  reviewRows,
   seoEntryRows,
   siteContent,
 } from "@/lib/db/seed-content"
@@ -42,7 +41,6 @@ import {
   priceRows,
   priceTiers,
   pricingContents,
-  reviews,
   seoEntries,
   siteContents,
   siteSettings,
@@ -162,11 +160,7 @@ export async function provisionLocation(
     }))
   )
 
-  await db
-    .insert(reviews)
-    .values(
-      reviewRows.map((row, sortOrder) => ({ locationId, ...row, sortOrder }))
-    )
+  // No starter reviews on purpose — see the note in `seed-content.ts`.
 
   const tiers = await db
     .insert(priceTiers)

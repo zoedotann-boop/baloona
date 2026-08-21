@@ -13,6 +13,8 @@ import {
 } from "lucide-react"
 import { useRef, useState, useTransition } from "react"
 
+import { ConfirmModal } from "@/components/admin/confirm-modal"
+import { useToast } from "@/components/admin/toast"
 import { AdminCard, AdminField, AdminInput } from "@/components/admin/admin-ui"
 import { PillButton } from "@/components/brand/pill-button"
 import {
@@ -58,6 +60,7 @@ function PunchCardsManager({
   const [pending, start] = useTransition()
   const [showIssue, setShowIssue] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [removingSelected, setRemovingSelected] = useState(false)
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const rows: CardRow[] = results.flatMap((customer) =>
@@ -93,15 +96,13 @@ function PunchCardsManager({
   const toggleAll = () =>
     setSelected(allSelected ? new Set() : new Set(rows.map((r) => r.card.id)))
 
-  const deleteSelected = () => {
-    if (!window.confirm(t("deleteSelectedConfirm"))) return
+  const deleteSelected = () =>
     start(async () => {
       await Promise.all(
         [...selected].map((cardId) => deleteCard({ slug, cardId }))
       )
       refresh()
     })
-  }
 
   return (
     <div className="space-y-5 pb-10">
@@ -116,7 +117,7 @@ function PunchCardsManager({
         </div>
         <PillButton
           type="button"
-          size="md"
+          size="sm"
           onClick={() => setShowIssue((value) => !value)}
         >
           <Plus className="size-4" />
@@ -171,7 +172,7 @@ function PunchCardsManager({
                 </span>
                 <button
                   type="button"
-                  onClick={deleteSelected}
+                  onClick={() => setRemovingSelected(true)}
                   disabled={pending}
                   className="flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] font-bold text-destructive transition hover:bg-destructive/10 disabled:opacity-40"
                 >
@@ -195,6 +196,15 @@ function PunchCardsManager({
               />
             ))}
           </div>
+
+          <ConfirmModal
+            open={removingSelected}
+            onClose={() => setRemovingSelected(false)}
+            onConfirm={deleteSelected}
+            title={t("deleteSelected")}
+            message={t("deleteSelectedConfirm")}
+            confirmLabel={t("deleteCard")}
+          />
         </div>
       )}
     </div>
@@ -221,6 +231,7 @@ function CardRowView({
   const [pending, start] = useTransition()
   const [copied, setCopied] = useState(false)
   const [editing, setEditing] = useState(false)
+  const [removing, setRemoving] = useState(false)
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -267,13 +278,11 @@ function CardRowView({
       setEditing(false)
     })
 
-  const remove = () => {
-    if (!window.confirm(t("deleteConfirm"))) return
+  const remove = () =>
     start(async () => {
       await deleteCard({ slug, cardId: card.id })
       onChanged()
     })
-  }
 
   return (
     <AdminCard className="p-4">
@@ -370,7 +379,7 @@ function CardRowView({
           icon={<Trash2 className="size-4" />}
           label={t("deleteCard")}
           tooltip={t("deleteCardTip")}
-          onClick={remove}
+          onClick={() => setRemoving(true)}
           danger
         />
       </div>
@@ -436,6 +445,15 @@ function CardRowView({
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        open={removing}
+        onClose={() => setRemoving(false)}
+        onConfirm={remove}
+        title={customer.fullName || customer.phone}
+        message={t("deleteConfirm")}
+        confirmLabel={t("deleteCard")}
+      />
     </AdminCard>
   )
 }
@@ -513,7 +531,7 @@ function IssueForm({
 }) {
   const t = useTranslations("admin.punchCards")
   const [pending, start] = useTransition()
-  const [error, setError] = useState(false)
+  const toast = useToast()
 
   return (
     <AdminCard title={t("issueTitle")} description={t("issueDescription")}>
@@ -527,7 +545,6 @@ function IssueForm({
           const remainingRaw = String(data.get("remaining") ?? "").trim()
           const remaining = remainingRaw === "" ? total : Number(remainingRaw)
 
-          setError(false)
           start(async () => {
             const result = await issuePunchCard({
               slug,
@@ -542,7 +559,7 @@ function IssueForm({
               form.reset()
               onIssued(phone)
             } else {
-              setError(true)
+              toast(t("issueError"), "error")
             }
           })
         }}
@@ -580,14 +597,9 @@ function IssueForm({
         </AdminField>
 
         <div className="flex items-center gap-3 sm:col-span-2 lg:col-span-3">
-          <PillButton type="submit" size="md" disabled={pending}>
+          <PillButton type="submit" size="sm" disabled={pending}>
             {t("issueButton")}
           </PillButton>
-          {error && (
-            <span className="text-[14px] font-bold text-destructive">
-              {t("issueError")}
-            </span>
-          )}
         </div>
       </form>
     </AdminCard>
