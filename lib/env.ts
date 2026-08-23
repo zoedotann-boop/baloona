@@ -55,3 +55,16 @@ export const serpApiKey = () => optional("SERPAPI_API_KEY")
  * endpoints refuse every request rather than running unauthenticated.
  */
 export const cronSecret = () => optional("CRON_SECRET")
+
+/**
+ * PayMe (PayMeService) online payments. `PAYME_SELLER_ID` is the account's
+ * "Payme Id" / API key, sent in the request body — there is no separate secret.
+ * Unset disables online payments: the punch-card checkout falls back to issuing
+ * the card immediately. `PAYME_SANDBOX=true` targets the preprod environment for
+ * testing without moving real money.
+ */
+export const paymeConfig = () => {
+  const sellerId = optional("PAYME_SELLER_ID")
+  if (!sellerId) return null
+  return { sellerId, sandbox: process.env.PAYME_SANDBOX === "true" }
+}

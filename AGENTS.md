@@ -90,10 +90,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   (`/card/<token>`) and `/checkout` are the brand-global routes under `app/(standalone)/`
   (`card`/`checkout` are reserved slugs). Each product's "buy" links to
   `/checkout?product=<id>&from=<slug>`, which collects details + a mandatory Terms consent,
-  then calls `lib/shop/payment.ts` `startPayment` — a **placeholder** ahead of PayMe
-  approval that persists nothing; wire the real payment there. `/[location]/terms` renders a
-  per-branch Terms & Cancellation policy (editable body, falling back to a `sections` block
-  in `messages/*.json`).
+  then calls `startPunchCardCheckout` (`lib/actions/shop.ts`): with PayMe configured it opens a
+  pending `punch_card_order` and redirects to PayMe, and the card is issued only once payment
+  is **confirmed** (`fulfilOrder`, reached from the PayMe callback and `/checkout/success`);
+  without a key it falls back to issuing immediately (see the PayMe integration below).
+  `/[location]/terms` renders a per-branch Terms & Cancellation policy (editable body, falling
+  back to a `sections` block in `messages/*.json`).
 - **One public shell for every page.** All public pages wear the same frame from
   `components/layout/`: `PublicShell` (header + `<main>` + footer) filled by either
   `SiteChrome` — the full per-branch chrome (header nav, contact block, footer, announcement,
@@ -212,6 +214,12 @@ See `.env.example`.
   `HOME_REVIEWS_LIMIT` (`lib/db/queries/site.ts`) — otherwise the masonry would gain a
   few cards every night, forever. Ordering is `sortOrder` then newest, so an editor can
   still pin a favourite above the synced ones.
+- **PayMe (PayMeService)** — online payments via the `generate-sale` API (`lib/payme/`).
+  The punch-card checkout pays first: it creates a hosted sale and redirects the buyer, and
+  PayMe then POSTs to `app/api/payme` (`sale_callback_url`), which **re-queries the sale** to
+  confirm it is paid before issuing the card — the callback body alone is never trusted.
+  `PAYME_SELLER_ID` is the only key (in the body, no header/secret); `PAYME_SANDBOX=true`
+  targets preprod. Unset, the checkout keeps its no-payment behaviour.
 
 ## Code quality
 

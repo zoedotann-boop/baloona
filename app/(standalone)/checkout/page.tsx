@@ -19,7 +19,7 @@ export async function generateMetadata() {
   return { title: t("title") }
 }
 
-/** Checkout for one product. Payment itself is a placeholder (see checkout-form). */
+/** Checkout for one product; submitting hands off to PayMe (see checkout-form). */
 export default async function CheckoutPage({
   searchParams,
 }: PageProps<"/checkout">) {

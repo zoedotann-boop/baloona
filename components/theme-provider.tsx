@@ -47,7 +47,9 @@ function ThemeHotkey() {
         return
       }
 
-      if (event.key.toLowerCase() !== "d") {
+      // `key` can be undefined on synthetic keydowns (browser autofill, password
+      // managers), so guard before normalising it.
+      if (event.key?.toLowerCase() !== "d") {
         return
       }
 

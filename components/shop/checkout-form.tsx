@@ -5,7 +5,7 @@ import { useState, useTransition } from "react"
 
 import { ConsentCheckbox } from "@/components/brand/consent-checkbox"
 import { PillButton } from "@/components/brand/pill-button"
-import { purchasePunchCard } from "@/lib/actions/shop"
+import { startPunchCardCheckout } from "@/lib/actions/shop"
 import { cn } from "@/lib/utils"
 
 const inputClass =
@@ -51,18 +51,21 @@ function CheckoutForm({
     }
     const form = new FormData(event.currentTarget)
     startTransition(async () => {
-      const result = await purchasePunchCard({
+      const result = await startPunchCardCheckout({
         productId,
         from,
         fullName: String(form.get("fullName") ?? ""),
         phone: String(form.get("phone") ?? ""),
         email: String(form.get("email") ?? ""),
       })
-      if (result.ok) {
+      if (!result.ok) {
+        setStatus("error")
+      } else if ("redirect" in result) {
+        // Payments on: hand off to PayMe's hosted page (full-page navigation).
+        window.location.href = result.redirect
+      } else {
         setToken(result.token)
         setStatus("done")
-      } else {
-        setStatus("error")
       }
     })
   }
