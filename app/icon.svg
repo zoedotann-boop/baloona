@@ -4,8 +4,11 @@
     (StripedBalloon in components/brand/scene-art.tsx), the natural mark for a
     brand named "Baloona". The balloon envelope is white, so it sits on a soft
     sky tile for contrast. Colours mirror the Cloud & Candy tokens in
-    app/globals.css: --scene-sky-blue (#c2ebff) and --brand-flower-pink family.
+    app/globals.css: scene-sky-blue (#c2ebff) and the brand-flower-pink family.
     Self-contained (no CSS vars) because the browser renders it standalone.
+    Keep this comment free of consecutive hyphens: a double hyphen is illegal
+    inside XML comments and makes strict SVG parsers reject the whole file,
+    which shows up as a blank favicon in browsers that parse SVG strictly.
   -->
   <rect width="64" height="64" rx="14" fill="#c2ebff" />
   <g transform="translate(-1236.39 -167.66) scale(0.42138)">
