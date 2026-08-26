@@ -28,10 +28,12 @@ function MenuBoard({ title, description, note, categories }: MenuBoardProps) {
     <Section spacing="md" className="bg-brand-cloud">
       {/* The real "Baloona CAFÉ" banner from the café signage, full-bleed at the
           top — the giraffe, the wolf-on-bike + penguin and the scene, exactly as
-          painted. Pulled past the section gutter/top padding to span edge to edge. */}
+          painted. Vector SVG (assembled from the brand illustrations) so it stays
+          crisp at any width. Pulled past the section gutter/top padding to span
+          edge to edge. Next serves `.svg` unoptimized automatically. */}
       <h1 className="sr-only">{title}</h1>
       <Image
-        src="/assets/menu/cafe-banner.png"
+        src="/assets/menu/cafe-banner.svg"
         alt="Baloona Café"
         width={2400}
         height={567}
