@@ -3,8 +3,8 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -20,8 +20,16 @@ const { color, font, radius } = emailTheme
 export interface EmailLayoutProps {
   /** Locale the email is written in — drives `lang` and RTL/LTR direction. */
   locale: Locale
+  /**
+   * Absolute origin the logo + background are loaded from (e.g.
+   * `https://baloona.co.il`). Left blank in Storybook, where `public/` is served
+   * at the root; production senders pass {@link emailAssetsBaseUrl}.
+   */
+  baseUrl?: string
   /** Inbox preview line (rendered hidden, before the body). */
   preview: string
+  /** Optional pill above the heading — the site's eyebrow badge, e.g. a label. */
+  eyebrow?: string
   /** Card title, shown under the wordmark. */
   heading: string
   /** Optional line under the heading — typically the venue name. */
@@ -32,41 +40,107 @@ export interface EmailLayoutProps {
 }
 
 /**
- * The shell every Baloona email shares: RTL, the brand near-white background, a
- * centred white card, the Fredoka wordmark header over a candy accent bar, and
- * a muted footer. Templates provide only the card body via `children`; all copy
- * (heading/subheading/footer/preview) arrives as props because emails render
- * outside the next-intl provider.
+ * The shell every Baloona email shares, tuned to read like the site: the Baloona
+ * wordmark logo sitting on the cream "cream-rainbow" hero background used across
+ * the site, a candy accent bar, an eyebrow pill + plum heading, and a footer
+ * closed by a row of brand dots. The Fredoka + Assistant brand fonts load from
+ * Google Fonts (clients that honour web fonts render them; the rest fall back to
+ * the inline stacks). Everything is inline-styled, RTL-aware and table-safe.
+ *
+ * Templates provide only the card body via `children`; all copy
+ * (eyebrow/heading/subheading/footer/preview) arrives as props because emails
+ * render outside the next-intl provider.
  */
 export function EmailLayout({
   locale,
+  baseUrl = "",
   preview,
+  eyebrow,
   heading,
   subheading,
   footer,
   children,
 }: EmailLayoutProps) {
+  const dir = localeDir(locale)
+  const start = dir === "rtl" ? "right" : "left"
+  const asset = (path: string) => `${baseUrl}${path}`
+
   return (
-    <Html dir={localeDir(locale)} lang={locale}>
-      <Head />
+    <Html dir={dir} lang={locale}>
+      <Head>
+        {/* Brand fonts for clients that honour <link> web fonts (Apple Mail,
+            iOS). Gmail strips <head> styles, so it uses the inline fallbacks.
+            This is an email document, not a Next.js page — the page-font rule
+            (which points at pages/_document) does not apply. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Fredoka:wght@500;600;700&display=swap"
+        />
+      </Head>
       <Preview>{preview}</Preview>
-      <Body style={bodyStyle}>
+      <Body style={bodyStyle} dir={dir}>
         <Container style={containerStyle}>
-          <Section style={headerStyle}>
-            <Text style={wordmarkStyle}>Baloona</Text>
+          <Section
+            style={{
+              ...headerStyle,
+              backgroundImage: `url(${asset("/assets/bg-cream-rainbow.png")})`,
+            }}
+          >
+            <Img
+              src={asset("/assets/brand/logo.png")}
+              alt="Baloona"
+              width={168}
+              height={59}
+              style={logoStyle}
+            />
           </Section>
           <Section style={accentBarStyle} />
           <Section style={cardBodyStyle}>
-            <Heading as="h1" style={headingStyle}>
+            {eyebrow ? (
+              <table
+                role="presentation"
+                cellPadding={0}
+                cellSpacing={0}
+                style={{ marginBottom: "14px" }}
+              >
+                <tbody>
+                  <tr>
+                    <td style={eyebrowStyle}>{eyebrow}</td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : null}
+            <Heading as="h1" style={{ ...headingStyle, textAlign: start }}>
               {heading}
             </Heading>
             {subheading ? (
-              <Text style={subheadingStyle}>{subheading}</Text>
+              <Text style={{ ...subheadingStyle, textAlign: start }}>
+                {subheading}
+              </Text>
             ) : null}
-            {children}
+            <div style={{ textAlign: start }}>{children}</div>
           </Section>
-          <Hr style={hrStyle} />
           <Section style={footerStyle}>
+            <table
+              role="presentation"
+              align="center"
+              cellPadding={0}
+              cellSpacing={0}
+              style={{ margin: "0 auto 14px" }}
+            >
+              <tbody>
+                <tr>
+                  {[color.rose, color.banana, color.mint, color.lavender].map(
+                    (dot) => (
+                      <td key={dot} style={{ padding: "0 4px" }}>
+                        <div style={{ ...dotStyle, backgroundColor: dot }} />
+                      </td>
+                    )
+                  )}
+                </tr>
+              </tbody>
+            </table>
             <Text style={footerTextStyle}>{footer}</Text>
           </Section>
         </Container>
@@ -94,18 +168,21 @@ const containerStyle: CSSProperties = {
 }
 
 const headerStyle: CSSProperties = {
-  padding: "28px 32px 20px",
+  padding: "34px 32px",
   textAlign: "center",
-  backgroundColor: color.lavenderSoft,
+  // The site's "cream-rainbow" hero art (flower, crown, castle, cloud) is set
+  // inline per-render (it needs the base URL). The solid cream is the
+  // Outlook/Gmail fallback when the background image is dropped.
+  backgroundColor: color.cream,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
 }
 
-const wordmarkStyle: CSSProperties = {
-  margin: 0,
-  fontFamily: font.heading,
-  fontSize: "30px",
-  fontWeight: 700,
-  letterSpacing: "0.5px",
-  color: color.plum,
+const logoStyle: CSSProperties = {
+  margin: "0 auto",
+  display: "block",
+  height: "auto",
 }
 
 const accentBarStyle: CSSProperties = {
@@ -118,11 +195,24 @@ const cardBodyStyle: CSSProperties = {
   padding: "28px 32px 8px",
 }
 
-const headingStyle: CSSProperties = {
-  margin: "0 0 4px",
+const eyebrowStyle: CSSProperties = {
+  borderRadius: "999px",
+  backgroundColor: color.lavenderSoft,
+  padding: "6px 14px",
   fontFamily: font.heading,
-  fontSize: "22px",
+  fontSize: "12px",
   fontWeight: 700,
+  letterSpacing: "0.12em",
+  color: color.accent,
+}
+
+const headingStyle: CSSProperties = {
+  margin: "0 0 6px",
+  fontFamily: font.heading,
+  fontSize: "24px",
+  lineHeight: "1.2",
+  fontWeight: 700,
+  letterSpacing: "-0.4px",
   color: color.plum,
 }
 
@@ -132,19 +222,21 @@ const subheadingStyle: CSSProperties = {
   color: color.inkSoft,
 }
 
-const hrStyle: CSSProperties = {
-  margin: "8px 0 0",
-  border: "none",
+const footerStyle: CSSProperties = {
+  padding: "20px 32px 26px",
+  textAlign: "center",
   borderTop: `1px solid ${color.border}`,
 }
 
-const footerStyle: CSSProperties = {
-  padding: "16px 32px 24px",
-  textAlign: "center",
+const dotStyle: CSSProperties = {
+  width: "8px",
+  height: "8px",
+  borderRadius: "999px",
 }
 
 const footerTextStyle: CSSProperties = {
   margin: 0,
   fontSize: "12px",
+  lineHeight: "18px",
   color: color.mutedInk,
 }
