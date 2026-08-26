@@ -5,7 +5,6 @@ import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { StatusBadge } from "@/components/brand/status-badge"
 import { WallScene } from "@/components/brand/wall-scene"
-import { HeroMobileActions } from "@/components/home/hero-mobile-actions"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import type { HoursRow } from "@/lib/view-models"
@@ -111,7 +110,6 @@ function Hero({
           </div>
         </Reveal>
       </Container>
-      <HeroMobileActions whatsappHref={whatsappHref} isOpen={isOpen} />
     </Section>
   )
 }
