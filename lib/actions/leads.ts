@@ -12,10 +12,12 @@ import {
   leads,
   locations,
 } from "@/lib/db/schema"
+import { sendBirthdayInvitation } from "@/lib/email/birthday-invitation"
 import { sendLeadNotification } from "@/lib/email/lead-notification"
 import { contactLeadSchema } from "@/lib/forms/schemas"
 import { isHoneypotFilled } from "@/lib/forms/honeypot"
 import { pickLocale } from "@/lib/localized"
+import { siteOrigin } from "@/lib/site-url"
 import {
   buildObjectKey,
   isStorageConfigured,
@@ -197,6 +199,17 @@ export async function submitBirthdayLead(
       { label: t("lead.labels.estimatedTotal"), value: `${totalAmount} ₪` },
     ],
   })
+
+  // Courtesy invitation PDF to the visitor's own email — best-effort, so a
+  // failure is logged rather than allowed to fail an already-stored booking.
+  if (answers.email) {
+    const result = await sendBirthdayInvitation({
+      to: answers.email,
+      pdfUrl: `${await siteOrigin()}/birthday-invitation.pdf`,
+      celebrantName: answers.celebrantNames || undefined,
+    })
+    if (!result.sent) console.error("birthday invitation email:", result.error)
+  }
 
   return { ok: true }
 }
