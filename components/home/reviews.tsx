@@ -4,6 +4,7 @@ import { Panel } from "@/components/brand/panel"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { ReviewCard } from "@/components/brand/review-card"
+import { WallScene } from "@/components/brand/wall-scene"
 import { Section } from "@/components/layout/section"
 
 interface ReviewContent {
@@ -33,7 +34,8 @@ function Reviews({ title, items, photos }: ReviewsProps) {
   if (items.length === 0) return null
 
   return (
-    <Section>
+    <Section className="relative isolate overflow-hidden">
+      <WallScene variant="mountains" />
       <Reveal className="mx-auto max-w-6xl columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4 [&>*]:break-inside-avoid">
         <Panel
           tone="lavender"

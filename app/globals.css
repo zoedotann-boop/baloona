@@ -254,6 +254,10 @@
   .toast-in {
     animation: none;
   }
+  /* The brand motifs float site-wide; hold them still for reduced-motion. */
+  .animate-baloona-float {
+    animation: none;
+  }
 }
 
 /* No-JS fallback: never leave reveal content hidden if the observer can't run. */

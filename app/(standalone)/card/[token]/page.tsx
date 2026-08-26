@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 
+import { SkyBackdrop } from "@/components/brand/sky-backdrop"
 import { BrandShell } from "@/components/layout/brand-shell"
 import { PunchCardDisplay } from "@/components/punch-cards/punch-card-display"
 import { type Locale } from "@/i18n/routing"
@@ -26,22 +27,25 @@ export default async function PunchCardPage({
 
   return (
     <BrandShell>
-      <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-5 py-12">
-        <PunchCardDisplay
-          className="w-full"
-          total={card.totalPunches}
-          used={card.usedPunches}
-          customerName={card.customer.fullName || undefined}
-          branchName={
-            card.issuedByLocation
-              ? pickLocale(card.issuedByLocation.name, locale)
-              : null
-          }
-          note={card.note}
-        />
-        <p className="text-center text-[13px] text-muted-foreground">
-          {t("footerNote")}
-        </p>
+      <div className="relative isolate overflow-hidden">
+        <SkyBackdrop />
+        <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-5 py-12">
+          <PunchCardDisplay
+            className="w-full"
+            total={card.totalPunches}
+            used={card.usedPunches}
+            customerName={card.customer.fullName || undefined}
+            branchName={
+              card.issuedByLocation
+                ? pickLocale(card.issuedByLocation.name, locale)
+                : null
+            }
+            note={card.note}
+          />
+          <p className="text-center text-[13px] text-muted-foreground">
+            {t("footerNote")}
+          </p>
+        </div>
       </div>
     </BrandShell>
   )

@@ -1,3 +1,4 @@
+import { Heart, PartyBalloon } from "@/components/brand/motifs"
 import { Panel } from "@/components/brand/panel"
 import { Reveal } from "@/components/brand/reveal"
 import { Container } from "@/components/layout/container"
@@ -36,7 +37,23 @@ function BirthdayPackage({
   rules,
 }: BirthdayPackageProps) {
   return (
-    <Section>
+    <Section className="relative overflow-hidden">
+      {/* Party accents in the margins around the centered package card. */}
+      <PartyBalloon
+        aria-hidden
+        color="var(--brand-rose)"
+        className="pointer-events-none absolute top-12 left-[5%] hidden h-28 opacity-85 lg:block"
+      />
+      <PartyBalloon
+        aria-hidden
+        color="var(--brand-mint)"
+        className="pointer-events-none absolute top-24 right-[5%] hidden h-24 opacity-85 lg:block"
+      />
+      <Heart
+        aria-hidden
+        fill="var(--brand-flower-pink)"
+        className="pointer-events-none absolute right-[9%] bottom-16 hidden w-8 lg:block"
+      />
       <Container size="sm">
         <Reveal>
           <Panel tone="lavender" className="text-center">

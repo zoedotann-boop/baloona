@@ -1,6 +1,7 @@
 import { BalloonClusterIcon } from "@/components/brand/balloon-cluster-icon"
 import { PillButton } from "@/components/brand/pill-button"
 import { Reveal } from "@/components/brand/reveal"
+import { SkyBackdrop } from "@/components/brand/sky-backdrop"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 
@@ -31,7 +32,8 @@ function MenuTeaser({
   tiles,
 }: MenuTeaserProps) {
   return (
-    <Section className="bg-brand-cloud">
+    <Section className="relative isolate overflow-hidden bg-brand-cloud">
+      <SkyBackdrop />
       <Container className="grid items-center gap-12 md:grid-cols-2">
         <Reveal>
           <h2 className="mb-4 font-heading text-[38px] font-black text-brand-plum">

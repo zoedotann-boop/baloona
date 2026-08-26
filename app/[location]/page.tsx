@@ -113,8 +113,6 @@ export default async function Page({ params }: PageProps<"/[location]">) {
         products={products.map((product) => ({
           id: product.id,
           name: pickLocale(product.name, locale),
-          entries: product.entries,
-          entriesLabel: shopT("entries", { count: product.entries }),
           perEntryLabel: shopT("perEntry", {
             amount: formatPerEntry(product.price, product.entries, locale),
           }),

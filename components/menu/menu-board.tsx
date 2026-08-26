@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 import { Reveal } from "@/components/brand/reveal"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -23,13 +25,23 @@ interface MenuBoardProps {
 /** Menu page: a flat, flowing "docs" view — categories with priced item lines. */
 function MenuBoard({ title, description, note, categories }: MenuBoardProps) {
   return (
-    <Section spacing="md">
+    <Section spacing="md" className="bg-brand-cloud">
+      {/* The real "Baloona CAFÉ" banner from the café signage, full-bleed at the
+          top — the giraffe, the wolf-on-bike + penguin and the scene, exactly as
+          painted. Pulled past the section gutter/top padding to span edge to edge. */}
+      <h1 className="sr-only">{title}</h1>
+      <Image
+        src="/assets/menu/cafe-banner.png"
+        alt="Baloona Café"
+        width={2400}
+        height={567}
+        priority
+        sizes="100vw"
+        className="-mx-5 -mt-14 mb-10 h-auto w-[calc(100%+2.5rem)] max-w-none md:-mx-9 md:-mt-16 md:mb-12 md:w-[calc(100%+4.5rem)]"
+      />
       <Container size="sm">
         <header className="mb-8 text-center">
-          <h1 className="font-heading text-[clamp(34px,5vw,50px)] font-black text-brand-plum">
-            {title}
-          </h1>
-          <p className="mt-3 text-[18px] leading-relaxed text-brand-ink-soft">
+          <p className="text-[18px] leading-relaxed text-brand-ink-soft">
             {description}
           </p>
         </header>

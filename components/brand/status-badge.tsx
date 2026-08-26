@@ -21,15 +21,18 @@ interface StatusBadgeProps
     React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof badgeVariants> {
   label: string
+  /** Green pulsing dot when open, red when closed. Defaults to open. */
+  isOpen?: boolean
   /** Set false to freeze the pulsing dot (e.g. in snapshot tests). */
   animated?: boolean
 }
 
-/** "Open now" indicator with a pulsing green dot. */
+/** Opening-status indicator: a pulsing dot (green when open, red when closed). */
 function StatusBadge({
   className,
   variant,
   label,
+  isOpen = true,
   animated = true,
   ...props
 }: StatusBadgeProps) {
@@ -37,7 +40,8 @@ function StatusBadge({
     <span className={cn(badgeVariants({ variant }), className)} {...props}>
       <span
         className={cn(
-          "size-[7px] rounded-full bg-brand-green",
+          "size-[7px] rounded-full",
+          isOpen ? "bg-brand-green" : "bg-red-500",
           animated && "animate-baloona-pulse"
         )}
       />

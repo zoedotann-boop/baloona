@@ -8,6 +8,7 @@ import { useMemo, useState, useTransition } from "react"
 
 import { PillButton } from "@/components/brand/pill-button"
 import { SignaturePad } from "@/components/brand/signature-pad"
+import { WallScene } from "@/components/brand/wall-scene"
 import { submitBirthdayLead } from "@/lib/actions/leads"
 import {
   buildBirthdayForm,
@@ -109,8 +110,9 @@ function BirthdayLeadForm({
   return (
     <section
       id="lead-form"
-      className="scroll-mt-20 px-5 py-20 text-foreground md:px-9 md:py-28"
+      className="relative isolate scroll-mt-20 overflow-hidden px-5 py-20 text-foreground md:px-9 md:py-28"
     >
+      <WallScene variant="party" />
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 text-center">
           <h2 className="font-heading text-[clamp(32px,4.5vw,44px)] font-black text-brand-plum">

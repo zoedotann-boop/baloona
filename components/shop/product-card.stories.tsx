@@ -7,13 +7,12 @@ const meta = {
   component: ProductCard,
   args: {
     name: "כרטיסייה 10 כניסות",
-    entries: 10,
-    entriesLabel: "10 כניסות",
     perEntryLabel: "רק 35 ₪ לכניסה!",
     price: "350 ₪",
     featured: false,
     popularLabel: "הבחירה הפופולרית",
     buyLabel: "לרכישה",
+    theme: "age12",
     href: "#",
   },
   parameters: { backgrounds: { value: "nearwhite" } },
@@ -29,26 +28,12 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const TenEntries: Story = {}
+/** The "up to age 12" pink flamingo card. */
+export const Age12: Story = {}
+
+/** The "up to age 2" blue balloons card. */
+export const Age2: Story = {
+  args: { name: "כרטיסייה 5 כניסות", price: "200 ₪", theme: "age2" },
+}
 
 export const Featured: Story = { args: { featured: true } }
-
-export const TwentyEntries: Story = {
-  args: {
-    name: "כרטיסייה 20 כניסות",
-    entries: 20,
-    entriesLabel: "20 כניסות",
-    perEntryLabel: "רק 32.5 ₪ לכניסה!",
-    price: "650 ₪",
-  },
-}
-
-export const FiveEntries: Story = {
-  args: {
-    name: "כרטיסייה 5 כניסות",
-    entries: 5,
-    entriesLabel: "5 כניסות",
-    perEntryLabel: "רק 40 ₪ לכניסה!",
-    price: "200 ₪",
-  },
-}

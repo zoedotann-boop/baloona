@@ -20,8 +20,6 @@ const meta = {
       {
         id: "1",
         name: "כרטיסייה 5 כניסות",
-        entries: 5,
-        entriesLabel: "5 כניסות",
         perEntryLabel: "רק 40 ₪ לכניסה!",
         price: "200 ₪",
         featured: false,
@@ -30,8 +28,6 @@ const meta = {
       {
         id: "2",
         name: "כרטיסייה 10 כניסות",
-        entries: 10,
-        entriesLabel: "10 כניסות",
         perEntryLabel: "רק 35 ₪ לכניסה!",
         price: "350 ₪",
         featured: true,
@@ -40,8 +36,6 @@ const meta = {
       {
         id: "3",
         name: "כרטיסייה 20 כניסות",
-        entries: 20,
-        entriesLabel: "20 כניסות",
         perEntryLabel: "רק 32.5 ₪ לכניסה!",
         price: "650 ₪",
         featured: false,

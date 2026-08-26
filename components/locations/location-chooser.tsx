@@ -2,9 +2,9 @@ import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { Confetti } from "@/components/brand/confetti"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
+import { WallScene } from "@/components/brand/wall-scene"
 import { Container } from "@/components/layout/container"
 
 interface LocationCard {
@@ -26,8 +26,8 @@ function LocationChooser({ locations }: { locations: LocationCard[] }) {
   const t = useTranslations("locations")
 
   return (
-    <div className="relative flex min-h-full flex-1 items-center overflow-hidden bg-brand-pink-soft px-5 py-14 md:px-9">
-      <Confetti />
+    <div className="relative isolate flex min-h-full flex-1 items-center overflow-hidden bg-brand-pink-soft px-5 py-14 md:px-9">
+      <WallScene variant="savanna" />
       <Container size="md">
         <Reveal className="text-center">
           <h1 className="font-heading text-[clamp(34px,5vw,52px)] leading-[1.1] font-black text-brand-plum">

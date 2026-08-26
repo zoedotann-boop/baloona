@@ -1,7 +1,7 @@
 import { Check, MapPin } from "lucide-react"
 
-import { Confetti } from "@/components/brand/confetti"
 import { Reveal } from "@/components/brand/reveal"
+import { SkyBackdrop } from "@/components/brand/sky-backdrop"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { ProductCard } from "@/components/shop/product-card"
@@ -9,8 +9,6 @@ import { ProductCard } from "@/components/shop/product-card"
 interface ShopProduct {
   id: string
   name: string
-  entries: number
-  entriesLabel: string
   perEntryLabel: string
   price: string
   featured: boolean
@@ -49,8 +47,11 @@ function ShopSection({
   if (products.length === 0) return null
 
   return (
-    <Section id="shop" className="relative scroll-mt-20 overflow-hidden">
-      <Confetti />
+    <Section
+      id="shop"
+      className="relative isolate scroll-mt-20 overflow-hidden bg-[#eaf6fd]"
+    >
+      <SkyBackdrop />
       <Container>
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-[clamp(32px,4.5vw,46px)] font-black text-brand-plum">
@@ -65,18 +66,21 @@ function ShopSection({
           </span>
         </Reveal>
 
-        <div className="mt-12 grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 flex flex-wrap items-stretch justify-center gap-6">
           {products.map((product, index) => (
-            <Reveal key={product.id} delay={index * 80}>
+            <Reveal
+              key={product.id}
+              delay={index * 80}
+              className="w-full max-w-[260px]"
+            >
               <ProductCard
                 name={product.name}
-                entries={product.entries}
-                entriesLabel={product.entriesLabel}
                 perEntryLabel={product.perEntryLabel}
                 price={product.price}
                 featured={product.featured}
                 popularLabel={popularLabel}
                 buyLabel={buyLabel}
+                theme={index % 2 === 0 ? "age12" : "age2"}
                 href={product.href}
               />
             </Reveal>
