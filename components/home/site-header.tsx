@@ -6,10 +6,8 @@ import { useTranslations } from "next-intl"
 import { Menu, X } from "lucide-react"
 import { useEffect, useState } from "react"
 
-import { LanguageSwitcher } from "@/components/brand/language-switcher"
 import { Logo } from "@/components/brand/logo"
 import { PillButton } from "@/components/brand/pill-button"
-import { StatusBadge } from "@/components/brand/status-badge"
 import type { LocationPaths } from "@/lib/site-links"
 import { cn } from "@/lib/utils"
 
@@ -17,26 +15,14 @@ interface SiteHeaderProps {
   /**
    * Per-branch links. Omitted on brand-global pages (branch picker, card,
    * checkout without a source branch), where the bar shrinks to just the
-   * wordmark and language switcher.
+   * wordmark.
    */
   paths?: LocationPaths
   whatsappHref?: string
-  /** Rendered from the venue's real opening hours; omitted when unknown. */
-  statusLabel?: string
-  /** Drives the status dot colour (green open / red closed). */
-  isOpen?: boolean
-  /** Shown only when more than one branch is published. */
-  showBranchSwitch?: boolean
 }
 
-/** Sticky top bar: wordmark, primary nav, open-now status and CTAs. */
-function SiteHeader({
-  paths,
-  whatsappHref,
-  statusLabel,
-  isOpen = true,
-  showBranchSwitch = false,
-}: SiteHeaderProps) {
+/** Sticky top bar: wordmark, primary nav and the WhatsApp CTA. */
+function SiteHeader({ paths, whatsappHref }: SiteHeaderProps) {
   const t = useTranslations()
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -46,7 +32,6 @@ function SiteHeader({
         { href: paths.home, label: t("nav.home") },
         { href: paths.menu, label: t("nav.menu") },
         { href: paths.birthdays, label: t("nav.birthdays") },
-        { href: paths.shop, label: t("nav.shop") },
       ]
     : []
   const hasNav = navItems.length > 0
@@ -108,26 +93,10 @@ function SiteHeader({
               </Link>
             )
           })}
-          {showBranchSwitch && (
-            <Link
-              href="/"
-              className="flex h-10 items-center rounded-full bg-brand-pink/70 px-[18px] text-base font-bold text-brand-plum shadow-sm hover:bg-brand-pink"
-            >
-              {t("nav.allBranches")}
-            </Link>
-          )}
         </nav>
       )}
 
       <div className="flex items-center gap-3.5 md:justify-self-end">
-        {statusLabel && (
-          <StatusBadge
-            className="hidden lg:inline-flex"
-            variant="inline"
-            label={statusLabel}
-            isOpen={isOpen}
-          />
-        )}
         {whatsappHref && (
           <PillButton
             href={whatsappHref}
@@ -139,7 +108,6 @@ function SiteHeader({
             {t("site.whatsapp")}
           </PillButton>
         )}
-        <LanguageSwitcher />
       </div>
 
       {/* Mobile navigation drawer */}
@@ -175,15 +143,6 @@ function SiteHeader({
                 </Link>
               )
             })}
-            {showBranchSwitch && (
-              <Link
-                href="/"
-                onClick={() => setMenuOpen(false)}
-                className="flex h-12 items-center rounded-2xl bg-brand-pink/70 px-4 text-[17px] font-bold text-brand-plum shadow-sm hover:bg-brand-pink"
-              >
-                {t("nav.allBranches")}
-              </Link>
-            )}
             {whatsappHref && (
               <PillButton
                 href={whatsappHref}

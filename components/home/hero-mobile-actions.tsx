@@ -43,14 +43,12 @@ function HeroMobileActions({ whatsappHref, isOpen }: HeroMobileActionsProps) {
         {/* Open / closed status chip */}
         <span
           className={cn(
-            "relative flex size-12 flex-col items-center justify-center rounded-full px-1 text-center font-heading text-[11px] leading-tight font-black ring-4 ring-white/70",
-            isOpen ? "bg-brand-green text-white" : "bg-white text-brand-plum"
+            "relative flex size-12 flex-col items-center justify-center rounded-full px-1 text-center font-heading text-[11px] leading-tight font-black text-white ring-4 ring-white/70",
+            isOpen ? "bg-brand-green" : "bg-red-500"
           )}
         >
-          {isOpen && (
-            <span className="animate-baloona-pulse absolute top-2 size-[6px] rounded-full bg-white" />
-          )}
-          <span className={cn(isOpen && "mt-2.5")}>
+          <span className="animate-baloona-pulse absolute top-2 size-[6px] rounded-full bg-white" />
+          <span className="mt-2.5">
             {isOpen ? status("openShort") : status("closedShort")}
           </span>
         </span>

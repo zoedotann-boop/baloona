@@ -23,13 +23,17 @@ function propertyFor(field: BirthdayFormFieldView): RJSFSchema {
 
   switch (field.type) {
     case "number":
-      return { type: "number", title }
+      return { type: "number", title, minimum: 0 }
     case "checkbox":
       return { type: "boolean", title }
     case "date":
       return { type: "string", format: "date", title }
     case "email":
       return { type: "string", format: "email", title }
+    case "tel":
+      // Digits, spaces and the usual phone punctuation; a `pattern` error is
+      // mapped to a localized "invalid phone" message in the form component.
+      return { type: "string", title, pattern: "^[0-9+\\-()\\s]{7,}$" }
     case "select":
       return {
         type: "string",

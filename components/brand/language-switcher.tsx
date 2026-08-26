@@ -20,8 +20,17 @@ function persistLocale(code: string) {
 /**
  * Persists the chosen locale in a cookie the server reads on the next request,
  * then refreshes so every server component re-renders in the new language.
+ *
+ * `dropUp` opens the menu above the button — use it in the footer, where a
+ * downward menu would spill off the page.
  */
-function LanguageSwitcher({ className }: { className?: string }) {
+function LanguageSwitcher({
+  className,
+  dropUp = false,
+}: {
+  className?: string
+  dropUp?: boolean
+}) {
   const locale = useLocale()
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -66,7 +75,10 @@ function LanguageSwitcher({ className }: { className?: string }) {
           />
           <ul
             role="listbox"
-            className="absolute end-0 z-50 mt-2 min-w-[150px] overflow-hidden rounded-2xl border border-border bg-white p-1 shadow-lg shadow-brand-plum/10"
+            className={cn(
+              "absolute end-0 z-50 min-w-[150px] overflow-hidden rounded-2xl border border-brand-pink bg-brand-pink-soft p-1 shadow-lg shadow-brand-plum/10",
+              dropUp ? "bottom-full mb-2" : "mt-2"
+            )}
           >
             {LANGUAGES.map((lang) => {
               const active = lang.code === locale
@@ -78,8 +90,8 @@ function LanguageSwitcher({ className }: { className?: string }) {
                     className={cn(
                       "flex w-full items-center gap-2 rounded-xl px-3 py-2 text-[15px] transition",
                       active
-                        ? "bg-brand-pink-soft font-extrabold text-brand-plum"
-                        : "font-bold text-muted-foreground hover:bg-muted"
+                        ? "bg-brand-pink font-extrabold text-brand-plum"
+                        : "font-bold text-brand-plum/70 hover:bg-brand-pink/50"
                     )}
                   >
                     <Check

@@ -18,7 +18,6 @@ interface LabelledRow {
 
 interface HomeContentDraft {
   home: {
-    heroBadge: Localized
     heroTitle: Localized
     heroDescription: Localized
     heroImages: string[]
@@ -96,12 +95,6 @@ function HomeContentForm({
     >
       <AdminCard title={t("heroTitle")}>
         <div className="space-y-4">
-          <LocalizedField
-            label={t("heroBadge")}
-            tooltip={t("heroBadgeTip")}
-            value={draft.home.heroBadge}
-            onChange={(value) => home("heroBadge", value)}
-          />
           <LocalizedField
             label={t("heroHeading")}
             tooltip={t("heroHeadingTip")}

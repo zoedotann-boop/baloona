@@ -1,10 +1,11 @@
 "use client"
 
 import Form from "@rjsf/shadcn"
+import type { RJSFValidationError } from "@rjsf/utils"
 import validator from "@rjsf/validator-ajv8"
 import { useTranslations } from "next-intl"
 import { Check, PartyPopper } from "lucide-react"
-import { useMemo, useRef, useState, useTransition } from "react"
+import { useCallback, useMemo, useRef, useState, useTransition } from "react"
 
 import { PillButton } from "@/components/brand/pill-button"
 import { SignaturePad } from "@/components/brand/signature-pad"
@@ -72,6 +73,7 @@ function BirthdayLeadForm({
   signatureHint,
 }: BirthdayLeadFormProps) {
   const t = useTranslations("birthdays")
+  const forms = useTranslations("forms")
   const [answers, setAnswers] = useState<Answers>({})
   const [selected, setSelected] = useState<string[]>([])
   const [agreed, setAgreed] = useState(false)
@@ -84,6 +86,29 @@ function BirthdayLeadForm({
   const { schema, uiSchema } = useMemo(
     () => buildBirthdayForm(fields),
     [fields]
+  )
+
+  // AJV speaks English by default; rewrite the validation messages a visitor
+  // sees into the site's own Hebrew copy, keyed off the failing rule.
+  const localizeErrors = useCallback(
+    (errors: RJSFValidationError[]): RJSFValidationError[] =>
+      errors.map((error) => {
+        switch (error.name) {
+          case "required":
+            return { ...error, message: forms("required") }
+          case "format":
+            if (error.params?.format === "email")
+              return { ...error, message: forms("invalidEmail") }
+            return error
+          case "pattern":
+            return { ...error, message: forms("invalidPhone") }
+          case "maxLength":
+            return { ...error, message: forms("tooLong") }
+          default:
+            return error
+        }
+      }),
+    [forms]
   )
 
   const toggle = (id: string) =>
@@ -137,6 +162,9 @@ function BirthdayLeadForm({
           </div>
         ) : (
           <div className="rounded-[28px] border border-border bg-white p-6 md:p-8">
+            <p className="mb-5 text-[14px] text-brand-ink-soft">
+              {t("formInfo")}
+            </p>
             <Form
               schema={schema}
               uiSchema={uiSchema}
@@ -144,7 +172,9 @@ function BirthdayLeadForm({
               formData={answers}
               onChange={(event) => setAnswers(event.formData ?? {})}
               onSubmit={(event) => handleSubmit(event.formData)}
+              transformErrors={localizeErrors}
               showErrorList={false}
+              focusOnFirstError
               noHtml5Validate
             >
               <HoneypotField ref={honeypotRef} />

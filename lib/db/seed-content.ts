@@ -93,7 +93,6 @@ export const siteContent = (city: Localized) => ({
 })
 
 export const homeContent = {
-  heroBadge: l("פתוח עכשיו · עד 19:00", "Open now · until 19:00"),
   heroTitle: l(
     "משחקייה ובית קפה — להורים ולילדים",
     "A playground & café — for parents and kids"

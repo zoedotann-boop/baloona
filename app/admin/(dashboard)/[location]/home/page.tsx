@@ -20,7 +20,6 @@ export default async function AdminHomePage({
       slug={slug}
       initial={{
         home: {
-          heroBadge: toLocalized(home.heroBadge),
           heroTitle: toLocalized(home.heroTitle),
           heroDescription: toLocalized(home.heroDescription),
           heroImages: home.heroImages,

@@ -1,0 +1,1 @@
+ALTER TABLE "home_content" DROP COLUMN "hero_badge";

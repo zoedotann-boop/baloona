@@ -13,6 +13,7 @@ const meta = {
     tagline: "מתחם ג׳ימבורי ויום הולדת לילדים בגילאי 1–9 בקרית אונו.",
     contact: storyContact,
     hours: storyHours,
+    showBranchSwitch: true,
     year: 2026,
   },
 } satisfies Meta<typeof SiteFooter>

@@ -40,7 +40,6 @@ export const homeContents = pgTable("home_content", {
     .primaryKey()
     .references(() => locations.id, { onDelete: "cascade" }),
 
-  heroBadge: localized().notNull(),
   heroTitle: localized().notNull(),
   heroDescription: localized().notNull(),
   /** Three images for the hero mosaic, largest first. */

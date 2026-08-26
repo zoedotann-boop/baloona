@@ -44,7 +44,6 @@ import {
 const homeSchema = z.object({
   slug: z.string().min(1),
   home: z.object({
-    heroBadge: localizedSchema,
     heroTitle: localizedSchema,
     heroDescription: localizedSchema,
     heroImages: z.array(z.string()).max(3),

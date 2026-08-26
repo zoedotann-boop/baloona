@@ -15,7 +15,10 @@ interface PublicShellProps {
  */
 function PublicShell({ header, footer, children }: PublicShellProps) {
   return (
-    <div className="flex min-h-svh flex-col bg-background">
+    // `overflow-x-clip` keeps decorative wall scenes and any wide row from
+    // opening a horizontal scroll (it clips without becoming a scroll
+    // container, so the sticky header keeps working).
+    <div className="flex min-h-svh flex-col overflow-x-clip bg-background">
       {header}
       <main className="flex-1">{children}</main>
       {footer}
