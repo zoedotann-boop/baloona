@@ -1,4 +1,4 @@
-import { Text } from "@react-email/components"
+import { Section, Text } from "@react-email/components"
 import type { CSSProperties } from "react"
 
 import type { Locale } from "@/i18n/routing"
@@ -11,8 +11,12 @@ const { color, font } = emailTheme
 export interface BirthdayInvitationEmailProps {
   /** Locale the invitation is written in. */
   locale: Locale
+  /** Absolute origin the logo + background are loaded from. */
+  baseUrl?: string
   /** Inbox preview line. */
   preview: string
+  /** Pill above the heading — the site's eyebrow badge. */
+  eyebrow: string
   /** Warm greeting headline (may include the celebrant's name). */
   heading: string
   /** Body paragraphs shown under the heading, in order. */
@@ -31,7 +35,9 @@ export interface BirthdayInvitationEmailProps {
  */
 export function BirthdayInvitationEmail({
   locale,
+  baseUrl,
   preview,
+  eyebrow,
   heading,
   paragraphs,
   signoff,
@@ -40,7 +46,9 @@ export function BirthdayInvitationEmail({
   return (
     <EmailLayout
       locale={locale}
+      baseUrl={baseUrl}
       preview={preview}
+      eyebrow={eyebrow}
       heading={heading}
       footer={footer}
     >
@@ -49,23 +57,32 @@ export function BirthdayInvitationEmail({
           {paragraph}
         </Text>
       ))}
-      <Text style={signoffStyle}>{signoff}</Text>
+      <Section style={signoffStyle}>
+        <Text style={signoffTextStyle}>{signoff}</Text>
+      </Section>
     </EmailLayout>
   )
 }
 
 const paragraphStyle: CSSProperties = {
-  margin: "0 0 12px",
+  margin: "0 0 14px",
   fontFamily: font.body,
   fontSize: "16px",
-  lineHeight: "24px",
+  lineHeight: "26px",
   color: color.ink,
 }
 
 const signoffStyle: CSSProperties = {
-  margin: "20px 0 0",
-  fontFamily: font.body,
-  fontSize: "14px",
-  fontWeight: 600,
+  margin: "20px 0 8px",
+  padding: "14px 18px",
+  borderRadius: "18px",
+  backgroundColor: color.pinkSoft,
+}
+
+const signoffTextStyle: CSSProperties = {
+  margin: 0,
+  fontFamily: font.heading,
+  fontSize: "15px",
+  fontWeight: 700,
   color: color.plum,
 }

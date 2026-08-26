@@ -103,6 +103,21 @@
   --brand-gold: #f4c542;
   --brand-flower-pink: #f4a0b8;
 
+  /* Wall-scene palette · sampled straight from the painted Baloona walls
+     (`Baloona_NewWalls` PDF). These drive the decorative {@link WallScene} /
+     {@link SkyBackdrop} sky gradients and rolling hills so the on-site scenes
+     match the printed murals exactly. Non-text, decorative use only. */
+  --scene-sky-pink: #ffdbde;
+  --scene-sky-pink-deep: #ffcced;
+  --scene-sky-blue: #c2ebff;
+  --scene-sky-lavender: #e2e3ff;
+  --scene-sky-banana: #fff8d6;
+  --scene-hill-back: #8feec5;
+  --scene-hill-mid: #b6ffca;
+  --scene-hill-front: #c6fbd4;
+  --scene-pond: #97dff8;
+  --scene-town: #8d92e1;
+
   --background: #fdf6f8;
   --foreground: #575757;
   --card: #ffffff;

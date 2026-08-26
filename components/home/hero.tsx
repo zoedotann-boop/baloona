@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl"
 
-import { AccentSquare } from "@/components/brand/accent-square"
 import { PillButton } from "@/components/brand/pill-button"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
@@ -94,18 +93,6 @@ function Hero({
         </Reveal>
 
         <Reveal delay={120} className="relative">
-          <AccentSquare
-            className="absolute -end-4 -top-5 -z-10"
-            color="bg-brand-lavender"
-            size={110}
-            rotate={-8}
-          />
-          <AccentSquare
-            className="absolute -start-5 -bottom-6 -z-10"
-            color="bg-brand-banana"
-            size={96}
-            rotate={10}
-          />
           {/* Playful photo mosaic. */}
           <div className="grid grid-cols-2 gap-3">
             <Photo

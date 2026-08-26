@@ -1,4 +1,4 @@
-import { Column, Row, Section, Text } from "@react-email/components"
+import { Section, Text } from "@react-email/components"
 import type { CSSProperties } from "react"
 
 import { emailTheme } from "./email-theme"
@@ -15,9 +15,11 @@ interface DetailTableProps {
 }
 
 /**
- * A label/value list for email bodies — the reusable way any Baloona template
- * lays out submitted details. Rows with an empty value are dropped so optional
- * fields never render as blanks.
+ * The submitted details of a lead, laid out as soft rounded bands — one per
+ * field — echoing the site's rounded cards. Each band stacks a muted caption
+ * over the bold value, which stays readable in RTL and never truncates a long
+ * message. Rows with an empty value are dropped so optional fields never render
+ * as blanks. Alignment is inherited from the RTL-aware wrapper in EmailLayout.
  */
 export function DetailTable({ rows }: DetailTableProps) {
   const filled = rows.filter((row) => row.value.trim())
@@ -26,44 +28,41 @@ export function DetailTable({ rows }: DetailTableProps) {
   return (
     <Section style={tableStyle}>
       {filled.map((row, index) => (
-        <Row key={`${row.label}-${index}`} style={rowStyle}>
-          <Column style={labelStyle}>{row.label}</Column>
-          <Column style={valueColumnStyle}>
-            <Text style={valueStyle}>{row.value}</Text>
-          </Column>
-        </Row>
+        <div key={`${row.label}-${index}`} style={rowStyle}>
+          <Text style={labelStyle}>{row.label}</Text>
+          <Text style={valueStyle}>{row.value}</Text>
+        </div>
       ))}
     </Section>
   )
 }
 
 const tableStyle: CSSProperties = {
-  marginBottom: "12px",
+  margin: "4px 0 12px",
 }
 
 const rowStyle: CSSProperties = {
-  borderBottom: `1px solid ${color.muted}`,
+  marginBottom: "8px",
+  padding: "12px 16px",
+  borderRadius: "16px",
+  backgroundColor: color.muted,
 }
 
 const labelStyle: CSSProperties = {
-  padding: "10px 0",
-  width: "34%",
-  verticalAlign: "top",
-  fontSize: "13px",
+  margin: "0 0 2px",
+  fontFamily: font.body,
+  fontSize: "12px",
+  fontWeight: 600,
+  letterSpacing: "0.04em",
   color: color.mutedInk,
-  whiteSpace: "nowrap",
-}
-
-const valueColumnStyle: CSSProperties = {
-  padding: "10px 0",
-  verticalAlign: "top",
 }
 
 const valueStyle: CSSProperties = {
   margin: 0,
   fontFamily: font.body,
-  fontSize: "15px",
-  fontWeight: 600,
+  fontSize: "16px",
+  fontWeight: 700,
+  lineHeight: "24px",
   color: color.ink,
   wordBreak: "break-word",
 }

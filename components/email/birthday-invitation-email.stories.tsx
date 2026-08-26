@@ -37,6 +37,7 @@ export const Named: Story = {
   args: {
     locale: "he",
     preview: birthdayInvitation.preview,
+    eyebrow: birthdayInvitation.eyebrow,
     heading: birthdayInvitation.headingNamed.replace("{name}", "נועה"),
     paragraphs: [birthdayInvitation.intro, birthdayInvitation.body],
     signoff: birthdayInvitation.signoff,
@@ -48,6 +49,7 @@ export const WithoutName: Story = {
   args: {
     locale: "he",
     preview: birthdayInvitation.preview,
+    eyebrow: birthdayInvitation.eyebrow,
     heading: birthdayInvitation.heading,
     paragraphs: [birthdayInvitation.intro, birthdayInvitation.body],
     signoff: birthdayInvitation.signoff,

@@ -19,7 +19,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Cafe: Story = { args: { variant: "cafe" } }
 export const Meadow: Story = { args: { variant: "meadow" } }
 export const Market: Story = { args: { variant: "market" } }
 export const Mountains: Story = { args: { variant: "mountains" } }
