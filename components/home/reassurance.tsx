@@ -1,6 +1,6 @@
-import { Confetti } from "@/components/brand/confetti"
 import { PillButton } from "@/components/brand/pill-button"
 import { Reveal } from "@/components/brand/reveal"
+import { WallScene } from "@/components/brand/wall-scene"
 import { Section } from "@/components/layout/section"
 
 interface ReassuranceProps {
@@ -13,8 +13,8 @@ interface ReassuranceProps {
 /** "אל תדאגו, דאגנו לכם להכל!" — centered flowing reassurance over confetti. */
 function Reassurance({ title, body, ctaLabel, ctaHref }: ReassuranceProps) {
   return (
-    <Section spacing="xl" className="relative overflow-hidden">
-      <Confetti />
+    <Section spacing="xl" className="relative isolate overflow-hidden">
+      <WallScene variant="market" />
       <Reveal className="mx-auto max-w-2xl text-center">
         <h2 className="font-heading text-[clamp(34px,5vw,52px)] leading-[1.15] font-black text-brand-plum">
           {title}

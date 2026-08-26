@@ -23,6 +23,8 @@ interface SiteHeaderProps {
   whatsappHref?: string
   /** Rendered from the venue's real opening hours; omitted when unknown. */
   statusLabel?: string
+  /** Drives the status dot colour (green open / red closed). */
+  isOpen?: boolean
   /** Shown only when more than one branch is published. */
   showBranchSwitch?: boolean
 }
@@ -32,6 +34,7 @@ function SiteHeader({
   paths,
   whatsappHref,
   statusLabel,
+  isOpen = true,
   showBranchSwitch = false,
 }: SiteHeaderProps) {
   const t = useTranslations()
@@ -59,7 +62,7 @@ function SiteHeader({
   }, [menuOpen])
 
   return (
-    <header className="sticky top-0 z-40 flex h-[74px] items-center justify-between gap-6 border-b border-border bg-brand-cloud px-5 md:px-9">
+    <header className="sticky top-0 z-40 flex h-[74px] items-center justify-between gap-6 border-b border-border bg-white px-5 md:px-9">
       {hasNav && (
         <button
           type="button"
@@ -93,8 +96,8 @@ function SiteHeader({
                 className={cn(
                   "flex h-10 items-center rounded-full px-[18px] text-base",
                   active
-                    ? "bg-brand-pink font-extrabold text-foreground"
-                    : "font-bold text-muted-foreground hover:bg-brand-pink/40"
+                    ? "bg-brand-pink font-extrabold text-brand-plum shadow-sm"
+                    : "bg-brand-pink/70 font-bold text-brand-plum shadow-sm hover:bg-brand-pink"
                 )}
               >
                 {item.label}
@@ -104,7 +107,7 @@ function SiteHeader({
           {showBranchSwitch && (
             <Link
               href="/"
-              className="flex h-10 items-center rounded-full px-[18px] text-base font-bold text-muted-foreground hover:bg-brand-pink/40"
+              className="flex h-10 items-center rounded-full bg-brand-pink/70 px-[18px] text-base font-bold text-brand-plum shadow-sm hover:bg-brand-pink"
             >
               {t("nav.allBranches")}
             </Link>
@@ -118,6 +121,7 @@ function SiteHeader({
             className="hidden lg:inline-flex"
             variant="inline"
             label={statusLabel}
+            isOpen={isOpen}
           />
         )}
         {whatsappHref && (
@@ -146,7 +150,7 @@ function SiteHeader({
           />
           <nav
             id="mobile-nav"
-            className="relative flex flex-col gap-1 border-b border-border bg-brand-cloud px-5 py-4"
+            className="relative flex flex-col gap-1 border-b border-border bg-white px-5 py-4"
           >
             {navItems.map((item) => {
               const active = pathname === item.href
@@ -159,8 +163,8 @@ function SiteHeader({
                   className={cn(
                     "flex h-12 items-center rounded-2xl px-4 text-[17px]",
                     active
-                      ? "bg-brand-pink font-extrabold text-foreground"
-                      : "font-bold text-muted-foreground hover:bg-brand-pink/40"
+                      ? "bg-brand-pink font-extrabold text-brand-plum shadow-sm"
+                      : "bg-brand-pink/70 font-bold text-brand-plum shadow-sm hover:bg-brand-pink"
                   )}
                 >
                   {item.label}
@@ -171,7 +175,7 @@ function SiteHeader({
               <Link
                 href="/"
                 onClick={() => setMenuOpen(false)}
-                className="flex h-12 items-center rounded-2xl px-4 text-[17px] font-bold text-muted-foreground hover:bg-brand-pink/40"
+                className="flex h-12 items-center rounded-2xl bg-brand-pink/70 px-4 text-[17px] font-bold text-brand-plum shadow-sm hover:bg-brand-pink"
               >
                 {t("nav.allBranches")}
               </Link>

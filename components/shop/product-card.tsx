@@ -1,12 +1,18 @@
-import { BalloonClusterIcon } from "@/components/brand/balloon-cluster-icon"
+import Image from "next/image"
+
 import { PillButton } from "@/components/brand/pill-button"
+
+type CardTheme = "age12" | "age2"
+
+// The two printed Baloona entry cards, used as-is. Cards alternate between the
+// pink "up to age 12" design and the blue "up to age 2" design across the grid.
+const CARD_IMAGE: Record<CardTheme, string> = {
+  age12: "/assets/shop/card-age12.png",
+  age2: "/assets/shop/card-age2.png",
+}
 
 interface ProductCardProps {
   name: string
-  /** Number of punches — drives the flower punch-spots. */
-  entries: number
-  /** e.g. "10 כניסות" — used as the punch grid's accessible label. */
-  entriesLabel: string
   /** Marketing line, e.g. "רק 32.5 ₪ לכניסה!". */
   perEntryLabel: string
   /** Formatted price, e.g. "350 ₪". */
@@ -16,31 +22,27 @@ interface ProductCardProps {
   /** Badge text for the featured card, e.g. "הבחירה הפופולרית". */
   popularLabel: string
   buyLabel: string
+  /** Which printed card design to show. */
+  theme?: CardTheme
   /** Checkout link for this product. */
   href: string
 }
 
 /**
- * A punch-card package in the shop, styled as a minimal postage stamp: a white
- * card with a perforated (scalloped) purple edge and a row of flower punch-marks
- * — the first few already stamped, in order. Each mark "punches" (shrinks +
- * fades) when hovered or tapped. The per-entry line sits under the price to make
- * the deal read cheaper. Dumb component; the page passes plain strings.
+ * A punch-card package in the shop: the actual printed Baloona entry card
+ * (image, used as-is) with the price and CTA on a frosted footer. Dumb
+ * component; the page passes plain strings + the theme.
  */
 function ProductCard({
   name,
-  entries,
-  entriesLabel,
   perEntryLabel,
   price,
   featured,
   popularLabel,
   buyLabel,
+  theme = "age12",
   href,
 }: ProductCardProps) {
-  // Chronological: the first ~20% of marks are already stamped, in order.
-  const usedCount = Math.round(entries * 0.2)
-
   return (
     <div className="relative h-full">
       {featured && (
@@ -49,43 +51,26 @@ function ProductCard({
         </span>
       )}
 
-      {/* Two-layer stamp: a purple stamp whose padding shows as a solid
-          perforated frame around the white inner card. */}
-      <div className="stamp-edge h-full bg-accent p-[3px]">
-        <div className="stamp-edge flex h-full flex-col items-center bg-white p-8 text-center">
-          <h3 className="font-heading text-[22px] font-black text-brand-plum">
+      <div className="flex h-full flex-col overflow-hidden rounded-[28px] bg-white shadow-sm ring-1 ring-border">
+        <Image
+          src={CARD_IMAGE[theme]}
+          alt=""
+          width={1196}
+          height={2073}
+          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
+          className="w-full"
+        />
+        <div className="mt-auto px-6 py-5 text-center">
+          <h3 className="font-heading text-[20px] font-black text-brand-plum">
             {name}
           </h3>
-
-          <div
-            className="mt-5 flex flex-wrap justify-center gap-1.5"
-            aria-label={entriesLabel}
-          >
-            {Array.from({ length: entries }, (_, index) => {
-              const stamped = index < usedCount
-              return (
-                <BalloonClusterIcon
-                  key={index}
-                  color="var(--brand-lavender)"
-                  size={26}
-                  solidCenter={!stamped}
-                  className="transition duration-200 hover:scale-90 hover:opacity-60 active:scale-90 active:opacity-60"
-                />
-              )
-            })}
-          </div>
-
-          {/* Price + CTA sit as one block pushed to the bottom, so the price
-              and button line up across every card regardless of flower count. */}
-          <div className="mt-auto w-full pt-6">
-            <p className="font-heading text-[34px] font-black text-brand-plum">
-              {price}
-            </p>
-            <p className="text-[14px] font-bold text-accent">{perEntryLabel}</p>
-            <PillButton href={href} size="md" className="mt-5 w-full">
-              {buyLabel}
-            </PillButton>
-          </div>
+          <p className="mt-1 font-heading text-[30px] font-black text-brand-plum">
+            {price}
+          </p>
+          <p className="text-[14px] font-bold text-accent">{perEntryLabel}</p>
+          <PillButton href={href} size="md" className="mt-4 w-full">
+            {buyLabel}
+          </PillButton>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl"
 
 import { Panel } from "@/components/brand/panel"
 import { Reveal } from "@/components/brand/reveal"
+import { WallScene } from "@/components/brand/wall-scene"
 import { Section } from "@/components/layout/section"
 import type { HoursRow } from "@/lib/view-models"
 
@@ -25,7 +26,11 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
   const t = useTranslations("pricing")
 
   return (
-    <Section id="pricing" className="scroll-mt-20 bg-white">
+    <Section
+      id="pricing"
+      className="relative isolate scroll-mt-20 overflow-hidden"
+    >
+      <WallScene variant="town" />
       <Reveal className="mx-auto max-w-3xl">
         <Panel tone="lavender" className="text-center">
           <h2 className="font-heading text-[clamp(32px,4.5vw,46px)] font-black">

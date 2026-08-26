@@ -5,6 +5,7 @@ import { PillButton } from "@/components/brand/pill-button"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
 import { StatusBadge } from "@/components/brand/status-badge"
+import { WallScene } from "@/components/brand/wall-scene"
 import { HeroMobileActions } from "@/components/home/hero-mobile-actions"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -43,8 +44,9 @@ function Hero({
   return (
     <Section
       spacing="md"
-      className="relative overflow-hidden bg-brand-pink-soft"
+      className="relative isolate overflow-hidden bg-brand-pink-soft"
     >
+      <WallScene variant="meadow" />
       <Container className="grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
         <Reveal>
           <StatusBadge className="mb-5" variant="pill" label={badge} />

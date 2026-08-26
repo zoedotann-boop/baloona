@@ -1,3 +1,4 @@
+import { PartyBalloon } from "@/components/brand/motifs"
 import { Reveal } from "@/components/brand/reveal"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -19,7 +20,18 @@ function BirthdaySteps({ title, note, steps }: BirthdayStepsProps) {
   if (steps.length === 0) return null
 
   return (
-    <Section className="bg-brand-cloud">
+    <Section className="relative overflow-hidden bg-brand-cloud">
+      {/* Light party-balloon accents above the heading. */}
+      <PartyBalloon
+        aria-hidden
+        color="var(--brand-lavender)"
+        className="pointer-events-none absolute top-6 left-[6%] hidden h-24 opacity-80 md:block"
+      />
+      <PartyBalloon
+        aria-hidden
+        color="var(--brand-flower-pink)"
+        className="pointer-events-none absolute top-10 right-[7%] hidden h-20 opacity-80 md:block"
+      />
       <Container size="md">
         <Reveal className="mb-14 text-center">
           <h2 className="font-heading text-[clamp(34px,4.5vw,48px)] font-black text-brand-plum">

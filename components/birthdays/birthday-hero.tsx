@@ -4,6 +4,7 @@ import { AccentSquare } from "@/components/brand/accent-square"
 import { PillButton } from "@/components/brand/pill-button"
 import { Photo } from "@/components/brand/photo"
 import { Reveal } from "@/components/brand/reveal"
+import { WallScene } from "@/components/brand/wall-scene"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 
@@ -18,7 +19,8 @@ function BirthdayHero({ title, description, imageUrl }: BirthdayHeroProps) {
   const t = useTranslations("birthdays")
 
   return (
-    <Section>
+    <Section className="relative isolate overflow-hidden">
+      <WallScene variant="party" />
       <Container className="grid items-center gap-12 md:grid-cols-2">
         <Reveal>
           <h1 className="mb-5 font-heading text-[clamp(38px,5vw,56px)] leading-tight font-black text-brand-plum">

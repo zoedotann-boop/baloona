@@ -26,8 +26,10 @@ export async function SiteChrome({
   slug: string
   children: React.ReactNode
 }) {
-  const [{ chrome, locale, paths, contact, hours, statusLabel }, published] =
-    await Promise.all([loadSiteChrome(slug), listPublishedLocations()])
+  const [
+    { chrome, locale, paths, contact, hours, statusLabel, isOpen },
+    published,
+  ] = await Promise.all([loadSiteChrome(slug), listPublishedLocations()])
 
   const announcement = chrome.announcement
   const settings = chrome.settings
@@ -40,6 +42,7 @@ export async function SiteChrome({
             paths={paths}
             whatsappHref={contact.whatsappHref}
             statusLabel={statusLabel}
+            isOpen={isOpen}
             showBranchSwitch={published.length > 1}
           />
         }
