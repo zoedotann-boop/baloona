@@ -2,7 +2,6 @@
 
 import Form from "@rjsf/shadcn"
 import type { RJSFValidationError } from "@rjsf/utils"
-import validator from "@rjsf/validator-ajv8"
 import { useTranslations } from "next-intl"
 import { Check, PartyPopper } from "lucide-react"
 import { useCallback, useMemo, useRef, useState, useTransition } from "react"
@@ -16,6 +15,7 @@ import {
   buildBirthdayForm,
   type BirthdayFormFieldView,
 } from "@/lib/birthday-form"
+import { birthdayValidator } from "@/lib/birthday-validator"
 import { cn } from "@/lib/utils"
 
 interface BirthdayUpgradeOption {
@@ -99,9 +99,21 @@ function BirthdayLeadForm({
           case "format":
             if (error.params?.format === "email")
               return { ...error, message: forms("invalidEmail") }
+            if (error.params?.format === "israeli-id")
+              return { ...error, message: forms("invalidId") }
             return error
           case "pattern":
             return { ...error, message: forms("invalidPhone") }
+          case "minimum":
+            return {
+              ...error,
+              message: forms("minValue", { min: error.params?.limit }),
+            }
+          case "maximum":
+            return {
+              ...error,
+              message: forms("maxValue", { max: error.params?.limit }),
+            }
           case "maxLength":
             return { ...error, message: forms("tooLong") }
           default:
@@ -168,7 +180,7 @@ function BirthdayLeadForm({
             <Form
               schema={schema}
               uiSchema={uiSchema}
-              validator={validator}
+              validator={birthdayValidator}
               formData={answers}
               onChange={(event) => setAnswers(event.formData ?? {})}
               onSubmit={(event) => handleSubmit(event.formData)}
