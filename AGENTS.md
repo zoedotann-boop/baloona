@@ -182,7 +182,13 @@ All optional — a missing key disables one feature instead of breaking the buil
 See `.env.example`.
 
 - **Resend** — emails each new lead to the branch's `leadRecipientEmail`. Failures are
-  recorded on the lead, never surfaced to the visitor.
+  recorded on the lead, never surfaced to the visitor. A birthday submission also sends the
+  visitor a courtesy email (`lib/email/birthday-invitation.ts`) with the ready-made Baloona
+  invitation attached as a PDF (`public/birthday-invitation.pdf`). The sender fetches the
+  asset's bytes from its public URL (built via `siteOrigin()`) and attaches them inline —
+  Resend refuses to download an attachment from `localhost`, so handing it the URL would only
+  work once deployed. It is best-effort: a missing key, empty recipient or send error is
+  logged, never allowed to fail the stored booking.
 - **Vercel Blob** — image uploads client-side straight from the browser: the image
   field calls `@vercel/blob/client` `upload()`, and `app/api/admin/media/upload`
   signs the token after re-checking branch access. Without `BLOB_READ_WRITE_TOKEN`,
