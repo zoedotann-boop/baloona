@@ -4,11 +4,12 @@ import Form from "@rjsf/shadcn"
 import validator from "@rjsf/validator-ajv8"
 import { useTranslations } from "next-intl"
 import { Check, PartyPopper } from "lucide-react"
-import { useMemo, useState, useTransition } from "react"
+import { useMemo, useRef, useState, useTransition } from "react"
 
 import { PillButton } from "@/components/brand/pill-button"
 import { SignaturePad } from "@/components/brand/signature-pad"
 import { WallScene } from "@/components/brand/wall-scene"
+import { HoneypotField } from "@/components/forms/honeypot-field"
 import { submitBirthdayLead } from "@/lib/actions/leads"
 import {
   buildBirthdayForm,
@@ -78,6 +79,7 @@ function BirthdayLeadForm({
   const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
   const [pending, startTransition] = useTransition()
+  const honeypotRef = useRef<HTMLInputElement>(null)
 
   const { schema, uiSchema } = useMemo(
     () => buildBirthdayForm(fields),
@@ -101,6 +103,7 @@ function BirthdayLeadForm({
         upgradeIds: selected,
         consent: agreed,
         signature: signature ?? undefined,
+        honeypot: honeypotRef.current?.value ?? "",
       })
       if (result.ok) setSubmitted(true)
       else setError(t("error"))
@@ -144,6 +147,7 @@ function BirthdayLeadForm({
               showErrorList={false}
               noHtml5Validate
             >
+              <HoneypotField ref={honeypotRef} />
               {upgrades.length > 0 && (
                 <div className="mt-6">
                   <div className="mb-1 font-heading text-[16px] font-black text-brand-plum">

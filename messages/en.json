@@ -272,6 +272,35 @@
       }
     ]
   },
+  "forms": {
+    "required": "This field is required",
+    "invalidPhone": "Invalid phone number",
+    "invalidEmail": "Invalid email address",
+    "tooLong": "This value is too long"
+  },
+  "emails": {
+    "shell": {
+      "footer": "This message was sent automatically by the Baloona website."
+    },
+    "lead": {
+      "contact": {
+        "heading": "New enquiry from the website",
+        "preview": "A new enquiry came in from the contact form"
+      },
+      "birthday": {
+        "heading": "New birthday request",
+        "preview": "A new birthday booking request came in"
+      },
+      "labels": {
+        "name": "Name",
+        "phone": "Phone",
+        "subject": "Subject",
+        "message": "Message",
+        "upgrades": "Upgrades",
+        "estimatedTotal": "Estimated total"
+      }
+    }
+  },
   "admin": {
     "brand": "Baloona admin",
     "signIn": {

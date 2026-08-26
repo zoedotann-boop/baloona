@@ -1,6 +1,7 @@
 "use server"
 
 import { eq, inArray } from "drizzle-orm"
+import { getTranslations } from "next-intl/server"
 import { z } from "zod"
 
 import { defaultLocale } from "@/i18n/routing"
@@ -12,6 +13,8 @@ import {
   locations,
 } from "@/lib/db/schema"
 import { sendLeadNotification } from "@/lib/email/lead-notification"
+import { contactLeadSchema } from "@/lib/forms/schemas"
+import { isHoneypotFilled } from "@/lib/forms/honeypot"
 import { pickLocale } from "@/lib/localized"
 import {
   buildObjectKey,
@@ -35,21 +38,15 @@ export type SubmitResult = { ok: true } | { ok: false; error: string }
 // mutate existing records — so there is nothing for a caller to reach that the
 // forms do not already expose.
 
-const contactSchema = z.object({
-  locationId: z.uuid(),
-  fullName: z.string().trim().min(1).max(120),
-  phone: z.string().trim().min(6).max(40),
-  subject: z.string().trim().max(120).optional(),
-  message: z.string().trim().min(1).max(4000),
-})
-
 // react-doctor-disable-next-line react-doctor/server-auth-actions -- public form
 export async function submitContactLead(
-  input: z.input<typeof contactSchema>
+  input: z.input<typeof contactLeadSchema>
 ): Promise<SubmitResult> {
-  const parsed = contactSchema.safeParse(input)
+  const parsed = contactLeadSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   const data = parsed.data
+  // Drop bot submissions silently — the honeypot is invisible to humans.
+  if (isHoneypotFilled(data.honeypot)) return { ok: true }
 
   const location = await db.query.locations.findFirst({
     where: eq(locations.id, data.locationId),
@@ -69,15 +66,25 @@ export async function submitContactLead(
     })
     .returning({ id: leads.id })
 
+  const t = await getTranslations({
+    locale: defaultLocale,
+    namespace: "emails",
+  })
+  const locationName = pickLocale(location.name, defaultLocale)
+  const heading = t("lead.contact.heading")
   await notify(lead.id, {
     to: location.contact?.leadRecipientEmail || location.contact?.email || "",
-    locationName: pickLocale(location.name, defaultLocale),
-    heading: "פנייה חדשה מהאתר",
+    subject: `${heading} · ${locationName}`,
+    locale: defaultLocale,
+    heading,
+    preview: t("lead.contact.preview"),
+    footer: t("shell.footer"),
+    locationName,
     rows: [
-      { label: "שם", value: data.fullName },
-      { label: "טלפון", value: data.phone },
-      { label: "נושא", value: data.subject ?? "" },
-      { label: "הודעה", value: data.message },
+      { label: t("lead.labels.name"), value: data.fullName },
+      { label: t("lead.labels.phone"), value: data.phone },
+      { label: t("lead.labels.subject"), value: data.subject ?? "" },
+      { label: t("lead.labels.message"), value: data.message },
     ],
   })
 
@@ -91,6 +98,7 @@ const birthdaySchema = z.object({
   consent: z.boolean(),
   /** `data:image/png;base64,…` produced by the signature pad. */
   signature: z.string().startsWith("data:image/").optional(),
+  honeypot: z.string().optional(),
 })
 
 // react-doctor-disable-next-line react-doctor/server-auth-actions -- public form
@@ -100,6 +108,8 @@ export async function submitBirthdayLead(
   const parsed = birthdaySchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   const data = parsed.data
+  // Drop bot submissions silently — the honeypot is invisible to humans.
+  if (isHoneypotFilled(data.honeypot)) return { ok: true }
 
   const location = await db.query.locations.findFirst({
     where: eq(locations.id, data.locationId),
@@ -161,20 +171,30 @@ export async function submitBirthdayLead(
     })
     .returning({ id: leads.id })
 
+  const t = await getTranslations({
+    locale: defaultLocale,
+    namespace: "emails",
+  })
+  const locationName = pickLocale(location.name, defaultLocale)
+  const heading = t("lead.birthday.heading")
   await notify(lead.id, {
     to: location.contact?.leadRecipientEmail || location.contact?.email || "",
-    locationName: pickLocale(location.name, defaultLocale),
-    heading: "בקשת יום הולדת חדשה",
+    subject: `${heading} · ${locationName}`,
+    locale: defaultLocale,
+    heading,
+    preview: t("lead.birthday.preview"),
+    footer: t("shell.footer"),
+    locationName,
     rows: [
       ...visible.map((field) => ({
         label: pickLocale(field.label, defaultLocale),
         value: answers[field.key] ?? "",
       })),
       {
-        label: "תוספות",
+        label: t("lead.labels.upgrades"),
         value: selectedUpgrades.map((upgrade) => upgrade.label).join(", "),
       },
-      { label: "סכום משוער", value: `${totalAmount} ₪` },
+      { label: t("lead.labels.estimatedTotal"), value: `${totalAmount} ₪` },
     ],
   })
 
