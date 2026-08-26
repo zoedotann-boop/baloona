@@ -1,7 +1,11 @@
 import "server-only"
 
+import { render } from "@react-email/render"
+import { getTranslations } from "next-intl/server"
 import { Resend } from "resend"
 
+import { BirthdayInvitationEmail } from "@/components/email/birthday-invitation-email"
+import { defaultLocale } from "@/i18n/routing"
 import { resendConfig } from "@/lib/env"
 
 export interface BirthdayInvitation {
@@ -20,13 +24,15 @@ const ATTACHMENT_FILENAME = "baloona-birthday-invitation.pdf"
  * Email the visitor the ready-made Baloona birthday invitation as a PDF
  * attachment after they submit the booking form.
  *
- * This is a courtesy, not a receipt: like the lead notification it is
- * best-effort and never fails the submission. A missing Resend key or empty
- * recipient is a silent no-op, and any send error is returned for the caller
- * to log rather than surfaced to the visitor. The PDF is a static asset served
- * from `public/`; we fetch its bytes here and attach them inline rather than
- * hand Resend the URL — Resend refuses to download an attachment from
- * `localhost`, so a `path` would work only once deployed.
+ * The cover note is the branded {@link BirthdayInvitationEmail} template — it
+ * shares the same shell as every other Baloona email. This is a courtesy, not a
+ * receipt: like the lead notification it is best-effort and never fails the
+ * submission. A missing Resend key or empty recipient is a silent no-op, and any
+ * send error is returned for the caller to log rather than surfaced to the
+ * visitor. The PDF is a static asset served from `public/`; we fetch its bytes
+ * here and attach them inline rather than hand Resend the URL — Resend refuses
+ * to download an attachment from `localhost`, so a `path` would work only once
+ * deployed.
  */
 export async function sendBirthdayInvitation(
   invitation: BirthdayInvitation
@@ -45,20 +51,32 @@ export async function sendBirthdayInvitation(
     return { sent: false, error: (error as Error).message }
   }
 
-  const greeting = invitation.celebrantName
-    ? `תודה שבחרתם לחגוג את יום ההולדת של ${escapeHtml(invitation.celebrantName)} איתנו! 🎉`
-    : "תודה שבחרתם לחגוג איתנו! 🎉"
+  const t = await getTranslations({
+    locale: defaultLocale,
+    namespace: "emails",
+  })
+  const name = invitation.celebrantName
+  const heading = name
+    ? t("birthdayInvitation.headingNamed", { name })
+    : t("birthdayInvitation.heading")
+  const subject = name
+    ? t("birthdayInvitation.subjectNamed", { name })
+    : t("birthdayInvitation.subject")
 
-  const html = `<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;color:#2f2a3d;font-size:16px;line-height:24px">
-  <h2 style="margin:0 0 8px;color:#2f2a3d">${greeting}</h2>
-  <p style="margin:0 0 8px">מצורפת הזמנה מעוצבת ליום ההולדת 🎈</p>
-  <p style="margin:0">תוכלו להדפיס אותה או לצלם מסך ולשלוח לאורחים כהזמנה ליום ההולדת!</p>
-  <p style="margin:16px 0 0;font-size:13px;color:#2f6f86">נשמח לראותכם, צוות Baloona 💛</p>
-</div>`
-
-  const subject = invitation.celebrantName
-    ? `הזמנה ליום ההולדת של ${invitation.celebrantName} 🎉`
-    : "ההזמנה ליום ההולדת שלכם 🎉"
+  const email = (
+    <BirthdayInvitationEmail
+      locale={defaultLocale}
+      preview={t("birthdayInvitation.preview")}
+      heading={heading}
+      paragraphs={[t("birthdayInvitation.intro"), t("birthdayInvitation.body")]}
+      signoff={t("birthdayInvitation.signoff")}
+      footer={t("shell.footer")}
+    />
+  )
+  const [html, text] = await Promise.all([
+    render(email),
+    render(email, { plainText: true }),
+  ])
 
   try {
     const { error } = await new Resend(config.apiKey).emails.send({
@@ -66,6 +84,7 @@ export async function sendBirthdayInvitation(
       to: invitation.to,
       subject,
       html,
+      text,
       attachments: [{ filename: ATTACHMENT_FILENAME, content }],
     })
     if (error) return { sent: false, error: error.message }
@@ -73,12 +92,4 @@ export async function sendBirthdayInvitation(
   } catch (error) {
     return { sent: false, error: (error as Error).message }
   }
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
 }

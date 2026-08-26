@@ -7,6 +7,8 @@ import { defaultLocale } from "@/i18n/routing"
 import { db } from "@/lib/db"
 import { locations, products, punchCardOrders } from "@/lib/db/schema"
 import { paymeConfig } from "@/lib/env"
+import { isHoneypotFilled } from "@/lib/forms/honeypot"
+import { checkoutSchema } from "@/lib/forms/schemas"
 import { pickLocale } from "@/lib/localized"
 import { generateSale } from "@/lib/payme/client"
 import { issueCard } from "@/lib/shop/orders"
@@ -21,15 +23,6 @@ type CheckoutResult =
   | { ok: true; token: string }
   | { ok: false; error: string }
 
-const schema = z.object({
-  productId: z.uuid(),
-  fullName: z.string().trim().default(""),
-  phone: z.string().trim().min(6).max(40),
-  email: z.string().trim().default(""),
-  /** Branch the visitor bought from, recorded as the issuing branch. */
-  from: z.string().optional(),
-})
-
 // Deliberately unauthenticated: it backs the public checkout. With PayMe
 // configured it creates a pending order and hands back a hosted payment page —
 // the card is only issued once payment is confirmed (see `fulfilOrder`, reached
@@ -37,10 +30,13 @@ const schema = z.object({
 // back to issuing the card immediately so the shop still works in dev.
 // react-doctor-disable-next-line react-doctor/server-auth-actions -- public checkout
 export async function startPunchCardCheckout(
-  input: z.input<typeof schema>
+  input: z.input<typeof checkoutSchema>
 ): Promise<CheckoutResult> {
-  const parsed = schema.safeParse(input)
+  const parsed = checkoutSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
+  // Drop bot submissions silently — the honeypot is invisible to humans.
+  if (isHoneypotFilled(parsed.data.honeypot))
+    return { ok: false, error: "invalid" }
   const { productId, fullName, phone, email, from } = parsed.data
 
   const product = await db.query.products.findFirst({

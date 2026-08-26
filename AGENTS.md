@@ -175,6 +175,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - The birthday booking form is editor-defined: `birthday_form_field` rows compile to a
   JSON Schema (`lib/birthday-form.ts`) rendered by `@rjsf/shadcn`. Answers land in
   `lead.formData` keyed by field key and render as a label/value list in the inbox.
+- Public forms (contact, checkout, birthday) share the zod schemas in `lib/forms/schemas.ts`
+  so the client and the server enforce the same rules; the hand-built forms validate on submit
+  and show per-field messages from the `forms` namespace. Every public form renders a hidden
+  `<HoneypotField>` (`components/forms/`); a filled honeypot means a bot, and the server action
+  drops the submission via `isHoneypotFilled` (`lib/forms/honeypot.ts`) without storing it.
 
 ## Integrations
 
@@ -188,7 +193,10 @@ See `.env.example`.
   asset's bytes from its public URL (built via `siteOrigin()`) and attaches them inline —
   Resend refuses to download an attachment from `localhost`, so handing it the URL would only
   work once deployed. It is best-effort: a missing key, empty recipient or send error is
-  logged, never allowed to fail the stored booking.
+  logged, never allowed to fail the stored booking. Emails are built with React Email
+  (`@react-email/components`): every message shares the branded shell in `components/email/`
+  (`EmailLayout`), copy lives in the `emails` namespace of the message files, and admin lead
+  notifications always render in Hebrew (RTL).
 - **Vercel Blob** — image uploads client-side straight from the browser: the image
   field calls `@vercel/blob/client` `upload()`, and `app/api/admin/media/upload`
   signs the token after re-checking branch access. Without `BLOB_READ_WRITE_TOKEN`,

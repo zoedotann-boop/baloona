@@ -5,7 +5,11 @@ import { useState, useTransition } from "react"
 
 import { ConsentCheckbox } from "@/components/brand/consent-checkbox"
 import { PillButton } from "@/components/brand/pill-button"
+import { HoneypotField } from "@/components/forms/honeypot-field"
 import { startPunchCardCheckout } from "@/lib/actions/shop"
+import { collectFieldErrors, type FieldErrors } from "@/lib/forms/field-errors"
+import { HONEYPOT_FIELD } from "@/lib/forms/honeypot"
+import { checkoutSchema } from "@/lib/forms/schemas"
 import { cn } from "@/lib/utils"
 
 const inputClass =
@@ -36,28 +40,40 @@ function CheckoutForm({
   termsHref,
 }: CheckoutFormProps) {
   const t = useTranslations("checkout")
+  const tErrors = useTranslations("forms")
   const [agreed, setAgreed] = useState(false)
   const [status, setStatus] = useState<"idle" | "consent" | "error" | "done">(
     "idle"
   )
+  const [errors, setErrors] = useState<FieldErrors>({})
   const [token, setToken] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const form = new FormData(event.currentTarget)
+    const payload = {
+      productId,
+      from,
+      fullName: String(form.get("fullName") ?? ""),
+      phone: String(form.get("phone") ?? ""),
+      email: String(form.get("email") ?? ""),
+      honeypot: String(form.get(HONEYPOT_FIELD) ?? ""),
+    }
+
+    const parsed = checkoutSchema.safeParse(payload)
+    if (!parsed.success) {
+      setErrors(collectFieldErrors(parsed.error.issues, payload, tErrors))
+      return
+    }
+    setErrors({})
+
     if (!agreed) {
       setStatus("consent")
       return
     }
-    const form = new FormData(event.currentTarget)
     startTransition(async () => {
-      const result = await startPunchCardCheckout({
-        productId,
-        from,
-        fullName: String(form.get("fullName") ?? ""),
-        phone: String(form.get("phone") ?? ""),
-        email: String(form.get("email") ?? ""),
-      })
+      const result = await startPunchCardCheckout(parsed.data)
       if (!result.ok) {
         setStatus("error")
       } else if ("redirect" in result) {
@@ -91,6 +107,7 @@ function CheckoutForm({
   return (
     <form
       onSubmit={onSubmit}
+      noValidate
       className="rounded-[26px] border border-border bg-white p-8"
     >
       <div className="stamp-edge mb-6 bg-accent p-[3px]">
@@ -110,31 +127,53 @@ function CheckoutForm({
       </div>
 
       <div className="space-y-4">
-        <input
-          name="fullName"
-          required
-          className={inputClass}
-          placeholder={t("namePlaceholder")}
-          autoComplete="name"
-        />
-        <input
-          name="phone"
-          type="tel"
-          required
-          dir="ltr"
-          className={cn(inputClass, "text-right")}
-          placeholder={t("phonePlaceholder")}
-          autoComplete="tel"
-        />
-        <input
-          name="email"
-          type="email"
-          required
-          dir="ltr"
-          className={cn(inputClass, "text-right")}
-          placeholder={t("emailPlaceholder")}
-          autoComplete="email"
-        />
+        <div>
+          <input
+            name="fullName"
+            required
+            aria-invalid={Boolean(errors.fullName)}
+            className={cn(inputClass, errors.fullName && "border-destructive")}
+            placeholder={t("namePlaceholder")}
+            autoComplete="name"
+          />
+          <FieldError message={errors.fullName} />
+        </div>
+        <div>
+          <input
+            name="phone"
+            type="tel"
+            required
+            dir="ltr"
+            aria-invalid={Boolean(errors.phone)}
+            className={cn(
+              inputClass,
+              "text-right",
+              errors.phone && "border-destructive"
+            )}
+            placeholder={t("phonePlaceholder")}
+            autoComplete="tel"
+          />
+          <FieldError message={errors.phone} />
+        </div>
+        <div>
+          <input
+            name="email"
+            type="email"
+            required
+            dir="ltr"
+            aria-invalid={Boolean(errors.email)}
+            className={cn(
+              inputClass,
+              "text-right",
+              errors.email && "border-destructive"
+            )}
+            placeholder={t("emailPlaceholder")}
+            autoComplete="email"
+          />
+          <FieldError message={errors.email} />
+        </div>
+
+        <HoneypotField />
 
         <ConsentCheckbox
           checked={agreed}
@@ -178,6 +217,16 @@ function CheckoutForm({
         </PillButton>
       </div>
     </form>
+  )
+}
+
+/** Inline, RTL-friendly validation message shown under a field. */
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null
+  return (
+    <p role="alert" className="mt-1.5 text-[13px] font-bold text-destructive">
+      {message}
+    </p>
   )
 }
 
