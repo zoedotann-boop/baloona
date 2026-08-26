@@ -7,7 +7,7 @@ import {
   LeadNotificationEmail,
   type LeadNotificationEmailProps,
 } from "@/components/email/lead-notification-email"
-import { resendConfig } from "@/lib/env"
+import { emailAssetsBaseUrl, resendConfig } from "@/lib/env"
 
 export interface LeadNotification extends LeadNotificationEmailProps {
   to: string
@@ -32,7 +32,9 @@ export async function sendLeadNotification(
   if (!notification.to) return { sent: false, error: "No recipient configured" }
 
   const { to, subject, ...emailProps } = notification
-  const email = <LeadNotificationEmail {...emailProps} />
+  const email = (
+    <LeadNotificationEmail {...emailProps} baseUrl={emailAssetsBaseUrl()} />
+  )
   const [html, text] = await Promise.all([
     render(email),
     render(email, { plainText: true }),

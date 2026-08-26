@@ -6,7 +6,7 @@ import { Resend } from "resend"
 
 import { BirthdayInvitationEmail } from "@/components/email/birthday-invitation-email"
 import { defaultLocale } from "@/i18n/routing"
-import { resendConfig } from "@/lib/env"
+import { emailAssetsBaseUrl, resendConfig } from "@/lib/env"
 
 export interface BirthdayInvitation {
   /** The visitor's own email address, taken from the booking form. */
@@ -66,7 +66,9 @@ export async function sendBirthdayInvitation(
   const email = (
     <BirthdayInvitationEmail
       locale={defaultLocale}
+      baseUrl={emailAssetsBaseUrl()}
       preview={t("birthdayInvitation.preview")}
+      eyebrow={t("birthdayInvitation.eyebrow")}
       heading={heading}
       paragraphs={[t("birthdayInvitation.intro"), t("birthdayInvitation.body")]}
       signoff={t("birthdayInvitation.signoff")}

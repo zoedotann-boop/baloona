@@ -34,6 +34,19 @@ export const resendConfig = () => {
 }
 
 /**
+ * Absolute base URL for the assets embedded in outgoing email (the logo and the
+ * header background). Email clients fetch these over HTTPS when the recipient
+ * opens the message, so the URL must be publicly reachable — a relative or
+ * `localhost` path never loads in an inbox. Defaults to the production domain;
+ * override with `EMAIL_ASSETS_BASE_URL` on preview deployments. The trailing
+ * slash is trimmed so callers can safely append `/assets/…`.
+ */
+export function emailAssetsBaseUrl(): string {
+  const base = optional("EMAIL_ASSETS_BASE_URL") || "https://baloona.co.il"
+  return base.replace(/\/+$/, "")
+}
+
+/**
  * Vercel Blob read-write token. Present in production once a Blob store is
  * connected to the project (Vercel injects it); locally it arrives via
  * `vercel env pull`. `handleUpload` needs this static token specifically — an
