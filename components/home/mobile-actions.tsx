@@ -46,7 +46,7 @@ function MobileActions({ whatsappHref, isOpen }: MobileActionsProps) {
         {/* Open / closed status chip */}
         <span
           className={cn(
-            "relative flex size-12 flex-col items-center justify-center rounded-full px-1 text-center font-heading text-[11px] leading-tight font-black text-white ring-4 ring-white/70",
+            "relative flex size-14 flex-col items-center justify-center rounded-full px-1 text-center font-heading text-[11px] leading-tight font-black text-white ring-4 ring-white/70",
             isOpen ? "bg-brand-green" : "bg-red-500"
           )}
         >
@@ -75,7 +75,7 @@ function MobileActions({ whatsappHref, isOpen }: MobileActionsProps) {
           aria-hidden={!showTop}
           tabIndex={showTop ? 0 : -1}
           className={cn(
-            "flex size-12 items-center justify-center rounded-full bg-white text-foreground ring-4 ring-white/70 transition-all duration-300 active:translate-y-px active:scale-95",
+            "flex size-14 items-center justify-center rounded-full bg-white text-foreground ring-4 ring-white/70 transition-all duration-300 active:translate-y-px active:scale-95",
             showTop
               ? "translate-y-0 scale-100 opacity-100"
               : "pointer-events-none translate-y-2 scale-90 opacity-0"
