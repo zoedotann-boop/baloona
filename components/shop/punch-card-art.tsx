@@ -19,21 +19,32 @@ interface PunchCardArtProps {
   theme: PunchCardTheme
   /** Decorative sub-heading on the card, e.g. "כרטיסיית כניסה לילדים עד גיל 12". */
   caption: string
+  /**
+   * How many of the ten slots are punched. Omit for the decorative marketing
+   * card (all slots render empty); pass the live value on a customer's own card
+   * so slots 1…`used` show as stamped.
+   */
+  used?: number
   className?: string
 }
 
-// The card is drawn in a 600×1036 space (the printed card's 1200×2072 ratio).
+// The card is drawn in a 600-wide space at the printed card's 1200×2072 ratio.
+// We trim a little off that height (1036 → CARD_H) to keep the card from reading
+// too tall; the slot grid lifts and the bottom scenery rides up to match.
 // Ten punch slots sit in two columns of five; numbers count 1–5 down the right
 // column, 6–10 down the left, mirroring the physical card.
+const CARD_H = 980
 const SLOT_W = 219
 const SLOT_H = 70
 const X_LEFT = 76
 const X_RIGHT = 320
-const ROW_Y = [374, 462, 550, 638, 726]
+const ROW_Y = [346, 434, 522, 610, 698]
 
 interface ThemeArt {
   background: string
   slot: string
+  /** Fill for a stamped (punched) slot. */
+  punchedSlot: string
   top: React.ReactNode
   bottom: React.ReactNode
 }
@@ -41,6 +52,7 @@ interface ThemeArt {
 const PINK: ThemeArt = {
   background: "#f6c9c8",
   slot: "#ff9699",
+  punchedSlot: "#ef5a63",
   top: (
     <>
       <CartisiaCloudPink
@@ -83,6 +95,7 @@ const PINK: ThemeArt = {
 const BLUE: ThemeArt = {
   background: "#a6dbf4",
   slot: "#d8f5ff",
+  punchedSlot: "#4bb6e8",
   top: (
     <>
       <CartisiaCloudBlue
@@ -141,13 +154,21 @@ interface SlotProps {
   y: number
   side: "left" | "right"
   fill: string
+  punchedFill: string
   number: number
+  /** Whether this slot has been used (stamped). */
+  punched: boolean
 }
 
-/** One punch slot: the stadium pill, a white token at the outer end, its number. */
-function Slot({ y, side, fill, number }: SlotProps) {
+/**
+ * One punch slot: the stadium pill, a white numbered token at the outer end, and
+ * — once punched — a deeper fill with a white check stamped at the inner end.
+ */
+function Slot({ y, side, fill, punchedFill, number, punched }: SlotProps) {
   const x = side === "left" ? X_LEFT : X_RIGHT
-  const cx = side === "left" ? x + SLOT_H * 0.62 : x + SLOT_W - SLOT_H * 0.62
+  const inset = SLOT_H * 0.62
+  const tokenCx = side === "left" ? x + inset : x + SLOT_W - inset
+  const checkCx = side === "left" ? x + SLOT_W - inset : x + inset
   return (
     <>
       <rect
@@ -156,11 +177,21 @@ function Slot({ y, side, fill, number }: SlotProps) {
         width={SLOT_W}
         height={SLOT_H}
         rx={SLOT_H / 2}
-        fill={fill}
+        fill={punched ? punchedFill : fill}
       />
-      <circle cx={cx} cy={y} r={SLOT_H * 0.34} fill="#ffffff" />
+      {punched && (
+        <path
+          d={`M${checkCx - 13} ${y} l8 9 l16 -19`}
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth={6}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      <circle cx={tokenCx} cy={y} r={SLOT_H * 0.34} fill="#ffffff" />
       <text
-        x={cx}
+        x={tokenCx}
         y={y}
         textAnchor="middle"
         dominantBaseline="central"
@@ -178,21 +209,24 @@ function Slot({ y, side, fill, number }: SlotProps) {
 /**
  * The illustrated Baloona punch card, rebuilt from the printed card's own vector
  * art (see {@link file://./cartisia-motifs.tsx}) so it scales crisply and ships
- * with no image payload. Purely decorative — the product name, price and CTA
- * live beside it — so the whole drawing is `aria-hidden`.
+ * with no image payload. On the shop it is purely decorative; on a customer's own
+ * card `used` stamps the slots they have redeemed. The greeting, balance and any
+ * labels live beside it, so the drawing itself stays `aria-hidden`.
  */
-function PunchCardArt({ theme, caption, className }: PunchCardArtProps) {
+function PunchCardArt({ theme, caption, used, className }: PunchCardArtProps) {
   const art = THEMES[theme]
   return (
     <svg
-      viewBox="0 0 600 1036"
+      viewBox={`0 0 600 ${CARD_H}`}
       className={cn("block w-full", className)}
       role="presentation"
       aria-hidden
     >
-      <rect width={600} height={1036} fill={art.background} />
+      <rect width={600} height={CARD_H} fill={art.background} />
       {art.top}
-      {art.bottom}
+      {/* The scenery is drawn against the printed card's original 1036 height;
+          lift it so it meets the shorter bottom edge, keeping the composition. */}
+      <g transform={`translate(0 ${CARD_H - 1036})`}>{art.bottom}</g>
       <CartisiaLogo
         x={150}
         y={120}
@@ -218,7 +252,9 @@ function PunchCardArt({ theme, caption, className }: PunchCardArtProps) {
           y={y}
           side="right"
           fill={art.slot}
+          punchedFill={art.punchedSlot}
           number={index + 1}
+          punched={used !== undefined && index + 1 <= used}
         />
       ))}
       {ROW_Y.map((y, index) => (
@@ -227,7 +263,9 @@ function PunchCardArt({ theme, caption, className }: PunchCardArtProps) {
           y={y}
           side="left"
           fill={art.slot}
+          punchedFill={art.punchedSlot}
           number={index + 6}
+          punched={used !== undefined && index + 6 <= used}
         />
       ))}
     </svg>

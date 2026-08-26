@@ -76,7 +76,7 @@ function ShopSection({
               <Reveal
                 key={product.id}
                 delay={index * 80}
-                className="w-full max-w-[260px]"
+                className="w-full max-w-[360px]"
               >
                 <ProductCard
                   name={product.name}

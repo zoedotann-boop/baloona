@@ -32,3 +32,9 @@ export const Age2: Story = {
     caption: "כרטיסיית כניסה לילדים עד גיל שנתיים",
   },
 }
+
+/** A customer's own card mid-way through: four of the ten slots stamped. */
+export const Punched: Story = { args: { used: 4 } }
+
+/** A fully redeemed card — every slot stamped. */
+export const Full: Story = { args: { used: 10 } }

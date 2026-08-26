@@ -29,7 +29,7 @@ export default async function PunchCardPage({
     <BrandShell>
       <div className="relative isolate overflow-hidden">
         <SkyBackdrop />
-        <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-5 py-12">
+        <div className="mx-auto flex max-w-xl flex-col items-center gap-6 px-5 py-12">
           <PunchCardDisplay
             className="w-full"
             total={card.totalPunches}

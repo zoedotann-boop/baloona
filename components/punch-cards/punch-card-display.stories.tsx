@@ -9,7 +9,7 @@ const meta = {
   parameters: { backgrounds: { value: "lavender" } },
   decorators: [
     (Story) => (
-      <div className="mx-auto max-w-md">
+      <div className="mx-auto max-w-xl">
         <Story />
       </div>
     ),
@@ -28,5 +28,3 @@ export const Partial: Story = {
 export const AlmostFull: Story = { args: { used: 9 } }
 
 export const Completed: Story = { args: { used: 10 } }
-
-export const SmallCard: Story = { args: { total: 6, used: 2 } }

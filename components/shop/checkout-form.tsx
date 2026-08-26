@@ -114,7 +114,7 @@ function CheckoutForm({
       className="rounded-[26px] border border-border bg-white p-8"
     >
       <div className="mb-6 flex flex-col items-center">
-        <div className="w-full max-w-[220px] overflow-hidden rounded-[28px] shadow-sm ring-1 ring-border">
+        <div className="w-full max-w-[320px] overflow-hidden rounded-[28px] shadow-sm ring-1 ring-border">
           <PunchCardArt theme="age12" caption={tShop("cardCaptions.age12")} />
         </div>
         <div className="mt-4 text-center">

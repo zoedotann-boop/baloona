@@ -159,6 +159,7 @@
   },
   "punchCard": {
     "cardTitle": "הכרטיסייה שלך",
+    "cardCaption": "כרטיסיית כניסה לבאלונה",
     "greeting": "הכרטיסייה של {name}",
     "usedOfTotal": "{used} מתוך {total} נוקבו",
     "remaining": "נותרו <strong>{count}</strong> ניקובים",

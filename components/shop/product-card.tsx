@@ -22,9 +22,9 @@ interface ProductCardProps {
 }
 
 /**
- * A punch-card package in the shop: the actual printed Baloona entry card
- * (image, used as-is) with the price and CTA on a frosted footer. Dumb
- * component; the page passes plain strings + the theme.
+ * A punch-card package in the shop: the illustrated Baloona entry card
+ * ({@link PunchCardArt}, drawn as inline SVG) with the price and CTA on a frosted
+ * footer. Dumb component; the page passes plain strings + the theme.
  */
 function ProductCard({
   name,
