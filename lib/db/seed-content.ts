@@ -464,6 +464,7 @@ export const birthdayFormFieldRows = [
     label: l("מספר משתתפים", "Number of guests"),
     placeholder: l("מינ. 25 ילדים", "Min. 25 children"),
     type: "number" as const,
+    minValue: 25,
     isRequired: true,
   },
   {
@@ -484,7 +485,7 @@ export const birthdayFormFieldRows = [
     key: "idNumber",
     label: l("ת.ז", "ID number"),
     placeholder: l("000000000", "000000000"),
-    type: "text" as const,
+    type: "id" as const,
     isRequired: true,
   },
   {

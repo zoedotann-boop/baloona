@@ -88,6 +88,8 @@ export default async function BirthdaysPage({
             value: option.value,
             label: pickLocale(option.label, locale),
           })),
+          min: field.minValue,
+          max: field.maxValue,
           isRequired: field.isRequired,
         }))}
         upgradesTitle={pickLocale(content.upgradesTitle, locale)}

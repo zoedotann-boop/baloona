@@ -1,6 +1,7 @@
 import type { RJSFSchema, UiSchema } from "@rjsf/utils"
 
 import type { FormFieldType } from "@/lib/db/schema"
+import { isValidIsraeliId } from "@/lib/israeli-id"
 
 /** One editor-defined question, already resolved for the active locale. */
 export interface BirthdayFormFieldView {
@@ -9,6 +10,9 @@ export interface BirthdayFormFieldView {
   placeholder?: string
   type: FormFieldType
   options: { value: string; label: string }[]
+  /** Inclusive bounds for `number` fields (e.g. a 25-guest minimum). */
+  min?: number | null
+  max?: number | null
   isRequired: boolean
 }
 
@@ -18,22 +22,47 @@ const INPUT_TYPES: Partial<Record<FormFieldType, string>> = {
   email: "email",
 }
 
+/**
+ * Boundaries shared by the schema (client-side AJV) and `isAnswerValid`
+ * (server-side re-check) so a single edit moves both in step.
+ */
+const PHONE_PATTERN = /^[0-9+\-()\s]{7,}$/
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+/** AJV custom format name, registered on the client validator. */
+export const ISRAELI_ID_FORMAT = "israeli-id"
+/** Free-text caps that trip the localized "too long" message. */
+const MAX_TEXT_LENGTH = 120
+const MAX_TEXTAREA_LENGTH = 1000
+
 function propertyFor(field: BirthdayFormFieldView): RJSFSchema {
   const title = field.label
 
   switch (field.type) {
-    case "number":
-      return { type: "number", title, minimum: 0 }
+    case "number": {
+      const schema: RJSFSchema = {
+        type: "number",
+        title,
+        minimum: field.min ?? 0,
+      }
+      if (field.max != null) schema.maximum = field.max
+      return schema
+    }
     case "checkbox":
       return { type: "boolean", title }
     case "date":
       return { type: "string", format: "date", title }
     case "email":
       return { type: "string", format: "email", title }
+    case "id":
+      // A `format` error carrying `israeli-id` maps to a localized "invalid ID"
+      // message in the form component.
+      return { type: "string", title, format: ISRAELI_ID_FORMAT }
+    case "textarea":
+      return { type: "string", title, maxLength: MAX_TEXTAREA_LENGTH }
     case "tel":
       // Digits, spaces and the usual phone punctuation; a `pattern` error is
       // mapped to a localized "invalid phone" message in the form component.
-      return { type: "string", title, pattern: "^[0-9+\\-()\\s]{7,}$" }
+      return { type: "string", title, pattern: PHONE_PATTERN.source }
     case "select":
       return {
         type: "string",
@@ -44,7 +73,43 @@ function propertyFor(field: BirthdayFormFieldView): RJSFSchema {
         })),
       }
     default:
-      return { type: "string", title }
+      return { type: "string", title, maxLength: MAX_TEXT_LENGTH }
+  }
+}
+
+/**
+ * Re-check a submitted answer against its field type on the server.
+ *
+ * The client validator (AJV) already rejects malformed input, but the action is
+ * unauthenticated and must not trust the payload, so it runs the same
+ * type-level rules again. An empty value is treated as valid here — the
+ * required check is handled separately.
+ */
+export function isAnswerValid(
+  field: Pick<BirthdayFormFieldView, "type" | "min" | "max">,
+  value: string
+): boolean {
+  if (!value) return true
+  switch (field.type) {
+    case "id":
+      return isValidIsraeliId(value)
+    case "email":
+      return EMAIL_PATTERN.test(value)
+    case "tel":
+      return PHONE_PATTERN.test(value)
+    case "number": {
+      const parsed = Number(value)
+      if (!Number.isFinite(parsed)) return false
+      if (parsed < (field.min ?? 0)) return false
+      if (field.max != null && parsed > field.max) return false
+      return true
+    }
+    case "text":
+      return value.length <= MAX_TEXT_LENGTH
+    case "textarea":
+      return value.length <= MAX_TEXTAREA_LENGTH
+    default:
+      return true
   }
 }
 

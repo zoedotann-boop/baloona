@@ -12,6 +12,7 @@ import {
   birthdaySteps,
   birthdayUpgrades,
   contactSubjects,
+  formFieldType,
   galleryImages,
   homeContents,
   homeFeatures,
@@ -432,19 +433,12 @@ const birthdaySchema = z.object({
         ),
       label: localizedSchema,
       placeholder: localizedSchema,
-      type: z.enum([
-        "text",
-        "textarea",
-        "tel",
-        "email",
-        "date",
-        "number",
-        "select",
-        "checkbox",
-      ]),
+      type: z.enum(formFieldType.enumValues),
       options: z.array(
         z.object({ value: z.string().min(1), label: localizedSchema })
       ),
+      minValue: z.number().int().nullable(),
+      maxValue: z.number().int().nullable(),
       isRequired: z.boolean(),
       isVisible: z.boolean(),
     })

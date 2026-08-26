@@ -97,6 +97,7 @@ export const formFieldType = pgEnum("form_field_type", [
   "textarea",
   "tel",
   "email",
+  "id",
   "date",
   "number",
   "select",
@@ -131,6 +132,9 @@ export const birthdayFormFields = pgTable(
     placeholder: localized(),
     type: formFieldType().notNull().default("text"),
     options: jsonb().$type<FormFieldOption[]>().notNull().default([]),
+    /** Inclusive bounds for `number` fields; ignored by every other type. */
+    minValue: integer(),
+    maxValue: integer(),
     isRequired: boolean().notNull().default(false),
     isVisible: boolean().notNull().default(true),
     sortOrder: integer().notNull().default(0),
