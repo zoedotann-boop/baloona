@@ -299,6 +299,16 @@
         "upgrades": "Upgrades",
         "estimatedTotal": "Estimated total"
       }
+    },
+    "birthdayInvitation": {
+      "preview": "Your birthday invitation",
+      "heading": "Thanks for choosing to celebrate with us! 🎉",
+      "headingNamed": "Thanks for choosing to celebrate {name}'s birthday with us! 🎉",
+      "intro": "A designed birthday invitation is attached 🎈",
+      "body": "Print it or take a screenshot and send it to your guests as the birthday invitation!",
+      "signoff": "See you soon, the Baloona team 💛",
+      "subject": "Your birthday invitation 🎉",
+      "subjectNamed": "Invitation to {name}'s birthday 🎉"
     }
   },
   "admin": {
