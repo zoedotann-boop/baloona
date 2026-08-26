@@ -31,6 +31,7 @@ const FIELD_TYPES: FormFieldType[] = [
   "textarea",
   "tel",
   "email",
+  "id",
   "date",
   "number",
   "select",
@@ -84,6 +85,8 @@ interface BirthdaysDraft {
     placeholder: Localized
     type: FormFieldType
     options: { value: string; label: Localized }[]
+    minValue: number | null
+    maxValue: number | null
     isRequired: boolean
     isVisible: boolean
   }[]
@@ -484,6 +487,8 @@ function BirthdaysForm({
             placeholder: emptyLocalized(),
             type: "text" as FormFieldType,
             options: [],
+            minValue: null,
+            maxValue: null,
             isRequired: false,
             isVisible: true,
           })}
@@ -572,6 +577,47 @@ function BirthdaysForm({
                 value={field.placeholder}
                 onChange={(placeholder) => update({ ...field, placeholder })}
               />
+
+              {field.type === "number" && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <AdminField
+                    label={t("fieldMinValue")}
+                    tooltip={t("fieldMinValueTip")}
+                  >
+                    <AdminInput
+                      type="number"
+                      value={field.minValue ?? ""}
+                      onChange={(event) =>
+                        update({
+                          ...field,
+                          minValue:
+                            event.target.value === ""
+                              ? null
+                              : Number(event.target.value),
+                        })
+                      }
+                    />
+                  </AdminField>
+                  <AdminField
+                    label={t("fieldMaxValue")}
+                    tooltip={t("fieldMaxValueTip")}
+                  >
+                    <AdminInput
+                      type="number"
+                      value={field.maxValue ?? ""}
+                      onChange={(event) =>
+                        update({
+                          ...field,
+                          maxValue:
+                            event.target.value === ""
+                              ? null
+                              : Number(event.target.value),
+                        })
+                      }
+                    />
+                  </AdminField>
+                </div>
+              )}
 
               {field.type === "select" && (
                 <div>

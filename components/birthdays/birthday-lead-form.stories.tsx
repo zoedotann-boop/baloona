@@ -29,6 +29,23 @@ const meta = {
         isRequired: true,
       },
       {
+        key: "guestsCount",
+        label: "מספר משתתפים",
+        placeholder: "מינ. 25 ילדים",
+        type: "number",
+        options: [],
+        min: 25,
+        isRequired: true,
+      },
+      {
+        key: "idNumber",
+        label: "ת.ז",
+        placeholder: "000000000",
+        type: "id",
+        options: [],
+        isRequired: true,
+      },
+      {
         key: "phone",
         label: "טלפון",
         placeholder: "050-0000000",

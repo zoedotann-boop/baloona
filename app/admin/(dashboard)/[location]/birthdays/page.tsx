@@ -71,6 +71,8 @@ export default async function AdminBirthdaysPage({
             value: option.value,
             label: toLocalized(option.label),
           })),
+          minValue: field.minValue,
+          maxValue: field.maxValue,
           isRequired: field.isRequired,
           isVisible: field.isVisible,
         })),

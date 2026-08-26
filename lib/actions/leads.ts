@@ -12,6 +12,7 @@ import {
   leads,
   locations,
 } from "@/lib/db/schema"
+import { isAnswerValid } from "@/lib/birthday-form"
 import { sendBirthdayInvitation } from "@/lib/email/birthday-invitation"
 import { sendLeadNotification } from "@/lib/email/lead-notification"
 import { contactLeadSchema } from "@/lib/forms/schemas"
@@ -134,6 +135,14 @@ export async function submitBirthdayLead(
     const raw = data.answers[field.key]
     const value = raw === undefined || raw === null ? "" : String(raw).trim()
     if (field.isRequired && !value) return { ok: false, error: "required" }
+    if (
+      value &&
+      !isAnswerValid(
+        { type: field.type, min: field.minValue, max: field.maxValue },
+        value
+      )
+    )
+      return { ok: false, error: "invalid" }
     if (value) answers[field.key] = value
   }
 
