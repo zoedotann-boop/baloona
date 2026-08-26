@@ -62,7 +62,7 @@ function SiteHeader({
   }, [menuOpen])
 
   return (
-    <header className="sticky top-0 z-40 flex h-[74px] items-center justify-between gap-6 border-b border-border bg-white px-5 md:px-9">
+    <header className="sticky top-0 z-40 flex h-[74px] items-center justify-between gap-6 border-b border-border bg-white px-5 md:grid md:grid-cols-[1fr_auto_1fr] md:px-9">
       {hasNav && (
         <button
           type="button"
@@ -80,12 +80,16 @@ function SiteHeader({
         </button>
       )}
 
-      <Link href={paths?.home ?? "/"} aria-label={t("site.brand")}>
+      <Link
+        href={paths?.home ?? "/"}
+        aria-label={t("site.brand")}
+        className="md:justify-self-start"
+      >
         <Logo size="md" />
       </Link>
 
       {hasNav && (
-        <nav className="hidden items-center gap-1.5 md:flex">
+        <nav className="hidden items-center gap-1.5 md:flex md:justify-self-center">
           {navItems.map((item) => {
             const active = pathname === item.href
             return (
@@ -115,7 +119,7 @@ function SiteHeader({
         </nav>
       )}
 
-      <div className="flex items-center gap-3.5">
+      <div className="flex items-center gap-3.5 md:justify-self-end">
         {statusLabel && (
           <StatusBadge
             className="hidden lg:inline-flex"
