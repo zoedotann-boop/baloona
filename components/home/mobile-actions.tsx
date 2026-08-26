@@ -6,17 +6,20 @@ import { useEffect, useState } from "react"
 import { Icon } from "@/components/brand/icon"
 import { cn } from "@/lib/utils"
 
-interface HeroMobileActionsProps {
+interface MobileActionsProps {
   whatsappHref: string
   /** Drives the status chip from the venue's real opening hours. */
   isOpen: boolean
 }
 
 /**
- * Mobile-only floating controls for the hero: a small open/closed status chip
- * plus WhatsApp and back-to-top buttons that stay in view while scrolling.
+ * Mobile-only floating controls: a small open/closed status chip plus WhatsApp
+ * and back-to-top buttons that stay in view while scrolling. Rendered at the
+ * site-chrome root (never inside an `isolate`/`overflow` section) so the fixed
+ * layer always paints above page content. The desktop counterpart is
+ * {@link import("./status-float").StatusFloat}.
  */
-function HeroMobileActions({ whatsappHref, isOpen }: HeroMobileActionsProps) {
+function MobileActions({ whatsappHref, isOpen }: MobileActionsProps) {
   const site = useTranslations("site")
   const status = useTranslations("status")
   const mobile = useTranslations("mobile")
@@ -85,4 +88,4 @@ function HeroMobileActions({ whatsappHref, isOpen }: HeroMobileActionsProps) {
   )
 }
 
-export { HeroMobileActions }
+export { MobileActions }

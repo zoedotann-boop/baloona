@@ -1,6 +1,7 @@
 import { TrackingScripts } from "@/components/analytics/tracking-scripts"
 import { AnnouncementModal } from "@/components/brand/announcement-modal"
 import { ContactSection } from "@/components/home/contact-section"
+import { MobileActions } from "@/components/home/mobile-actions"
 import { SiteFooter } from "@/components/home/site-footer"
 import { SiteHeader } from "@/components/home/site-header"
 import { StatusFloat } from "@/components/home/status-float"
@@ -69,6 +70,8 @@ export async function SiteChrome({
       </PublicShell>
 
       {statusLabel && <StatusFloat label={statusLabel} isOpen={isOpen} />}
+
+      <MobileActions whatsappHref={contact.whatsappHref} isOpen={isOpen} />
 
       {announcement?.isActive && (
         <AnnouncementModal
