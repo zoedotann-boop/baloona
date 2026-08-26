@@ -13,6 +13,7 @@ const meta = {
     popularLabel: "הבחירה הפופולרית",
     buyLabel: "לרכישה",
     theme: "age12",
+    cardCaption: "כרטיסיית כניסה לילדים עד גיל 12",
     href: "#",
   },
   parameters: { backgrounds: { value: "nearwhite" } },
@@ -33,7 +34,12 @@ export const Age12: Story = {}
 
 /** The "up to age 2" blue balloons card. */
 export const Age2: Story = {
-  args: { name: "כרטיסייה 5 כניסות", price: "200 ₪", theme: "age2" },
+  args: {
+    name: "כרטיסייה 5 כניסות",
+    price: "200 ₪",
+    theme: "age2",
+    cardCaption: "כרטיסיית כניסה לילדים עד גיל שנתיים",
+  },
 }
 
 export const Featured: Story = { args: { featured: true } }

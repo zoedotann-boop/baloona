@@ -12,6 +12,8 @@ import { HONEYPOT_FIELD } from "@/lib/forms/honeypot"
 import { checkoutSchema } from "@/lib/forms/schemas"
 import { cn } from "@/lib/utils"
 
+import { PunchCardArt } from "./punch-card-art"
+
 const inputClass =
   "w-full h-12 rounded-xl bg-white border border-border px-4 text-[16px] text-foreground placeholder:text-muted-foreground focus:bg-white focus:border-primary focus:outline-none transition"
 
@@ -40,6 +42,7 @@ function CheckoutForm({
   termsHref,
 }: CheckoutFormProps) {
   const t = useTranslations("checkout")
+  const tShop = useTranslations("shop")
   const tErrors = useTranslations("forms")
   const [agreed, setAgreed] = useState(false)
   const [status, setStatus] = useState<"idle" | "consent" | "error" | "done">(
@@ -110,17 +113,18 @@ function CheckoutForm({
       noValidate
       className="rounded-[26px] border border-border bg-white p-8"
     >
-      <div className="stamp-edge mb-6 bg-accent p-[3px]">
-        <div className="stamp-edge flex items-center justify-between gap-3 bg-white px-6 py-5">
-          <div>
-            <div className="font-heading text-[19px] font-black text-brand-plum">
-              {productName}
-            </div>
-            <div className="mt-0.5 text-[14px] text-brand-ink-soft">
-              {entriesLabel}
-            </div>
+      <div className="mb-6 flex flex-col items-center">
+        <div className="w-full max-w-[220px] overflow-hidden rounded-[28px] shadow-sm ring-1 ring-border">
+          <PunchCardArt theme="age12" caption={tShop("cardCaptions.age12")} />
+        </div>
+        <div className="mt-4 text-center">
+          <div className="font-heading text-[19px] font-black text-brand-plum">
+            {productName}
           </div>
-          <div className="font-heading text-[26px] font-black text-brand-plum">
+          <div className="mt-0.5 text-[14px] text-brand-ink-soft">
+            {entriesLabel}
+          </div>
+          <div className="mt-1 font-heading text-[26px] font-black text-brand-plum">
             {productPrice}
           </div>
         </div>

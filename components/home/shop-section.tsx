@@ -26,6 +26,8 @@ interface ShopSectionProps {
   /** Badge for the featured package. */
   popularLabel: string
   buyLabel: string
+  /** Decorative captions drawn on the two alternating card designs. */
+  cardCaptions: { age12: string; age2: string }
   products: ShopProduct[]
 }
 
@@ -42,6 +44,7 @@ function ShopSection({
   benefits,
   popularLabel,
   buyLabel,
+  cardCaptions,
   products,
 }: ShopSectionProps) {
   if (products.length === 0) return null
@@ -67,24 +70,28 @@ function ShopSection({
         </Reveal>
 
         <div className="mt-12 flex flex-wrap items-stretch justify-center gap-6">
-          {products.map((product, index) => (
-            <Reveal
-              key={product.id}
-              delay={index * 80}
-              className="w-full max-w-[260px]"
-            >
-              <ProductCard
-                name={product.name}
-                perEntryLabel={product.perEntryLabel}
-                price={product.price}
-                featured={product.featured}
-                popularLabel={popularLabel}
-                buyLabel={buyLabel}
-                theme={index % 2 === 0 ? "age12" : "age2"}
-                href={product.href}
-              />
-            </Reveal>
-          ))}
+          {products.map((product, index) => {
+            const theme = index % 2 === 0 ? "age12" : "age2"
+            return (
+              <Reveal
+                key={product.id}
+                delay={index * 80}
+                className="w-full max-w-[260px]"
+              >
+                <ProductCard
+                  name={product.name}
+                  perEntryLabel={product.perEntryLabel}
+                  price={product.price}
+                  featured={product.featured}
+                  popularLabel={popularLabel}
+                  buyLabel={buyLabel}
+                  theme={theme}
+                  cardCaption={cardCaptions[theme]}
+                  href={product.href}
+                />
+              </Reveal>
+            )
+          })}
         </div>
 
         {/* Shared selling points — stated once for the whole shop, not per card. */}
