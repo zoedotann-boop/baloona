@@ -197,35 +197,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-
-  /* Postage-stamp edge: semicircular perforations punched out of all four sides.
-     Four radial-gradient masks (one per edge), each opaque except its notches,
-     combined with `intersect` so every edge's notches show. The element's own
-     background then reads as a stamp against whatever sits behind it. */
-  .stamp-edge {
-    --stamp-r: 7px;
-    --stamp-p: 20px;
-    -webkit-mask:
-      radial-gradient(var(--stamp-r) at 50% 0, #0000 99%, #000) 50% 0 /
-        var(--stamp-p) 100% repeat-x,
-      radial-gradient(var(--stamp-r) at 50% 100%, #0000 99%, #000) 50% 100% /
-        var(--stamp-p) 100% repeat-x,
-      radial-gradient(var(--stamp-r) at 0 50%, #0000 99%, #000) 0 50% / 100%
-        var(--stamp-p) repeat-y,
-      radial-gradient(var(--stamp-r) at 100% 50%, #0000 99%, #000) 100% 50% /
-        100% var(--stamp-p) repeat-y;
-    mask:
-      radial-gradient(var(--stamp-r) at 50% 0, #0000 99%, #000) 50% 0 /
-        var(--stamp-p) 100% repeat-x,
-      radial-gradient(var(--stamp-r) at 50% 100%, #0000 99%, #000) 50% 100% /
-        var(--stamp-p) 100% repeat-x,
-      radial-gradient(var(--stamp-r) at 0 50%, #0000 99%, #000) 0 50% / 100%
-        var(--stamp-p) repeat-y,
-      radial-gradient(var(--stamp-r) at 100% 50%, #0000 99%, #000) 100% 50% /
-        100% var(--stamp-p) repeat-y;
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
-  }
 }
 
 @keyframes baloonaPulse {

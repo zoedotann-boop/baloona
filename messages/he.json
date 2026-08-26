@@ -159,6 +159,7 @@
   },
   "punchCard": {
     "cardTitle": "הכרטיסייה שלך",
+    "cardCaption": "כרטיסיית כניסה לבאלונה",
     "greeting": "הכרטיסייה של {name}",
     "usedOfTotal": "{used} מתוך {total} נוקבו",
     "remaining": "נותרו <strong>{count}</strong> ניקובים",
@@ -172,6 +173,10 @@
     "title": "הכרטיסיות של בלונה",
     "subtitle": "רכשו כרטיסייה דיגיטלית ותיהנו מכניסות במחיר משתלם.",
     "validAllBranches": "הכרטיסייה תקפה לשימוש בכל סניפי בלונה",
+    "cardCaptions": {
+      "age12": "כרטיסיית כניסה לילדים עד גיל 12",
+      "age2": "כרטיסיית כניסה לילדים עד גיל שנתיים"
+    },
     "entries": "{count} כניסות",
     "perEntry": "רק {amount} לכניסה!",
     "popularBadge": "הבחירה הפופולרית",

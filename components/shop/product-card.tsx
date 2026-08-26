@@ -1,15 +1,6 @@
-import Image from "next/image"
-
 import { PillButton } from "@/components/brand/pill-button"
 
-type CardTheme = "age12" | "age2"
-
-// The two printed Baloona entry cards, used as-is. Cards alternate between the
-// pink "up to age 12" design and the blue "up to age 2" design across the grid.
-const CARD_IMAGE: Record<CardTheme, string> = {
-  age12: "/assets/shop/card-age12.png",
-  age2: "/assets/shop/card-age2.png",
-}
+import { PunchCardArt, type PunchCardTheme } from "./punch-card-art"
 
 interface ProductCardProps {
   name: string
@@ -23,15 +14,17 @@ interface ProductCardProps {
   popularLabel: string
   buyLabel: string
   /** Which printed card design to show. */
-  theme?: CardTheme
+  theme?: PunchCardTheme
+  /** Decorative caption drawn on the card art, e.g. "כרטיסיית כניסה…". */
+  cardCaption: string
   /** Checkout link for this product. */
   href: string
 }
 
 /**
- * A punch-card package in the shop: the actual printed Baloona entry card
- * (image, used as-is) with the price and CTA on a frosted footer. Dumb
- * component; the page passes plain strings + the theme.
+ * A punch-card package in the shop: the illustrated Baloona entry card
+ * ({@link PunchCardArt}, drawn as inline SVG) with the price and CTA on a frosted
+ * footer. Dumb component; the page passes plain strings + the theme.
  */
 function ProductCard({
   name,
@@ -41,6 +34,7 @@ function ProductCard({
   popularLabel,
   buyLabel,
   theme = "age12",
+  cardCaption,
   href,
 }: ProductCardProps) {
   return (
@@ -52,14 +46,7 @@ function ProductCard({
       )}
 
       <div className="flex h-full flex-col overflow-hidden rounded-[28px] bg-white shadow-sm ring-1 ring-border">
-        <Image
-          src={CARD_IMAGE[theme]}
-          alt=""
-          width={1196}
-          height={2073}
-          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
-          className="w-full"
-        />
+        <PunchCardArt theme={theme} caption={cardCaption} />
         <div className="mt-auto px-6 py-5 text-center">
           <h3 className="font-heading text-[20px] font-black text-brand-plum">
             {name}

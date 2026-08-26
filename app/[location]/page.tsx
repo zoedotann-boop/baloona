@@ -110,6 +110,10 @@ export default async function Page({ params }: PageProps<"/[location]">) {
         benefits={shopT.raw("benefits") as string[]}
         popularLabel={shopT("popularBadge")}
         buyLabel={shopT("buy")}
+        cardCaptions={{
+          age12: shopT("cardCaptions.age12"),
+          age2: shopT("cardCaptions.age2"),
+        }}
         products={products.map((product) => ({
           id: product.id,
           name: pickLocale(product.name, locale),
