@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: PageProps<"/[location]">) {
 export default async function Page({ params }: PageProps<"/[location]">) {
   const { location: slug } = await params
   const [
-    { locale, paths, contact, hours, isOpen },
+    { locale, paths, contact, hours, statusLabel, isOpen },
     data,
     format,
     products,
@@ -54,7 +54,7 @@ export default async function Page({ params }: PageProps<"/[location]">) {
   return (
     <>
       <Hero
-        badge={pickLocale(home.heroBadge, locale)}
+        statusLabel={statusLabel}
         title={pickLocale(home.heroTitle, locale)}
         description={pickLocale(home.heroDescription, locale)}
         images={home.heroImages}

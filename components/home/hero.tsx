@@ -12,7 +12,8 @@ import { Section } from "@/components/layout/section"
 import type { HoursRow } from "@/lib/view-models"
 
 interface HeroProps {
-  badge: string
+  /** Live opening-status line (green/red dot). Omitted when hours are unknown. */
+  statusLabel?: string
   title: string
   description: string
   /** Up to three photos: the first spans the mosaic's full width. */
@@ -29,7 +30,7 @@ interface HeroProps {
  * soft-pink surface.
  */
 function Hero({
-  badge,
+  statusLabel,
   title,
   description,
   images,
@@ -49,7 +50,14 @@ function Hero({
       <WallScene variant="meadow" />
       <Container className="grid items-center gap-10 md:grid-cols-[1.05fr_0.95fr]">
         <Reveal>
-          <StatusBadge className="mb-5" variant="pill" label={badge} />
+          {statusLabel && (
+            <StatusBadge
+              className="mb-5"
+              variant="pill"
+              label={statusLabel}
+              isOpen={isOpen}
+            />
+          )}
           <h1 className="max-w-[12ch] font-heading text-[clamp(36px,6vw,60px)] leading-[1.05] font-black tracking-[-1px] text-brand-plum">
             {title}
           </h1>

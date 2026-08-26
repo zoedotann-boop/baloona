@@ -3,6 +3,7 @@ import { AnnouncementModal } from "@/components/brand/announcement-modal"
 import { ContactSection } from "@/components/home/contact-section"
 import { SiteFooter } from "@/components/home/site-footer"
 import { SiteHeader } from "@/components/home/site-header"
+import { StatusFloat } from "@/components/home/status-float"
 import { listPublishedLocations } from "@/lib/db/queries/site"
 import { pickLocale, pickLocaleList } from "@/lib/localized"
 import { loadSiteChrome } from "@/lib/site-view"
@@ -38,13 +39,7 @@ export async function SiteChrome({
     <>
       <PublicShell
         header={
-          <SiteHeader
-            paths={paths}
-            whatsappHref={contact.whatsappHref}
-            statusLabel={statusLabel}
-            isOpen={isOpen}
-            showBranchSwitch={published.length > 1}
-          />
+          <SiteHeader paths={paths} whatsappHref={contact.whatsappHref} />
         }
         footer={
           <>
@@ -64,6 +59,7 @@ export async function SiteChrome({
               tagline={pickLocale(chrome.site?.footerTagline, locale)}
               contact={contact}
               hours={hours}
+              showBranchSwitch={published.length > 1}
               year={new Date().getFullYear()}
             />
           </>
@@ -71,6 +67,8 @@ export async function SiteChrome({
       >
         {children}
       </PublicShell>
+
+      {statusLabel && <StatusFloat label={statusLabel} isOpen={isOpen} />}
 
       {announcement?.isActive && (
         <AnnouncementModal

@@ -11,8 +11,6 @@ const meta = {
   args: {
     paths: storyPaths,
     whatsappHref: storyContact.whatsappHref,
-    statusLabel: "פתוח עכשיו · עד 19:00",
-    showBranchSwitch: true,
   },
 } satisfies Meta<typeof SiteHeader>
 
@@ -21,16 +19,10 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
-export const SingleBranch: Story = {
-  args: { showBranchSwitch: false, statusLabel: undefined },
-}
-
-/** Brand-global variant: wordmark + language switcher only, no branch nav. */
+/** Brand-global variant: wordmark only, no branch nav. */
 export const BrandGlobal: Story = {
   args: {
     paths: undefined,
     whatsappHref: undefined,
-    statusLabel: undefined,
-    showBranchSwitch: false,
   },
 }

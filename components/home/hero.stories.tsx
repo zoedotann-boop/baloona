@@ -9,7 +9,7 @@ const meta = {
   component: Hero,
   parameters: { layout: "fullscreen" },
   args: {
-    badge: "פתוח עכשיו · עד 19:00",
+    statusLabel: "פתוח עכשיו · עד 19:00",
     title: "משחקייה ובית קפה — להורים ולילדים",
     description:
       "מתחם ג׳ימבורי ענק של 3 קומות לילדים בגילאי 1–9. לשבת עם הקטנים וליהנות גם אנחנו.",
@@ -30,4 +30,6 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
-export const Closed: Story = { args: { isOpen: false } }
+export const Closed: Story = {
+  args: { isOpen: false, statusLabel: "סגור · נפתח ביום חמישי ב-09:00" },
+}
