@@ -1,9 +1,10 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Pencil, Plus, Trash2 } from "lucide-react"
+import { KeyRound, Pencil, Plus, Trash2, X } from "lucide-react"
 import { useState, useTransition } from "react"
 
+import { AdminDialog } from "@/components/admin/admin-dialog"
 import { AdminModal } from "@/components/admin/admin-modal"
 import { ConfirmModal } from "@/components/admin/confirm-modal"
 import {
@@ -24,6 +25,7 @@ import {
   deleteTeamMember,
   updateTeamMember,
 } from "@/lib/actions/admin/locations"
+import { authClient } from "@/lib/auth-client"
 import type { UserRole } from "@/lib/db/schema"
 import { cn } from "@/lib/utils"
 
@@ -281,6 +283,7 @@ function MemberRow({
   const [locationIds, setLocationIds] = useState(member.locationIds)
   const [editing, setEditing] = useState(false)
   const [removing, setRemoving] = useState(false)
+  const [changingPassword, setChangingPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pending, start] = useTransition()
 
@@ -342,6 +345,16 @@ function MemberRow({
           >
             <Pencil className="size-4" />
           </button>
+          {member.isSelf && (
+            <button
+              type="button"
+              onClick={() => setChangingPassword(true)}
+              aria-label={t("changePassword")}
+              className="flex size-8 items-center justify-center rounded-lg text-brand-plum transition hover:bg-white"
+            >
+              <KeyRound className="size-4" />
+            </button>
+          )}
           {!member.isSelf && (
             <button
               type="button"
@@ -412,8 +425,146 @@ function MemberRow({
             {pending ? common("saving") : t("update")}
           </PillButton>
         </AdminModal>
+
+        {member.isSelf && (
+          <ChangePasswordModal
+            open={changingPassword}
+            onClose={() => setChangingPassword(false)}
+          />
+        )}
       </td>
     </AdminTableRow>
+  )
+}
+
+/**
+ * Self-service password change for the signed-in user.
+ *
+ * Better Auth verifies the current password and revokes other sessions, so a
+ * changed password logs the account out everywhere but the current tab.
+ */
+function ChangePasswordModal({
+  open,
+  onClose,
+}: {
+  open: boolean
+  onClose: () => void
+}) {
+  const t = useTranslations("admin.team")
+  const common = useTranslations("admin.common")
+  const [error, setError] = useState<string | null>(null)
+  const [done, setDone] = useState(false)
+  const [pending, start] = useTransition()
+
+  function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const form = event.currentTarget
+    const data = new FormData(form)
+    const currentPassword = String(data.get("currentPassword") ?? "")
+    const newPassword = String(data.get("newPassword") ?? "")
+    const confirmPassword = String(data.get("confirmPassword") ?? "")
+
+    setError(null)
+    setDone(false)
+
+    if (newPassword !== confirmPassword) {
+      setError(t("passwordsMismatch"))
+      return
+    }
+
+    start(async () => {
+      const result = await authClient.changePassword({
+        currentPassword,
+        newPassword,
+        revokeOtherSessions: true,
+      })
+      if (result.error) {
+        setError(
+          result.error.code === "INVALID_PASSWORD"
+            ? t("currentPasswordWrong")
+            : common("saveError")
+        )
+        return
+      }
+      form.reset()
+      setDone(true)
+    })
+  }
+
+  return (
+    <AdminDialog
+      open={open}
+      onClose={onClose}
+      className="w-[min(28rem,calc(100vw-2rem))]"
+    >
+      <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-3.5">
+        <h2 className="truncate font-heading text-[18px] font-black text-brand-plum">
+          {t("changePassword")}
+        </h2>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={common("close")}
+          className="flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted"
+        >
+          <X className="size-5" />
+        </button>
+      </div>
+
+      <form onSubmit={submit}>
+        <div className="space-y-4 px-5 py-4">
+          <AdminField label={t("currentPassword")}>
+            <AdminInput
+              name="currentPassword"
+              type="password"
+              autoComplete="current-password"
+              required
+              dir="ltr"
+              className="text-start"
+            />
+          </AdminField>
+          <AdminField label={t("newPassword")} tooltip={t("newPasswordTip")}>
+            <AdminInput
+              name="newPassword"
+              type="password"
+              autoComplete="new-password"
+              required
+              minLength={8}
+              dir="ltr"
+              className="text-start"
+            />
+          </AdminField>
+          <AdminField label={t("confirmPassword")}>
+            <AdminInput
+              name="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              required
+              minLength={8}
+              dir="ltr"
+              className="text-start"
+            />
+          </AdminField>
+
+          {error && (
+            <p role="alert" className="text-[14px] font-bold text-destructive">
+              {error}
+            </p>
+          )}
+          {done && (
+            <p role="status" className="text-[14px] font-bold text-brand-green">
+              {t("passwordChanged")}
+            </p>
+          )}
+        </div>
+
+        <div className="flex justify-end border-t border-border px-5 py-3">
+          <PillButton type="submit" size="sm" disabled={pending}>
+            {pending ? common("saving") : t("changePassword")}
+          </PillButton>
+        </div>
+      </form>
+    </AdminDialog>
   )
 }
 
