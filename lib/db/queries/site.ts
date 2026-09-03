@@ -137,17 +137,6 @@ export async function getPunchCardByToken(token: string) {
   })
 }
 
-/**
- * Active shop products for the global `/shop` page, in display order. Products
- * are brand-global (not scoped to a branch), so this is not location-filtered.
- */
-export async function listActiveProducts() {
-  return db.query.products.findMany({
-    where: eq(products.isActive, true),
-    orderBy: (p) => [asc(p.sortOrder)],
-  })
-}
-
 /** A single product for the checkout page; `undefined` for unknown/removed ids. */
 export async function getProductById(id: string) {
   return db.query.products.findFirst({ where: eq(products.id, id) })

@@ -38,17 +38,3 @@ export function emptyLocalized(): Localized {
 export function formatPrice(amount: number, locale: Locale): string {
   return `${amount.toLocaleString(locale === "he" ? "he-IL" : "en-US")} ₪`
 }
-
-/** Per-entry price for a package, e.g. 650₪ / 20 → "32.5 ₪" (one decimal). */
-export function formatPerEntry(
-  amount: number,
-  entries: number,
-  locale: Locale
-): string {
-  const perEntry = entries > 0 ? amount / entries : 0
-  const formatted = perEntry.toLocaleString(
-    locale === "he" ? "he-IL" : "en-US",
-    { maximumFractionDigits: 1 }
-  )
-  return `${formatted} ₪`
-}

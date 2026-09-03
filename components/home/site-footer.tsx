@@ -66,7 +66,6 @@ function SiteFooter({
     { label: nav("home"), href: paths.home },
     { label: nav("menu"), href: paths.menu },
     { label: nav("birthdays"), href: paths.birthdays },
-    { label: t("shop"), href: paths.shop },
     { label: t("pricingLink"), href: paths.pricing },
     { label: t("contactLink"), href: paths.contact },
     // A quick way back to the branch chooser, shown only when it is worth it.

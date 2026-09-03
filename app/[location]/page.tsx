@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getFormatter, getTranslations } from "next-intl/server"
+import { getFormatter } from "next-intl/server"
 
 import { BirthdayCta } from "@/components/home/birthday-cta"
 import { Features } from "@/components/home/features"
@@ -9,15 +9,9 @@ import { MenuTeaser } from "@/components/home/menu-teaser"
 import { Pricing } from "@/components/home/pricing"
 import { Reassurance } from "@/components/home/reassurance"
 import { Reviews } from "@/components/home/reviews"
-import { ShopSection } from "@/components/home/shop-section"
 import { VisionPanel } from "@/components/home/vision-panel"
-import { getHomePage, listActiveProducts } from "@/lib/db/queries/site"
-import {
-  formatPerEntry,
-  formatPrice,
-  pickLocale,
-  pickLocaleList,
-} from "@/lib/localized"
+import { getHomePage } from "@/lib/db/queries/site"
+import { formatPrice, pickLocale, pickLocaleList } from "@/lib/localized"
 import { buildPageMetadata } from "@/lib/seo"
 import { loadSiteChrome } from "@/lib/site-view"
 
@@ -28,19 +22,8 @@ export async function generateMetadata({ params }: PageProps<"/[location]">) {
 
 export default async function Page({ params }: PageProps<"/[location]">) {
   const { location: slug } = await params
-  const [
-    { locale, paths, contact, hours, statusLabel, isOpen },
-    data,
-    format,
-    products,
-    shopT,
-  ] = await Promise.all([
-    loadSiteChrome(slug),
-    getHomePage(slug),
-    getFormatter(),
-    listActiveProducts(),
-    getTranslations("shop"),
-  ])
+  const [{ locale, paths, contact, hours, statusLabel, isOpen }, data, format] =
+    await Promise.all([loadSiteChrome(slug), getHomePage(slug), getFormatter()])
 
   if (!data?.home || !data.pricing) notFound()
   const { home, pricing } = data
@@ -101,29 +84,6 @@ export default async function Page({ params }: PageProps<"/[location]">) {
         hours={hours}
         rules={pickLocaleList(pricing.rules, locale)}
         note={pickLocale(pricing.note, locale)}
-      />
-
-      <ShopSection
-        title={shopT("title")}
-        subtitle={shopT("subtitle")}
-        note={shopT("validAllBranches")}
-        benefits={shopT.raw("benefits") as string[]}
-        popularLabel={shopT("popularBadge")}
-        buyLabel={shopT("buy")}
-        cardCaptions={{
-          age12: shopT("cardCaptions.age12"),
-          age2: shopT("cardCaptions.age2"),
-        }}
-        products={products.map((product) => ({
-          id: product.id,
-          name: pickLocale(product.name, locale),
-          perEntryLabel: shopT("perEntry", {
-            amount: formatPerEntry(product.price, product.entries, locale),
-          }),
-          price: formatPrice(product.price, locale),
-          featured: product.isFeatured,
-          href: `/checkout?product=${product.id}&from=${slug}`,
-        }))}
       />
 
       <MenuTeaser
