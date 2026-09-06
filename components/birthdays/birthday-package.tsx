@@ -23,7 +23,6 @@ interface BirthdayPackageProps {
   rules: string[]
 }
 
-/** Birthday package: price, what's included, upgrades and important rules. */
 function BirthdayPackage({
   packageTitle,
   price,
@@ -38,7 +37,6 @@ function BirthdayPackage({
 }: BirthdayPackageProps) {
   return (
     <Section className="relative overflow-hidden">
-      {/* Party accents in the margins around the centered package card. */}
       <PartyBalloon
         aria-hidden
         color="var(--brand-rose)"

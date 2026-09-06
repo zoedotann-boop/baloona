@@ -12,7 +12,6 @@ import {
 import { type Localized, localized, localizedList, timestamps } from "./_shared"
 import { locations } from "./locations"
 
-/** Copy and pricing for `/[location]/birthdays`. One row per location. */
 export const birthdayContents = pgTable("birthday_content", {
   locationId: uuid()
     .primaryKey()
@@ -27,7 +26,6 @@ export const birthdayContents = pgTable("birthday_content", {
 
   packageTitle: localized().notNull(),
   packageAmount: integer().notNull().default(0),
-  /** How many children the base price covers. */
   packageChildrenCount: integer().notNull().default(25),
   extraChildAmount: integer().notNull().default(0),
   includedTitle: localized().notNull(),
@@ -54,7 +52,6 @@ export const birthdayContents = pgTable("birthday_content", {
   ...timestamps,
 })
 
-/** The numbered "what happens on the day" steps. */
 export const birthdaySteps = pgTable("birthday_step", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -67,7 +64,6 @@ export const birthdaySteps = pgTable("birthday_step", {
   ...timestamps,
 })
 
-/** Checklist of what the base package includes. */
 export const birthdayPackageLines = pgTable("birthday_package_line", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -78,7 +74,6 @@ export const birthdayPackageLines = pgTable("birthday_package_line", {
   ...timestamps,
 })
 
-/** Optional paid add-ons, offered as checkboxes on the booking form. */
 export const birthdayUpgrades = pgTable("birthday_upgrade", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -91,7 +86,6 @@ export const birthdayUpgrades = pgTable("birthday_upgrade", {
   ...timestamps,
 })
 
-/** Input types an editor can pick when building the booking form. */
 export const formFieldType = pgEnum("form_field_type", [
   "text",
   "textarea",
@@ -106,20 +100,11 @@ export const formFieldType = pgEnum("form_field_type", [
 
 export type FormFieldType = (typeof formFieldType.enumValues)[number]
 
-/** A choice offered by a `select` field. */
 export interface FormFieldOption {
   value: string
   label: Localized
 }
 
-/**
- * The booking form, defined row by row instead of hard-coded in the component.
- *
- * These rows compile into a JSON Schema rendered by `@rjsf/shadcn`, and the
- * submitted answers land in `leads.formData` keyed by `key`. Adding a question
- * is therefore an admin action, not a migration. `key` is what the admin sees
- * in the lead detail view, so it stays human-readable.
- */
 export const birthdayFormFields = pgTable(
   "birthday_form_field",
   {
@@ -132,7 +117,6 @@ export const birthdayFormFields = pgTable(
     placeholder: localized(),
     type: formFieldType().notNull().default("text"),
     options: jsonb().$type<FormFieldOption[]>().notNull().default([]),
-    /** Inclusive bounds for `number` fields; ignored by every other type. */
     minValue: integer(),
     maxValue: integer(),
     isRequired: boolean().notNull().default(false),

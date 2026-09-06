@@ -20,8 +20,6 @@ import {
   type LucideProps,
 } from "lucide-react"
 
-// Lucide dropped brand marks, so the socials are small inline SVGs that accept
-// the same className/size props as the Lucide icons.
 function svgProps({ className, size = 24 }: LucideProps) {
   return {
     className,
@@ -57,7 +55,6 @@ const TikTok = (p: LucideProps) => (
   </svg>
 )
 
-// Maps the mock-data icon keys to icons so content stays string-based.
 const ICONS = {
   building: Building2,
   utensils: Utensils,

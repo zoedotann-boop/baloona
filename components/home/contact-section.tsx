@@ -16,7 +16,6 @@ interface ContactSectionProps {
   subjects: string[]
 }
 
-/** Contact block: readable contact details beside a message form, on lavender. */
 function ContactSection({
   locationId,
   title,

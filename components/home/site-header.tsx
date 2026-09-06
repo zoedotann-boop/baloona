@@ -12,16 +12,10 @@ import type { LocationPaths } from "@/lib/site-links"
 import { cn } from "@/lib/utils"
 
 interface SiteHeaderProps {
-  /**
-   * Per-branch links. Omitted on brand-global pages (branch picker, card,
-   * checkout without a source branch), where the bar shrinks to just the
-   * wordmark.
-   */
   paths?: LocationPaths
   whatsappHref?: string
 }
 
-/** Sticky top bar: wordmark, primary nav and the WhatsApp CTA. */
 function SiteHeader({ paths, whatsappHref }: SiteHeaderProps) {
   const t = useTranslations()
   const pathname = usePathname()
@@ -36,7 +30,6 @@ function SiteHeader({ paths, whatsappHref }: SiteHeaderProps) {
     : []
   const hasNav = navItems.length > 0
 
-  // Lock body scroll while the mobile drawer is open.
   useEffect(() => {
     if (!menuOpen) return
     const previous = document.body.style.overflow
@@ -110,7 +103,6 @@ function SiteHeader({ paths, whatsappHref }: SiteHeaderProps) {
         )}
       </div>
 
-      {/* Mobile navigation drawer */}
       {menuOpen && (
         <div className="fixed inset-0 top-[74px] z-30 md:hidden">
           <button

@@ -3,7 +3,6 @@ import { boolean, integer, pgTable, uuid } from "drizzle-orm/pg-core"
 import { localized, timestamps } from "./_shared"
 import { locations } from "./locations"
 
-/** Copy around the menu board on `/[location]/menu`. */
 export const menuContents = pgTable("menu_content", {
   locationId: uuid()
     .primaryKey()
@@ -14,7 +13,6 @@ export const menuContents = pgTable("menu_content", {
   ...timestamps,
 })
 
-/** Menu tabs. Fully editable per location — add, rename, reorder or hide. */
 export const menuCategories = pgTable("menu_category", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -26,7 +24,6 @@ export const menuCategories = pgTable("menu_category", {
   ...timestamps,
 })
 
-/** A dish or drink. `amount` is whole shekels; formatting happens on render. */
 export const menuItems = pgTable("menu_item", {
   id: uuid().primaryKey().defaultRandom(),
   categoryId: uuid()

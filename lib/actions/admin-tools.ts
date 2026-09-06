@@ -11,12 +11,6 @@ import {
   type UploadTarget,
 } from "@/lib/storage"
 
-/**
- * Editor tools shared by every admin section: AI-drafted translations and
- * direct-to-Blob uploads. Both are gated on the caller having access to the
- * location they name.
- */
-
 const translateSchema = z.object({
   slug: z.string().min(1),
   values: z.array(z.string()).min(1).max(50),
@@ -41,11 +35,6 @@ const uploadSchema = z.object({
   contentType: z.string().startsWith("image/"),
 })
 
-/**
- * Resolve where the browser should upload an image. The backend decides the
- * mechanism (a Blob client-upload handshake or a local PUT); see
- * {@link UploadTarget}.
- */
 export async function createMediaUpload(
   input: z.input<typeof uploadSchema>
 ): Promise<({ ok: true } & UploadTarget) | { ok: false; error: string }> {

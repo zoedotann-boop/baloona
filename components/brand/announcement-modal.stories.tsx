@@ -7,7 +7,6 @@ const meta = {
   component: AnnouncementModal,
   parameters: { layout: "fullscreen" },
   args: {
-    // A fresh key per render keeps the pop-up open in the docs preview.
     storageKey: "storybook:announcement",
     title: "עדכון שעות פתיחה — יום העצמאות",
     body: "שימו לב לשינויים בשעות הפעילות בחג הקרוב.",

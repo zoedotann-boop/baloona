@@ -11,13 +11,6 @@ import {
   users,
 } from "@/lib/db/schema"
 
-/**
- * Read models for the admin.
- *
- * These load the editable rows verbatim — ids, hidden items and untranslated
- * values included — because the admin edits the record, not the rendered page.
- */
-
 export async function getGeneralSettings(locationId: string) {
   return db.query.locations.findFirst({
     where: eq(locations.id, locationId),
@@ -101,7 +94,6 @@ export async function getGalleryEditor(locationId: string) {
   })
 }
 
-/** Newest first — the inbox is read top-down. */
 export async function listLeads(locationId: string) {
   return db.query.leads.findMany({
     where: eq(leads.locationId, locationId),
@@ -123,12 +115,10 @@ export async function listTeam() {
   })
 }
 
-/** The full shop catalog for the admin editor (brand-global, in display order). */
 export async function listProducts() {
   return db.query.products.findMany({ orderBy: [asc(products.sortOrder)] })
 }
 
-/** The editable terms body for one branch (empty until an editor fills it). */
 export async function getTermsEditor(locationId: string) {
   return db.query.siteContents.findFirst({
     where: eq(siteContents.locationId, locationId),
@@ -136,12 +126,6 @@ export async function getTermsEditor(locationId: string) {
   })
 }
 
-/**
- * Customers and their punch cards for the front-desk manager. Punch cards are
- * brand-global, so this is not scoped to a location: a clerk at any branch finds
- * any customer. A blank query returns the most recent customers as a starting
- * point; a query matches phone, email or name.
- */
 export async function searchCustomerCards(query?: string, limit = 20) {
   const q = query?.trim()
   return db.query.customers.findMany({
@@ -160,7 +144,6 @@ export async function searchCustomerCards(query?: string, limit = 20) {
         orderBy: (card) => [desc(card.createdAt)],
         with: {
           issuedByLocation: { columns: { name: true } },
-          // The online purchase behind the card (if any), for payment status.
           order: { columns: { status: true, amount: true, paidAt: true } },
         },
       },

@@ -15,15 +15,6 @@ import {
   type ActionResult,
 } from "./shared"
 
-/**
- * חנות — the shop catalog editor.
- *
- * Products are brand-global, so this is not scoped to a location; the `slug`
- * only re-checks admin access via `requireLocationAccess` (the house auth gate),
- * exactly like the punch-card actions. The whole list is submitted at once and
- * reconciled with `syncCollection`, mirroring `savePricing`.
- */
-
 const productsSchema = z.object({
   slug: z.string().min(1),
   products: z.array(

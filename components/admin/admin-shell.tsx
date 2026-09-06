@@ -34,10 +34,6 @@ import { ADMIN_LOGIN_PATH } from "@/lib/admin/routes"
 import type { UserRole } from "@/lib/db/schema"
 import { cn } from "@/lib/utils"
 
-// Remembers the desktop rail state across visits so it survives navigation and
-// full reloads. Collapse only applies at md+; the mobile drawer is unaffected.
-// Read through useSyncExternalStore so SSR (expanded) and the client agree on
-// first paint, and so a toggle in one tab syncs to the others.
 const SIDEBAR_COLLAPSED_KEY = "baloona.admin.sidebarCollapsed"
 const collapseListeners = new Set<() => void>()
 
@@ -71,16 +67,13 @@ interface AdminShellProps {
   children: React.ReactNode
 }
 
-/** Sidebar + content frame for every signed-in admin page. */
 function AdminShell({ user, locations, children }: AdminShellProps) {
   const t = useTranslations("admin.nav")
   const pathname = usePathname()
   const router = useRouter()
-  // The sidebar is a static column on desktop and a slide-in drawer on mobile.
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
 
-  // Desktop-only: collapse the column to an icon rail.
   const collapsed = useSyncExternalStore(
     subscribeCollapsed,
     getCollapsedSnapshot,
@@ -88,13 +81,9 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
   )
   const toggleCollapsed = () => setCollapsed(!collapsed)
 
-  // Branch-scoped routes are `/admin/<slug>/…`; owner pages are not. Reading it
-  // from the path keeps the shell in the layout, above the `[location]` segment.
   const activeSlug = pathname.split("/")[2]
   const active = locations.find((location) => location.slug === activeSlug)
 
-  // Each group maps to one capability (see lib/admin/permissions.ts), so the
-  // sidebar shows a role exactly the sections its actions and pages allow.
   const settingsLinks =
     active && can(user.role, "settings")
       ? [
@@ -179,12 +168,8 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
   }
 
   return (
-    // The shell owns the viewport: it never scrolls, so the sidebar stays put
-    // and only the content column moves. It also hosts the toast region, so
-    // every admin page can report a result without wiring its own.
     <ToastProvider>
       <div className="flex h-svh overflow-hidden bg-brand-cloud">
-        {/* Mobile scrim behind the drawer. */}
         {open && (
           <div
             className="fixed inset-0 z-40 bg-foreground/40 md:hidden"
@@ -209,7 +194,6 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
             <span className={cn(collapsed && "md:hidden")}>
               <Logo size="sm" />
             </span>
-            {/* Desktop: collapse the column to an icon rail. */}
             <button
               type="button"
               onClick={toggleCollapsed}
@@ -222,7 +206,6 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
                 <PanelRightClose className="size-5" />
               )}
             </button>
-            {/* Mobile: close the drawer. */}
             <button
               type="button"
               onClick={close}
@@ -343,8 +326,6 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          {/* Mobile top bar — the only way to reach the nav on a phone.
-              Hamburger sits at the start (right in RTL), logo at the end. */}
           <div className="flex items-center justify-between border-b border-border bg-white px-4 py-2.5 md:hidden">
             <button
               type="button"
@@ -357,7 +338,6 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
             <Logo size="sm" />
           </div>
 
-          {/* The only scroll container on the page. */}
           <div className="min-w-0 flex-1 overflow-y-auto">
             <div className="mx-auto max-w-6xl px-4 py-4 md:px-6">
               {children}
@@ -369,7 +349,6 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
   )
 }
 
-/** One section of the sidebar. */
 function NavGroup({
   label,
   links,
@@ -398,8 +377,6 @@ function NavGroup({
               href={link.href}
               onClick={onNavigate}
               aria-current={isActive ? "page" : undefined}
-              // When collapsed the label is hidden from the desktop a11y tree,
-              // so restore the name via aria-label and a hover tooltip.
               title={collapsed ? link.label : undefined}
               aria-label={collapsed ? link.label : undefined}
               className={cn(

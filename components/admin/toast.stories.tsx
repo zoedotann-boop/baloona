@@ -22,11 +22,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/**
- * Results of an action the editor just took. Anchored to the viewport rather
- * than to the button, so "did that work?" is answered in the same place every
- * time. Each dismisses itself after four seconds, or on click.
- */
 export const Default: Story = {
   render: () => <Example />,
   args: { children: null },

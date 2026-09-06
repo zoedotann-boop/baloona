@@ -9,24 +9,11 @@ import { defaultLocale } from "@/i18n/routing"
 import { emailAssetsBaseUrl, resendConfig } from "@/lib/env"
 
 export interface PunchCardConfirmation {
-  /** The customer's own email address, from the checkout form. */
   to: string
-  /** Absolute link to the customer's digital card (`${origin}/card/<token>`). */
   cardUrl: string
-  /** Punches the card grants, shown in the confirmation. */
   entries: number
 }
 
-/**
- * Email the customer a confirmation with a link to their new digital punch card,
- * right after it is issued (pay-at-branch checkout or a paid PayMe order).
- *
- * The body is the branded {@link PunchCardConfirmationEmail} template rendered to
- * HTML (with a plain-text alternative) so every Baloona email shares one shell.
- * Like the other customer emails this is best-effort: a missing Resend key or
- * empty recipient is a silent no-op, and any send error is returned for the
- * caller to log rather than surfaced — the card already exists either way.
- */
 export async function sendPunchCardConfirmation(
   confirmation: PunchCardConfirmation
 ): Promise<{ sent: true } | { sent: false; error: string }> {

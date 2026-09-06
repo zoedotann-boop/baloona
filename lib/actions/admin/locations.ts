@@ -12,8 +12,6 @@ import { locationMembers, locations, users } from "@/lib/db/schema"
 
 import { localizedSchema, OK, type ActionResult } from "./shared"
 
-/** Owner-only: opening, renaming and staffing branches. */
-
 const slugSchema = z
   .string()
   .trim()
@@ -46,7 +44,6 @@ export async function createLocation(
   })
   if (clash) return { ok: false, error: "slug-taken" }
 
-  // New branches go last in the chooser and start unpublished.
   const [{ value: existingCount }] = await db
     .select({ value: count() })
     .from(locations)
@@ -88,12 +85,9 @@ export async function deleteLocation(slug: string): Promise<ActionResult> {
   })
   if (!location) return { ok: false, error: "not-found" }
 
-  // Every content table cascades from the location row.
   await db.delete(locations).where(eq(locations.id, location.id))
   redirect("/admin/locations")
 }
-
-// --- ניהול צוות -------------------------------------------------------------
 
 const memberSchema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -103,13 +97,6 @@ const memberSchema = z.object({
   locationIds: z.array(z.uuid()),
 })
 
-/**
- * Create a teammate.
- *
- * Public sign-up is off, so accounts are minted here through Better Auth's
- * internal adapter — the same path the seed script uses — and the owner hands
- * over the first password.
- */
 export async function createTeamMember(
   input: z.input<typeof memberSchema>
 ): Promise<ActionResult> {
@@ -139,7 +126,6 @@ export async function createTeamMember(
     password: await ctx.password.hash(data.password),
   })
 
-  // Owners reach every branch; managers and staff are scoped to their memberships.
   if (data.role !== "owner" && data.locationIds.length > 0) {
     await db
       .insert(locationMembers)
@@ -166,7 +152,6 @@ export async function updateTeamMember(
   if (!parsed.success) return { ok: false, error: "invalid" }
   const data = parsed.data
 
-  // An owner demoting themselves would lock the last owner out of the admin.
   if (data.userId === owner.id && data.role !== "owner")
     return { ok: false, error: "cannot-demote-self" }
 
@@ -178,7 +163,6 @@ export async function updateTeamMember(
     .delete(locationMembers)
     .where(eq(locationMembers.userId, data.userId))
 
-  // Owners reach every branch; managers and staff are scoped to their memberships.
   if (data.role !== "owner" && data.locationIds.length > 0) {
     await db.insert(locationMembers).values(
       data.locationIds.map((locationId) => ({

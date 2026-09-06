@@ -21,7 +21,6 @@ interface ImageFieldProps {
   className?: string
 }
 
-/** Client upload straight to Vercel Blob; returns the stored public URL. */
 async function uploadToBlob(pathname: string, file: File): Promise<string> {
   const { upload } = await import("@vercel/blob/client")
   const { url } = await upload(pathname, file, {
@@ -32,7 +31,6 @@ async function uploadToBlob(pathname: string, file: File): Promise<string> {
   return url
 }
 
-/** Local-disk fallback: PUT the bytes to our own route, then store the URL. */
 async function uploadToRoute(
   uploadUrl: string,
   url: string,
@@ -47,14 +45,6 @@ async function uploadToRoute(
   return url
 }
 
-/**
- * Pick an image by uploading it or by pasting a URL.
- *
- * Uploads go straight from the browser to Vercel Blob, so image bytes never
- * round-trip through the server (in development, without Blob configured, they
- * PUT to a local route instead). The URL stays editable so an editor can point
- * at an existing asset (or `/public`) without uploading.
- */
 function ImageField({
   label,
   tooltip,

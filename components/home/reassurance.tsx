@@ -10,7 +10,6 @@ interface ReassuranceProps {
   ctaHref: string
 }
 
-/** "אל תדאגו, דאגנו לכם להכל!" — centered flowing reassurance over confetti. */
 function Reassurance({ title, body, ctaLabel, ctaHref }: ReassuranceProps) {
   return (
     <Section spacing="xl" className="relative isolate overflow-hidden">

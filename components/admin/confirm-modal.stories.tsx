@@ -20,10 +20,6 @@ const noop = {
   message: "",
 }
 
-/**
- * Deleting a row from a draft list. The wording says the deletion only lands on
- * publish, because until then the editor can simply not save.
- */
 export const DraftRow: Story = {
   render: () => (
     <Example
@@ -34,10 +30,6 @@ export const DraftRow: Story = {
   args: noop,
 }
 
-/**
- * Deleting a branch, a team member or an enquiry — a server action that lands
- * straight away, so the wording says so.
- */
 export const Immediate: Story = {
   render: () => (
     <Example

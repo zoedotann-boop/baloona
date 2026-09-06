@@ -19,11 +19,6 @@ export async function generateMetadata({
   return { title: `${t("title")} · ${location}`, description: t("intro") }
 }
 
-/**
- * Terms & Cancellation policy — a per-branch page on the full site chrome (so
- * visitors can navigate away), rendering the branch's editable body and falling
- * back to the default copy in `messages` while that is empty.
- */
 export default async function TermsPage({
   params,
 }: PageProps<"/[location]/terms">) {

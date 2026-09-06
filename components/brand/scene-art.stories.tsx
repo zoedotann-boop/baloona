@@ -30,7 +30,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The full mural cast, ported from the painted Baloona walls. */
 export const Gallery: Story = {
   render: () => (
     <div className="flex flex-wrap items-end gap-8">
@@ -56,7 +55,6 @@ export const Gallery: Story = {
   ),
 }
 
-/** A composed pond scene — the Zone 2 wall. */
 export const PondWall: Story = {
   render: () => (
     <div

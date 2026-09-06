@@ -39,10 +39,6 @@ import {
   type ActionResult,
 } from "./shared"
 
-/** Content sections of the admin: home page, pricing, menu, birthdays, media. */
-
-// --- עמוד הבית --------------------------------------------------------------
-
 const homeSchema = z.object({
   slug: z.string().min(1),
   home: z.object({
@@ -165,8 +161,6 @@ export async function saveHomeContent(
   return OK
 }
 
-// --- מחירונים ---------------------------------------------------------------
-
 const pricingSchema = z.object({
   slug: z.string().min(1),
   title: localizedSchema,
@@ -209,7 +203,6 @@ export async function savePricing(
     columns: { id: true },
   })
 
-  // Insert new tiers first so their rows have a parent id to hang from.
   const tierIds = new Map<number, string>()
   for (const [index, tier] of data.tiers.entries()) {
     if (tier.id) {
@@ -267,8 +260,6 @@ export async function savePricing(
 
   return OK
 }
-
-// --- ניהול תפריט ------------------------------------------------------------
 
 const menuSchema = z.object({
   slug: z.string().min(1),
@@ -372,8 +363,6 @@ export async function saveMenu(
 
   return OK
 }
-
-// --- ימי הולדת --------------------------------------------------------------
 
 const birthdaySchema = z.object({
   slug: z.string().min(1),
@@ -558,11 +547,8 @@ export async function saveBirthdays(
   return OK
 }
 
-// --- ביקורות ----------------------------------------------------------------
-
 const reviewsSchema = z.object({
   slug: z.string().min(1),
-  /** Opts the branch into the nightly `/api/cron/google-reviews` job. */
   autoSync: z.boolean(),
   reviews: z.array(
     z.object({
@@ -574,7 +560,6 @@ const reviewsSchema = z.object({
       publishedAt: z.string(),
     })
   ),
-  /** Photos woven between the quotes in the "הורים מספרים" masonry. */
   photos: z.array(
     z.object({
       id: rowIdSchema,
@@ -616,8 +601,6 @@ export async function saveReviews(
   })
   await syncCollection({
     existingIds: existingPhotos.map((row) => row.id),
-    // Rows the editor added but never gave an image are dropped rather than
-    // saved as broken tiles.
     incoming: parsed.data.photos
       .filter((photo) => photo.url.trim())
       .map((row, sortOrder) => ({ ...row, sortOrder })),
@@ -628,8 +611,6 @@ export async function saveReviews(
     update: (row) =>
       db.update(reviewPhotos).set(row).where(eq(reviewPhotos.id, row.id)),
     remove: async (ids) => {
-      // Drop the objects too, so removing a photo does not leave it billable
-      // and publicly reachable in the bucket.
       const removed = existingPhotos.filter((row) => ids.includes(row.id))
       await db.delete(reviewPhotos).where(inArray(reviewPhotos.id, ids))
       await Promise.all(
@@ -641,8 +622,6 @@ export async function saveReviews(
     },
   })
 
-  // The auto-sync flag lives on `site_setting` but is edited here, next to the
-  // sync button it controls, rather than buried in the SEO settings screen.
   await db
     .update(siteSettings)
     .set({ googleReviewsAutoSync: parsed.data.autoSync })
@@ -650,8 +629,6 @@ export async function saveReviews(
 
   return OK
 }
-
-// --- מדיה -------------------------------------------------------------------
 
 const gallerySchema = z.object({
   slug: z.string().min(1),
@@ -690,8 +667,6 @@ export async function saveGallery(
     update: (row) =>
       db.update(galleryImages).set(row).where(eq(galleryImages.id, row.id)),
     remove: async (ids) => {
-      // Drop the objects too, so removing a photo does not leave it billable
-      // and publicly reachable in the bucket.
       const removed = existing.filter((row) => ids.includes(row.id))
       await db.delete(galleryImages).where(inArray(galleryImages.id, ids))
       await Promise.all(
@@ -705,8 +680,6 @@ export async function saveGallery(
 
   return OK
 }
-
-// --- תקנון ומדיניות ביטול ----------------------------------------------------
 
 const termsSchema = z.object({
   slug: z.string().min(1),

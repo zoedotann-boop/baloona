@@ -6,12 +6,6 @@ interface TrackingScriptsProps {
   metaPixelId?: string | null
 }
 
-/**
- * Per-location analytics tags, configured in הגדרות כלליות.
- *
- * Each tag renders only when its id is set, so a branch that has not been wired
- * up ships no third-party script at all.
- */
 function TrackingScripts({
   gaMeasurementId,
   gtmContainerId,

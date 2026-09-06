@@ -8,17 +8,10 @@ import { cn } from "@/lib/utils"
 interface ConsentCheckboxProps {
   checked: boolean
   onChange: (checked: boolean) => void
-  /** The visible label; may contain links (e.g. to the terms page). */
   children: React.ReactNode
   className?: string
 }
 
-/**
- * A brand-styled agreement checkbox. A visually-hidden native `<input>` keeps it
- * keyboard- and screen-reader-accessible (labelled by the visible text via
- * `aria-labelledby`), while the coloured box is the click target — so a link
- * inside the label navigates instead of toggling.
- */
 function ConsentCheckbox({
   checked,
   onChange,

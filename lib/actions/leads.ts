@@ -25,30 +25,14 @@ import {
   uploadObject,
 } from "@/lib/storage"
 
-/**
- * Public form submissions.
- *
- * Both actions store the lead first and notify second: the admin inbox is the
- * source of truth, so a Resend outage must never lose an enquiry. Email
- * failures are recorded on the lead row instead of surfacing to the visitor.
- */
-
 export type SubmitResult = { ok: true } | { ok: false; error: string }
 
-// These two actions are deliberately unauthenticated: they back the site's
-// public contact and booking forms, which anonymous visitors submit. They only
-// ever insert a new lead scoped to a validated location id — they never read or
-// mutate existing records — so there is nothing for a caller to reach that the
-// forms do not already expose.
-
-// react-doctor-disable-next-line react-doctor/server-auth-actions -- public form
 export async function submitContactLead(
   input: z.input<typeof contactLeadSchema>
 ): Promise<SubmitResult> {
   const parsed = contactLeadSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   const data = parsed.data
-  // Drop bot submissions silently — the honeypot is invisible to humans.
   if (isHoneypotFilled(data.honeypot)) return { ok: true }
 
   const location = await db.query.locations.findFirst({
@@ -99,19 +83,16 @@ const birthdaySchema = z.object({
   answers: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
   upgradeIds: z.array(z.uuid()).default([]),
   consent: z.boolean(),
-  /** `data:image/png;base64,…` produced by the signature pad. */
   signature: z.string().startsWith("data:image/").optional(),
   honeypot: z.string().optional(),
 })
 
-// react-doctor-disable-next-line react-doctor/server-auth-actions -- public form
 export async function submitBirthdayLead(
   input: z.input<typeof birthdaySchema>
 ): Promise<SubmitResult> {
   const parsed = birthdaySchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   const data = parsed.data
-  // Drop bot submissions silently — the honeypot is invisible to humans.
   if (isHoneypotFilled(data.honeypot)) return { ok: true }
 
   const location = await db.query.locations.findFirst({
@@ -123,8 +104,6 @@ export async function submitBirthdayLead(
   if (location.birthday.requiresSignature && !data.signature)
     return { ok: false, error: "signature" }
 
-  // The form's shape is editor-defined, so validate the submission against the
-  // stored field rows rather than trusting the payload's keys.
   const fields = await db.query.birthdayFormFields.findMany({
     where: eq(birthdayFormFields.locationId, location.id),
   })
@@ -209,8 +188,6 @@ export async function submitBirthdayLead(
     ],
   })
 
-  // Courtesy invitation PDF to the visitor's own email — best-effort, so a
-  // failure is logged rather than allowed to fail an already-stored booking.
   if (answers.email) {
     const result = await sendBirthdayInvitation({
       to: answers.email,
@@ -223,7 +200,6 @@ export async function submitBirthdayLead(
   return { ok: true }
 }
 
-/** Persist the signature PNG so the lead keeps a copy of what was signed. */
 async function storeSignature(
   locationSlug: string,
   dataUrl: string

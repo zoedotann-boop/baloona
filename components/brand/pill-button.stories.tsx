@@ -44,7 +44,6 @@ export const Variants: Story = {
   ),
 }
 
-/** `sm` is the admin's scale — it lines up with the h-9 controls beside it. */
 export const Sizes: Story = {
   render: () => (
     <div className="flex flex-wrap items-center gap-3">

@@ -4,14 +4,11 @@ import { cn } from "@/lib/utils"
 interface FeatureItemProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
   description?: string
-  /** Petal color of the balloon icon. */
   color?: string
   iconSize?: number
-  /** `row` = icon beside text (compact grid); `stack` = centered column. */
   layout?: "row" | "stack"
 }
 
-/** Balloon icon + title (+ optional description). Used in the features grid. */
 function FeatureItem({
   title,
   description,

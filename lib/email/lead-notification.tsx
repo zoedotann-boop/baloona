@@ -14,16 +14,6 @@ export interface LeadNotification extends LeadNotificationEmailProps {
   subject: string
 }
 
-/**
- * Email a new lead to the address configured for that location.
- *
- * The body is the branded {@link LeadNotificationEmail} template rendered to
- * HTML (with a plain-text alternative) so every Baloona email shares one shell.
- *
- * Notification failures never fail the submission: the lead is already stored,
- * and the admin inbox is the source of truth. The error is recorded on the lead
- * so it is visible rather than silent.
- */
 export async function sendLeadNotification(
   notification: LeadNotification
 ): Promise<{ sent: true } | { sent: false; error: string }> {

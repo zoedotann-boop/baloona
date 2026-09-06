@@ -5,7 +5,6 @@ import { SkyBackdrop } from "@/components/brand/sky-backdrop"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 
-// Flower petal colors, cycled across the categories.
 const CATEGORY_COLORS = [
   "var(--brand-lavender)",
   "var(--brand-rose)",
@@ -23,7 +22,6 @@ interface MenuTeaserProps {
   tiles: { id: string; label: string }[]
 }
 
-/** Home teaser linking to the full menu, with flower category icons. */
 function MenuTeaser({
   title,
   body,

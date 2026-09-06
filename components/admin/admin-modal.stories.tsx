@@ -15,11 +15,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/**
- * The dialog behind every table row's edit button. It edits the section draft
- * in place, so closing it is always safe — publishing happens from the page
- * header.
- */
 export const Default: Story = {
   render: () => <Example />,
   args: { open: true, onClose: () => {}, title: "", children: null },

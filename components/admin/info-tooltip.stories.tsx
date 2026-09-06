@@ -22,10 +22,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The bare icon — hover or focus it to reveal the guidance bubble. */
 export const Default: Story = {}
 
-/** How it reads in context: an info icon beside an admin field label. */
 export const OnAField: Story = {
   render: (args) => (
     <AdminField label="וואטסאפ" tooltip={args.text}>

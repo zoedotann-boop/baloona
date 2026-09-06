@@ -11,16 +11,6 @@ import { loadSiteChrome } from "@/lib/site-view"
 
 import { PublicShell } from "./public-shell"
 
-/**
- * Full per-branch chrome around a page: header, contact block and footer, plus
- * the branch's announcement modal and analytics. Used by the location layout
- * for every branch page, and by checkout when it knows the source branch, so
- * the shell is identical wherever a venue is in context.
- *
- * Rendered per request — the locale cookie already makes pages dynamic, and
- * reading Neon directly means an admin edit is live immediately with no cache
- * to invalidate.
- */
 export async function SiteChrome({
   slug,
   children,
@@ -44,7 +34,6 @@ export async function SiteChrome({
         }
         footer={
           <>
-            {/* Contact appears on every page, just above the footer. */}
             <ContactSection
               locationId={chrome.id}
               title={pickLocale(chrome.site?.contactTitle, locale)}

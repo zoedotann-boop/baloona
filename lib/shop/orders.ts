@@ -10,16 +10,6 @@ import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
 import { getSale } from "@/lib/payme/client"
 import { siteOrigin } from "@/lib/site-url"
 
-/**
- * Punch-card order fulfilment — the server-side half of the shop checkout.
- *
- * Kept out of the `"use server"` action module on purpose: only server code (the
- * PayMe callback and the success page) fulfils an order, so these must not be
- * exposed as callable actions. `startPunchCardCheckout` in `lib/actions/shop.ts`
- * borrows {@link issueCard} for its no-payment fallback.
- */
-
-/** Upsert the customer by phone and issue a fresh card. */
 export async function issueCard(input: {
   entries: number
   fullName: string
@@ -34,9 +24,6 @@ export async function issueCard(input: {
   let customerId: string
   if (existing) {
     customerId = existing.id
-    // This is the customer buying for themselves, so the details they just typed
-    // are authoritative — refresh the name/email to what they entered rather than
-    // keeping a stale value from an earlier purchase.
     const patch: Partial<typeof customers.$inferInsert> = {}
     if (input.fullName) patch.fullName = input.fullName
     if (input.email) patch.email = input.email
@@ -70,13 +57,6 @@ export async function issueCard(input: {
   return { token, cardId: card.id }
 }
 
-/**
- * Confirm a punch-card order was paid and issue its card. Idempotent: a fulfilled
- * order returns its existing card token, so a repeated PayMe callback or a
- * success-page revisit does nothing. Payment is re-queried from PayMe here — the
- * order id alone never issues a card. Returns the card token, or `null` when the
- * order is unpaid/unverifiable.
- */
 export async function fulfilOrder(orderId: string): Promise<string | null> {
   const order = await db.query.punchCardOrders.findFirst({
     where: eq(punchCardOrders.id, orderId),
@@ -91,10 +71,6 @@ export async function fulfilOrder(orderId: string): Promise<string | null> {
     return null
   }
 
-  // Claim the order atomically before issuing: only the caller that flips
-  // `pending → paid` gets to create the card, so the PayMe callback and the
-  // success page racing on the same order never issue it twice. (neon-http has
-  // no interactive row locks, so a conditional UPDATE is the guard.)
   const claimed = await db
     .update(punchCardOrders)
     .set({ status: "paid", paidAt: new Date() })
@@ -106,7 +82,6 @@ export async function fulfilOrder(orderId: string): Promise<string | null> {
     )
     .returning({ id: punchCardOrders.id })
   if (claimed.length === 0) {
-    // Lost the race — the winner is issuing the card; return it if it's ready.
     const fresh = await db.query.punchCardOrders.findFirst({
       where: eq(punchCardOrders.id, order.id),
       columns: { cardId: true },
@@ -126,10 +101,6 @@ export async function fulfilOrder(orderId: string): Promise<string | null> {
     .set({ cardId })
     .where(eq(punchCardOrders.id, order.id))
 
-  // Confirmation with the card link, sent once — this runs only for the caller
-  // that won the `pending → paid` claim above, so a repeated callback or a
-  // success-page revisit never re-sends it. Best-effort: the card is already
-  // issued, so a mail failure is logged rather than surfaced.
   const result = await sendPunchCardConfirmation({
     to: order.email,
     cardUrl: `${await siteOrigin()}/card/${token}`,
@@ -141,7 +112,6 @@ export async function fulfilOrder(orderId: string): Promise<string | null> {
   return token
 }
 
-/** Look up a punch card's share token by id. */
 async function tokenForCard(cardId: string): Promise<string | null> {
   const card = await db.query.punchCards.findFirst({
     where: eq(punchCards.id, cardId),

@@ -1,20 +1,10 @@
 import { defaultLocale, type Locale } from "@/i18n/routing"
 import type { Localized, LocalizedList } from "@/lib/localized"
 
-/**
- * Fill every translatable value in an admin draft in one pass.
- *
- * Admin drafts are plain objects whose translatable leaves are all
- * `{ he, en }` (or `{ he: string[] }`) shapes, so one generic walk powers the
- * "translate this page" button on every section instead of each form growing
- * its own translation plumbing.
- */
-
 type TextNode = { kind: "text"; node: Localized }
 type ListNode = { kind: "list"; node: LocalizedList }
 type Node = TextNode | ListNode
 
-/** How many strings to send per request, to keep prompts a sane size. */
 const CHUNK_SIZE = 40
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -43,11 +33,6 @@ function collect(value: unknown, out: Node[]): void {
 
 export type TranslateFn = (values: string[]) => Promise<string[] | null>
 
-/**
- * Return a copy of `draft` with `locale` filled in from the Hebrew source.
- * Resolves to `null` when the translation service fails, so the caller can show
- * an error and leave the draft untouched.
- */
 export async function translateDraft<T>(
   draft: T,
   locale: Locale,
@@ -57,7 +42,6 @@ export async function translateDraft<T>(
   const nodes: Node[] = []
   collect(clone, nodes)
 
-  // Flatten to one list of strings, remembering where each came from.
   const sources: string[] = []
   const spans: { node: Node; start: number; length: number }[] = []
   for (const node of nodes) {

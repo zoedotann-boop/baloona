@@ -38,18 +38,6 @@ interface CardRow {
   card: CustomerCardsView["cards"][number]
 }
 
-/**
- * כרטיסיות — the front-desk console, as a searchable card list.
- *
- * A card-per-customer layout (rather than a table) so it stays usable on the
- * phone a clerk actually holds at the counter; each card's actions are labeled,
- * not icon-only, so a first-time user can tell what every button does.
- *
- * Cards are brand-global, so this searches every customer regardless of branch;
- * the `slug` it carries is only the acting branch, recorded on each punch. Search
- * runs live (debounced) and every mutation re-runs it so the balance the clerk
- * sees is always the live database value.
- */
 function PunchCardsManager({
   slug,
   initial,
@@ -77,7 +65,6 @@ function PunchCardsManager({
       setSelected(new Set())
     })
 
-  // Start searching while typing, debounced so every keystroke isn't a request.
   const onSearchChange = (value: string) => {
     setQuery(value)
     if (debounce.current) clearTimeout(debounce.current)
@@ -215,7 +202,6 @@ function PunchCardsManager({
   )
 }
 
-/** One card row: summary + quick actions, with an inline edit panel. */
 function CardRowView({
   slug,
   customer,
@@ -496,13 +482,6 @@ function CardRowView({
   )
 }
 
-/**
- * A labeled action button (or link when `href` is given).
- *
- * The `icon` and `label` are both shown, so each action reads clearly without
- * needing to be learned — the fix for a row of ambiguous icon-only buttons.
- * `tooltip` adds a longer one-line explanation on hover via a native `title`.
- */
 function ActionChip({
   icon,
   label,
@@ -559,7 +538,6 @@ function ActionChip({
   )
 }
 
-/** Issue a fresh card, or migrate a physical one by setting remaining below total. */
 function IssueForm({
   slug,
   onIssued,

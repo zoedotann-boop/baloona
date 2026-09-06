@@ -37,28 +37,16 @@ const noop = {
   renderRow: () => null,
 }
 
-/**
- * Ordered rows as a compact table — the shape used for menu items, upgrades,
- * tiers and reviews. Press a row's pencil to open its full form in a dialog,
- * and drag its handle to reorder. The handle also works from the keyboard:
- * space to lift, arrows to move, space to drop.
- */
 export const Default: Story = {
   render: () => <Example />,
   args: noop,
 }
 
-/** The empty state an editor lands on before adding the first row. */
 export const Empty: Story = {
   render: () => <Example initial={[]} />,
   args: noop,
 }
 
-/**
- * The same table inside a dialog — a price tier's rows, a menu category's
- * items. The pencil expands the row in place rather than opening a second
- * dialog over the first, and so does the delete confirmation.
- */
 export const InsideADialog: Story = {
   render: () => (
     <AdminModal open onClose={() => {}} title="חבילת יום הולדת">

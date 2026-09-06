@@ -28,7 +28,6 @@ export const Inline: Story = {
   parameters: { backgrounds: { value: "nearwhite" } },
 }
 
-/** Closed — the dot turns red. */
 export const Closed: Story = {
   args: { variant: "inline", isOpen: false, label: "סגור · נפתח מחר ב-10:00" },
   parameters: { backgrounds: { value: "nearwhite" } },

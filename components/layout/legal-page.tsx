@@ -4,16 +4,10 @@ import { Section } from "./section"
 interface LegalPageProps {
   title: string
   intro: string
-  /** Optional line under the intro, e.g. the terms page's "last updated" date. */
   meta?: string
   children: React.ReactNode
 }
 
-/**
- * Shared template for the plain legal pages (accessibility statement, terms): a
- * lavender title band over a narrow prose column. Pages supply only the heading
- * copy and their body.
- */
 function LegalPage({ title, intro, meta, children }: LegalPageProps) {
   return (
     <div className="bg-white">

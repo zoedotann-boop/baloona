@@ -27,7 +27,6 @@ interface ProductsDraft {
   }[]
 }
 
-/** חנות — the punch-card packages sold in the online shop. */
 function ProductsForm({
   slug,
   initial,

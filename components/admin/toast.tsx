@@ -12,22 +12,6 @@ import {
 
 import { cn } from "@/lib/utils"
 
-/**
- * Transient confirmations for the admin — "published", "synced", "that failed".
- *
- * These used to sit inline beside the publish button, where a result on a long
- * page appeared wherever the editor was not looking. A toast is anchored to the
- * viewport instead, so the answer to "did that work?" lands in the same place
- * every time and then gets out of the way.
- *
- * Deliberately not a dependency: it is a list, a timer and an `aria-live`
- * region, and it wants the brand's own tokens.
- *
- * One rule for callers — do not toast from inside an `AdminDialog`. A native
- * `<dialog>` renders in the browser's top layer, above any z-index, so the
- * toast would be hidden behind it. Errors raised inside a dialog stay inline.
- */
-
 type ToastTone = "success" | "error"
 
 interface ToastItem {
@@ -36,14 +20,12 @@ interface ToastItem {
   tone: ToastTone
 }
 
-/** How long a toast stays before dismissing itself. */
 const DURATION_MS = 4000
 
 const ToastContext = createContext<
   ((message: string, tone?: ToastTone) => void) | null
 >(null)
 
-/** Show a transient message. Defaults to the success tone. */
 export function useToast() {
   const show = useContext(ToastContext)
   if (!show)
@@ -68,8 +50,6 @@ function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={show}>
       {children}
-      {/* Centred rather than corner-anchored: the admin's sidebar sits on the
-          start edge in RTL, and centre reads the same in both directions. */}
       <div
         className="pointer-events-none fixed bottom-5 left-1/2 z-[100] flex w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 flex-col items-center gap-2"
         aria-live="polite"
@@ -90,8 +70,6 @@ function Toast({
   toast: ToastItem
   onDismiss: (id: number) => void
 }) {
-  // Each toast owns its timer, so it cleans up with the element rather than
-  // leaving the provider to track handles.
   useEffect(() => {
     const timer = setTimeout(() => onDismiss(toast.id), DURATION_MS)
     return () => clearTimeout(timer)

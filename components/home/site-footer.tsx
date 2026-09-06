@@ -10,20 +10,13 @@ import type { ContactDetails, HoursRow } from "@/lib/view-models"
 
 interface SiteFooterProps {
   year: number
-  /**
-   * Per-branch data. When any of these is omitted the footer renders its slim
-   * brand-global variant (wordmark + credit line only) for pages with no
-   * branch behind them.
-   */
   paths?: LocationPaths
   tagline?: string
   contact?: ContactDetails
   hours?: HoursRow[]
-  /** Adds the "all branches" link when more than one branch is published. */
   showBranchSwitch?: boolean
 }
 
-/** Site footer: brand blurb, navigation, contact details, hours and socials. */
 function SiteFooter({
   paths,
   tagline,
@@ -35,8 +28,6 @@ function SiteFooter({
   const t = useTranslations("footer")
   const nav = useTranslations("nav")
 
-  // Brand-global pages have no branch to link to or list, so the footer shrinks
-  // to the wordmark and the credit line.
   if (!paths || !contact || !hours) {
     return (
       <footer className="bg-brand-cloud px-5 py-10 text-brand-plum md:px-9">
@@ -69,7 +60,6 @@ function SiteFooter({
     { label: t("shop"), href: paths.shop },
     { label: t("pricingLink"), href: paths.pricing },
     { label: t("contactLink"), href: paths.contact },
-    // A quick way back to the branch chooser, shown only when it is worth it.
     ...(showBranchSwitch ? [{ label: nav("allBranches"), href: "/" }] : []),
   ]
 

@@ -3,16 +3,9 @@ import type { Ref } from "react"
 import { HONEYPOT_FIELD } from "@/lib/forms/honeypot"
 
 interface HoneypotFieldProps {
-  /** Read the value at submit time when the form doesn't use `FormData`. */
   ref?: Ref<HTMLInputElement>
 }
 
-/**
- * Hidden anti-spam field. Positioned off-screen and taken out of the tab order
- * and the accessibility tree, so a human never sees or fills it — a naive bot
- * that completes every input does. Paired with `isHoneypotFilled` on the
- * server. Rendered inside every public form.
- */
 function HoneypotField({ ref }: HoneypotFieldProps) {
   return (
     <div
@@ -28,8 +21,6 @@ function HoneypotField({ ref }: HoneypotFieldProps) {
         defaultValue=""
         readOnly
         onFocus={(event) => event.currentTarget.removeAttribute("readonly")}
-        // Keep browser autofill and password managers away from the trap — an
-        // auto-filled honeypot would flag a real person as a bot.
         data-1p-ignore
         data-lpignore="true"
         data-bwignore="true"

@@ -8,11 +8,6 @@ import { type Locale } from "@/i18n/routing"
 import { getPunchCardByToken } from "@/lib/db/queries/site"
 import { pickLocale } from "@/lib/localized"
 
-/**
- * The customer's own card, reached by the opaque share link/QR the front desk
- * hands them. No login: the token is the credential. It has no branch in
- * context, so it wears the brand-global variant of the shared shell.
- */
 export default async function PunchCardPage({
   params,
 }: PageProps<"/card/[token]">) {

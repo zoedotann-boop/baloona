@@ -21,7 +21,6 @@ interface PricingProps {
   note: string
 }
 
-/** Pricing as a single flowing lavender panel — everything visible, docs-like. */
 function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
   const t = useTranslations("pricing")
 
@@ -37,7 +36,6 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
             {title}
           </h2>
 
-          {/* Prices — flowing lines, one block per tier */}
           <div className="mt-8 space-y-7">
             {tiers.map((tier) => (
               <div key={tier.id}>
@@ -61,7 +59,6 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
             ))}
           </div>
 
-          {/* Hours */}
           <div className="mt-9 border-t border-white/20 pt-7">
             <div className="font-heading text-[17px] font-bold text-white/85">
               {t("hoursTitle")}
@@ -75,7 +72,6 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
             </div>
           </div>
 
-          {/* Rules */}
           <div className="mt-9 border-t border-white/20 pt-7">
             <div className="font-heading text-[17px] font-bold text-white/85">
               {t("rulesTitle")}

@@ -248,7 +248,12 @@ See `.env.example`.
 - Where appropriate, evaluate whether the database schema can be simplified or improved to better align with best practices. Proactively suggest schema enhancements that would make the system clearer, more scalable, or easier to maintain.
 - Ensure comprehensive test coverage for all newly introduced functionality, including both happy paths and relevant edge cases. There is no unit-test runner here: coverage means a `*.stories.tsx` for every new brand primitive, home section and admin primitive, with the a11y addon clean.
 - Before review, all of these must pass: `bun run lint`, `bun run typecheck`,
-  `bun run format:check`, `bun run knip`, `bun run build-storybook`.
+  `bun run format:check`, `bun run knip`, `bun run comments`, `bun run build-storybook`.
+- No comments in `.ts`/`.tsx` sources. `bun run comments` (commentless) enforces this in
+  CI: code should read on its own, and anything a comment would explain belongs in a name,
+  a type, or a story. Only functional directives survive (`eslint-disable*`,
+  `@ts-expect-error`, license headers, etc.); run `bunx commentless . --write` to strip the
+  rest.
 - `ajv` is a direct dependency on purpose even though nothing imports it: it pins ajv@8
   as the hoisted copy so `ajv-formats` (pulled in by `@rjsf/validator-ajv8`) can never
   resolve eslint's ajv@6 and break the production build. Don't remove it — see

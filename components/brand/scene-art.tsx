@@ -1,15 +1,5 @@
 import { cn } from "@/lib/utils"
 
-/**
- * The Baloona wall-mural cast, ported verbatim from the painter's vector
- * artwork (the `Baloona_NewWalls` source SVGs). Each illustration keeps its
- * original coordinate space via the `viewBox`, so the baked-in brand colours
- * and proportions match the printed walls exactly. Every piece is decorative:
- * it renders `aria-hidden` with `pointer-events-none` and takes its size from
- * the wrapping element (`h-*` / `w-*`), matching {@link SkyBackdrop} and
- * {@link WallScene}.
- */
-
 type ArtProps = React.SVGProps<SVGSVGElement>
 
 function artProps({ className, ...props }: ArtProps) {
@@ -21,7 +11,6 @@ function artProps({ className, ...props }: ArtProps) {
   }
 }
 
-/** Big billowy cloud — the mural's headline sky filler. */
 function CloudFluffy(props: ArtProps) {
   return (
     <svg viewBox="1686.209 327.802 190.769 132.796" {...artProps(props)}>
@@ -33,7 +22,6 @@ function CloudFluffy(props: ArtProps) {
   )
 }
 
-/** Small rounded cloud puff. */
 function CloudPuff(props: ArtProps) {
   return (
     <svg viewBox="492.752 331.67 137.039 96.108" {...artProps(props)}>
@@ -45,7 +33,6 @@ function CloudPuff(props: ArtProps) {
   )
 }
 
-/** Flat-bottomed drifting cloud. */
 function CloudFlat(props: ArtProps) {
   return (
     <svg viewBox="404.163 433.139 164.435 76.517" {...artProps(props)}>
@@ -57,7 +44,6 @@ function CloudFlat(props: ArtProps) {
   )
 }
 
-/** Pink-striped hot-air balloon drifting over the walls. */
 function StripedBalloon(props: ArtProps) {
   return (
     <svg viewBox="2966.456 414.5 87.187 118.656" {...artProps(props)}>
@@ -89,7 +75,6 @@ function StripedBalloon(props: ArtProps) {
   )
 }
 
-/** A bunch of party balloons on strings — the birthday accent. */
 function BalloonBunch(props: ArtProps) {
   return (
     <svg viewBox="1556.977 223.866 73.192 142.744" {...artProps(props)}>
@@ -209,7 +194,6 @@ function BalloonBunch(props: ArtProps) {
   )
 }
 
-/** Two little pink love-hearts scattered in the sky. */
 function HeartsPink(props: ArtProps) {
   return (
     <svg viewBox="2431.47 405.851 53.001 58.175" {...artProps(props)}>
@@ -225,7 +209,6 @@ function HeartsPink(props: ArtProps) {
   )
 }
 
-/** Lavender butterfly with heart-dappled wings. */
 function Butterfly(props: ArtProps) {
   return (
     <svg viewBox="632.31 420.274 89.284 85.931" {...artProps(props)}>
@@ -289,7 +272,6 @@ function Butterfly(props: ArtProps) {
   )
 }
 
-/** Little white bird gliding across the sky. */
 function Bird(props: ArtProps) {
   return (
     <svg viewBox="1941.241 467.251 75.63 57.677" {...artProps(props)}>
@@ -309,7 +291,6 @@ function Bird(props: ArtProps) {
   )
 }
 
-/** White dove with outstretched wings. */
 function Dove(props: ArtProps) {
   return (
     <svg viewBox="1712.377 361.192 130.089 97.679" {...artProps(props)}>
@@ -337,7 +318,6 @@ function Dove(props: ArtProps) {
   )
 }
 
-/** White bunny mid-leap through the meadow. */
 function Bunny(props: ArtProps) {
   return (
     <svg viewBox="650.211 479.692 110.917 93.573" {...artProps(props)}>
@@ -373,7 +353,6 @@ function Bunny(props: ArtProps) {
   )
 }
 
-/** Toy zebra with lavender stripes — the mural's pony. */
 function Zebra(props: ArtProps) {
   return (
     <svg viewBox="1761.935 562.723 216.972 237.45" {...artProps(props)}>
@@ -565,7 +544,6 @@ function Zebra(props: ArtProps) {
   )
 }
 
-/** Gentle blue elephant from the pond wall. */
 function Elephant(props: ArtProps) {
   return (
     <svg viewBox="999.309 452.996 332.313 259.236" {...artProps(props)}>
@@ -725,7 +703,6 @@ function Elephant(props: ArtProps) {
   )
 }
 
-/** Golden fish surfacing in the pond. */
 function Fish(props: ArtProps) {
   return (
     <svg viewBox="610.367 758.687 80.232 81.277" {...artProps(props)}>
@@ -777,7 +754,6 @@ function Fish(props: ArtProps) {
   )
 }
 
-/** Kitten driving a pink tractor across the fields. */
 function CatTractor(props: ArtProps) {
   return (
     <svg viewBox="427.87 596.532 223.166 208.199" {...artProps(props)}>
@@ -901,7 +877,6 @@ function CatTractor(props: ArtProps) {
   )
 }
 
-/** Tall green cypress tree. */
 function Cypress(props: ArtProps) {
   return (
     <svg viewBox="1612.622 507.299 67.957 180.725" {...artProps(props)}>
@@ -1425,7 +1400,6 @@ function Cypress(props: ArtProps) {
   )
 }
 
-/** Pink fairytale castle on the hill. */
 function Castle(props: ArtProps) {
   return (
     <svg viewBox="340.734 398.401 231.024 218.91" {...artProps(props)}>
@@ -1498,7 +1472,6 @@ function Castle(props: ArtProps) {
   )
 }
 
-/** A soft scatter of lavender meadow dots. */
 function LavenderDots(props: ArtProps) {
   return (
     <svg viewBox="407.428 702.225 199.348 150.301" {...artProps(props)}>
@@ -1574,7 +1547,6 @@ function LavenderDots(props: ArtProps) {
   )
 }
 
-/** A small drift of lavender flecks. */
 function LavenderFlecks(props: ArtProps) {
   return (
     <svg viewBox="1135.245 791.979 87.953 48.674" {...artProps(props)}>

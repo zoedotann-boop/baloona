@@ -22,15 +22,9 @@ interface MenuBoardProps {
   categories: MenuCategoryContent[]
 }
 
-/** Menu page: a flat, flowing "docs" view — categories with priced item lines. */
 function MenuBoard({ title, description, note, categories }: MenuBoardProps) {
   return (
     <Section spacing="md" className="bg-brand-cloud">
-      {/* The real "Baloona CAFÉ" banner from the café signage, full-bleed at the
-          top — the giraffe, the wolf-on-bike + penguin and the scene, exactly as
-          painted. Vector SVG (assembled from the brand illustrations) so it stays
-          crisp at any width. Pulled past the section gutter/top padding to span
-          edge to edge. Next serves `.svg` unoptimized automatically. */}
       <h1 className="sr-only">{title}</h1>
       <Image
         src="/assets/menu/cafe-banner.svg"
@@ -48,7 +42,6 @@ function MenuBoard({ title, description, note, categories }: MenuBoardProps) {
           </p>
         </header>
 
-        {/* In-page jump nav — plain anchor links, flat pills. */}
         <nav className="mb-12 flex flex-wrap justify-center gap-2">
           {categories.map((category) => (
             <a

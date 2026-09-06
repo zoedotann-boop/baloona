@@ -4,15 +4,6 @@ import { Info } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-/**
- * A small "?"-style info icon that reveals a one-line explanation on hover or
- * keyboard focus. Used next to admin field labels so a first-time editor knows
- * what belongs in each control without cluttering the form with always-on text.
- *
- * Guidance is carried by the button's `aria-label`, so screen readers announce
- * it; the floating bubble is purely visual (`aria-hidden`). Positioning is
- * logical (`start-0` / `top-full`), so it lands correctly in the RTL admin.
- */
 function InfoTooltip({
   text,
   className,

@@ -170,7 +170,6 @@ export default async function Page({ params }: PageProps<"/[location]">) {
   )
 }
 
-/** First letter of each of the first two words, e.g. "מיכל ל." → "מל". */
 function initialsOf(name: string): string {
   return name
     .split(/\s+/)

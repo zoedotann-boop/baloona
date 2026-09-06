@@ -43,12 +43,6 @@ interface TeamRow {
   isSelf: boolean
 }
 
-/**
- * ניהול צוות — who can sign in, and which branches they can edit.
- *
- * Owners see everything; managers only see the branches ticked here, which is
- * what `requireLocationAccess` enforces on every admin route and action.
- */
 function TeamManager({
   members,
   locations,
@@ -288,8 +282,6 @@ function MemberRow({
   const [error, setError] = useState<string | null>(null)
   const [pending, start] = useTransition()
 
-  // The dialog has no separate save button: "done" saves the assignment and, on
-  // success, closes. A failed save keeps the dialog open so the error shows.
   const saveAndClose = () =>
     start(async () => {
       setError(null)
@@ -307,7 +299,6 @@ function MemberRow({
         )
     })
 
-  // Owners reach every branch, so listing branches for them would be a lie.
   const branchNames =
     role === "owner"
       ? t("allLocations")
@@ -425,12 +416,6 @@ function MemberRow({
   )
 }
 
-/**
- * Self-service password change for the signed-in user.
- *
- * Better Auth verifies the current password and revokes other sessions, so a
- * changed password logs the account out everywhere but the current tab.
- */
 function ChangePasswordModal({
   open,
   onClose,
