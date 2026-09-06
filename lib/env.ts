@@ -70,13 +70,23 @@ export const serpApiKey = () => optional("SERPAPI_API_KEY")
 export const cronSecret = () => optional("CRON_SECRET")
 
 /**
+ * Kill switch for PayMe online payments. The hosted payment page is currently
+ * down, so payments are forced off regardless of `PAYME_SELLER_ID`: the
+ * punch-card checkout issues the card immediately and records a pending order
+ * paid at the branch. Flip back to `true` to re-enable the online flow.
+ */
+const PAYME_ENABLED = false
+
+/**
  * PayMe (PayMeService) online payments. `PAYME_SELLER_ID` is the account's
  * "Payme Id" / API key, sent in the request body — there is no separate secret.
- * Unset disables online payments: the punch-card checkout falls back to issuing
- * the card immediately. `PAYME_SANDBOX=true` targets the preprod environment for
- * testing without moving real money.
+ * Returns null (online payments off) when the kill switch is off or the seller
+ * id is unset; the punch-card checkout then falls back to issuing the card
+ * immediately. `PAYME_SANDBOX=true` targets the preprod environment for testing
+ * without moving real money.
  */
 export const paymeConfig = () => {
+  if (!PAYME_ENABLED) return null
   const sellerId = optional("PAYME_SELLER_ID")
   if (!sellerId) return null
   return { sellerId, sandbox: process.env.PAYME_SANDBOX === "true" }
