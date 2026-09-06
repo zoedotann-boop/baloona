@@ -37,7 +37,10 @@ export const serpApiKey = () => optional("SERPAPI_API_KEY")
 
 export const cronSecret = () => optional("CRON_SECRET")
 
+const PAYME_ENABLED = false
+
 export const paymeConfig = () => {
+  if (!PAYME_ENABLED) return null
   const sellerId = optional("PAYME_SELLER_ID")
   if (!sellerId) return null
   return { sellerId, sandbox: process.env.PAYME_SANDBOX === "true" }
