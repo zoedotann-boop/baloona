@@ -89,6 +89,7 @@ export async function getReviewsEditor(locationId: string) {
     with: {
       settings: true,
       reviews: { orderBy: (r) => [asc(r.sortOrder)] },
+      reviewPhotos: { orderBy: (p) => [asc(p.sortOrder)] },
     },
   })
 }

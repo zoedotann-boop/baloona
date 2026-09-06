@@ -17,6 +17,7 @@ import {
   priceRows,
   priceTiers,
   pricingContents,
+  reviewPhotos,
   reviews,
   siteContents,
 } from "./content"
@@ -58,6 +59,7 @@ export const locationsRelations = relations(locations, ({ one, many }) => ({
   upgrades: many(birthdayUpgrades),
   formFields: many(birthdayFormFields),
   reviews: many(reviews),
+  reviewPhotos: many(reviewPhotos),
   galleryImages: many(galleryImages),
   contactSubjects: many(contactSubjects),
   leads: many(leads),
@@ -168,6 +170,13 @@ export const galleryImagesRelations = relations(galleryImages, ({ one }) => ({
 export const reviewsRelations = relations(reviews, ({ one }) => ({
   location: one(locations, {
     fields: [reviews.locationId],
+    references: [locations.id],
+  }),
+}))
+
+export const reviewPhotosRelations = relations(reviewPhotos, ({ one }) => ({
+  location: one(locations, {
+    fields: [reviewPhotos.locationId],
     references: [locations.id],
   }),
 }))

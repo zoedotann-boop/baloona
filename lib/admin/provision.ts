@@ -17,6 +17,7 @@ import {
   menuTeaserTileRows,
   priceTierRows,
   pricingContent,
+  reviewPhotoRows,
   seoEntryRows,
   siteContent,
 } from "@/lib/db/seed-content"
@@ -41,6 +42,7 @@ import {
   priceRows,
   priceTiers,
   pricingContents,
+  reviewPhotos,
   seoEntries,
   siteContents,
   siteSettings,
@@ -154,6 +156,14 @@ export async function provisionLocation(
 
   await db.insert(galleryImages).values(
     galleryImageRows.map((row, sortOrder) => ({
+      locationId,
+      ...row,
+      sortOrder,
+    }))
+  )
+
+  await db.insert(reviewPhotos).values(
+    reviewPhotoRows.map((row, sortOrder) => ({
       locationId,
       ...row,
       sortOrder,

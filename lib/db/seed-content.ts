@@ -530,6 +530,23 @@ export const galleryImageRows = [
   },
 ]
 
+/**
+ * Photos woven between the quotes in the "הורים מספרים" section. Seeded with a
+ * few venue moments so the masonry has images the day real reviews arrive; an
+ * editor curates them from ניהול ביקורות.
+ */
+export const reviewPhotoRows = [
+  { url: "/assets/gallery/gallery-4.png", alt: l("רגעים מהמתחם", "Moments") },
+  {
+    url: "/assets/gallery/gallery-5.png",
+    alt: l("חוגגים אצלנו", "Celebrating here"),
+  },
+  {
+    url: "/assets/gallery/gallery-6.png",
+    alt: l("בריכת הכדורים", "Ball pit"),
+  },
+]
+
 /*
  * There are deliberately no starter reviews.
  *

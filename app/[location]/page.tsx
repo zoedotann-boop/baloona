@@ -120,9 +120,9 @@ export default async function Page({ params }: PageProps<"/[location]">) {
           ago: format.relativeTime(review.publishedAt),
           rating: review.rating,
         }))}
-        photos={galleryImages.slice(3).map((image) => ({
-          url: image.url,
-          alt: image.alt,
+        photos={data.reviewPhotos.map((photo) => ({
+          url: photo.url,
+          alt: pickLocale(photo.alt, locale),
         }))}
       />
     </>
