@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 
 interface AccentSquareProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Fill color as a token utility class, e.g. "bg-brand-lavender". */
+  /** Fill color as a token utility class, e.g. "bg-brand-pink". */
   color?: string
   /** Size in pixels (square). */
   size?: number
@@ -15,7 +15,7 @@ interface AccentSquareProps extends React.HTMLAttributes<HTMLDivElement> {
  * `absolute -top-4 -end-5 -z-10`) inside a `relative` parent.
  */
 function AccentSquare({
-  color = "bg-brand-lavender",
+  color = "bg-brand-pink",
   size = 96,
   rotate = 0,
   className,

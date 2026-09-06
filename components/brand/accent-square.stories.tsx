@@ -6,7 +6,7 @@ const meta = {
   title: "Brand/AccentSquare",
   component: AccentSquare,
   parameters: { backgrounds: { value: "nearwhite" } },
-  args: { color: "bg-brand-lavender", size: 96, rotate: 0 },
+  args: { color: "bg-brand-pink", size: 96, rotate: 0 },
 } satisfies Meta<typeof AccentSquare>
 
 export default meta

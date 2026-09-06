@@ -2,6 +2,7 @@ import { ChevronLeft } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { Reveal } from "@/components/brand/reveal"
+import { WallScene } from "@/components/brand/wall-scene"
 import { ContactForm } from "@/components/home/contact-form"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
@@ -16,7 +17,8 @@ interface ContactSectionProps {
   subjects: string[]
 }
 
-/** Contact block: readable contact details beside a message form, on lavender. */
+/** Contact block: readable contact details beside a message form, over the
+ *  festive "party" wall scene with dark ink text. */
 function ContactSection({
   locationId,
   title,
@@ -56,13 +58,17 @@ function ContactSection({
   ]
 
   return (
-    <Section id="contact" className="bg-accent text-white">
+    <Section
+      id="contact"
+      className="relative isolate overflow-hidden text-foreground"
+    >
+      <WallScene variant="party" />
       <Container>
         <Reveal className="mb-12 text-center">
-          <h2 className="font-heading text-[clamp(34px,4.5vw,50px)] font-black">
+          <h2 className="font-heading text-[clamp(34px,4.5vw,50px)] font-black text-brand-plum">
             {title}
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[20px] leading-relaxed text-white/80">
+          <p className="mx-auto mt-4 max-w-xl text-[20px] leading-relaxed text-brand-ink-soft">
             {eyebrow}
           </p>
         </Reveal>
@@ -76,25 +82,25 @@ function ContactSection({
                   href={detail.href}
                   target={detail.external ? "_blank" : undefined}
                   rel={detail.external ? "noopener noreferrer" : undefined}
-                  className="group -mx-4 flex items-center justify-between gap-4 rounded-2xl px-4 py-3 transition hover:bg-white/10"
+                  className="group -mx-4 flex items-center justify-between gap-4 rounded-2xl px-4 py-3 transition hover:bg-brand-plum/5"
                 >
                   <span>
-                    <span className="block text-[15px] font-bold text-white/70">
+                    <span className="block text-[15px] font-bold text-brand-ink-soft">
                       {detail.label}
                     </span>
-                    <span className="block text-[20px] text-white underline decoration-white/40 decoration-2 underline-offset-4">
+                    <span className="block text-[20px] text-brand-plum underline decoration-brand-plum/30 decoration-2 underline-offset-4">
                       {detail.value}
                     </span>
                   </span>
-                  <ChevronLeft className="size-6 shrink-0 text-white/80 transition group-hover:-translate-x-1" />
+                  <ChevronLeft className="size-6 shrink-0 text-brand-plum/70 transition group-hover:-translate-x-1" />
                 </a>
               ))}
 
               <div className="px-4 pt-4">
-                <span className="block text-[15px] font-bold text-white/70">
+                <span className="block text-[15px] font-bold text-brand-ink-soft">
                   {hoursLabel("title")}
                 </span>
-                <div className="mt-1 space-y-1 text-[20px] text-white">
+                <div className="mt-1 space-y-1 text-[20px] text-foreground">
                   {hours.map((row) => (
                     <div key={row.days}>
                       {row.days} · {row.time}

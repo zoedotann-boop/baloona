@@ -83,7 +83,7 @@
      Lavender lead accent, plum headings, soft-rose CTAs, warm near-white bg.
      `rose` is the interactive (button/CTA) color (+ `rose-ink` text on it);
      `lavender` is the decorative accent (large/non-text only — white body text
-     fails contrast on it; use `--accent` #7b6ba8 for white-on-lavender panels);
+     fails contrast on it; use `--accent` #726bc0 for white-on-lavender panels);
      `plum` is the heading color; `ink`/`ink-soft` are the body text grays. */
   --brand-rose: #dda99e;
   --brand-rose-ink: #422d7d;
@@ -130,12 +130,12 @@
   --secondary-foreground: #4a3b66;
   --muted: #f1e9f5;
   --muted-foreground: #6b6076;
-  --accent: #7b6ba8;
+  --accent: #726bc0;
   --accent-foreground: #ffffff;
   --destructive: #c24b4b;
   --border: #ebd9e8;
   --input: #e2cfe0;
-  --ring: #7b6ba8;
+  --ring: #726bc0;
   --chart-1: #fde293;
   --chart-2: #a7e8d0;
   --chart-3: #dda99e;
@@ -145,10 +145,10 @@
   --sidebar-foreground: #575757;
   --sidebar-primary: #dda99e;
   --sidebar-primary-foreground: #422d7d;
-  --sidebar-accent: #7b6ba8;
+  --sidebar-accent: #726bc0;
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #ebd9e8;
-  --sidebar-ring: #7b6ba8;
+  --sidebar-ring: #726bc0;
 }
 
 @layer base {

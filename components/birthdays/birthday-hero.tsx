@@ -34,7 +34,7 @@ function BirthdayHero({ title, description, imageUrl }: BirthdayHeroProps) {
         <Reveal delay={120} className="relative">
           <AccentSquare
             className="absolute -end-4 -top-5 -z-10"
-            color="bg-brand-lavender"
+            color="bg-brand-mint"
             rotate={-8}
           />
           <AccentSquare

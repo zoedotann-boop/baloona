@@ -16,8 +16,8 @@ export const emailTheme = {
     card: "#ffffff",
     /** Heading + wordmark plum (`--brand-plum`). */
     plum: "#6e5a8f",
-    /** Deep lavender that carries white text (`--accent`). */
-    accent: "#7b6ba8",
+    /** Periwinkle lavender that carries white text (`--accent`). */
+    accent: "#726bc0",
     /** Soft-rose CTA accent (`--brand-rose`). */
     rose: "#dda99e",
     /** Ink used on rose/lavender fills (`--brand-rose-ink`). */
