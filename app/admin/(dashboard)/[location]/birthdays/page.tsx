@@ -9,7 +9,7 @@ export default async function AdminBirthdaysPage({
   params,
 }: PageProps<"/admin/[location]/birthdays">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "content")
   const data = await getBirthdayEditor(location.id)
   if (!data?.birthday) notFound()
 

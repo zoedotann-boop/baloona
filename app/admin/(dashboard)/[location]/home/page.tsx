@@ -9,7 +9,7 @@ export default async function AdminHomePage({
   params,
 }: PageProps<"/admin/[location]/home">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "content")
   const data = await getHomeEditor(location.id)
   if (!data?.home || !data.site) notFound()
 

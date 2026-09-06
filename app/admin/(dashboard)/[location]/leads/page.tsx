@@ -10,7 +10,7 @@ export default async function AdminLeadsPage({
   params,
 }: PageProps<"/admin/[location]/leads">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "leads")
 
   const [leads, editor, locale, format] = await Promise.all([
     listLeads(location.id),

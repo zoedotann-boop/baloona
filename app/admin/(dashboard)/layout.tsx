@@ -22,7 +22,7 @@ export default async function AdminDashboardLayout({
 
   return (
     <AdminShell
-      user={{ name: user.name, isOwner: user.role === "owner" }}
+      user={{ name: user.name, role: user.role }}
       locations={locations.map((location) => ({
         slug: location.slug,
         name: pickLocale(location.name, locale),

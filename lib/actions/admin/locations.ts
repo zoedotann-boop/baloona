@@ -99,7 +99,7 @@ const memberSchema = z.object({
   name: z.string().trim().min(1).max(120),
   email: z.email(),
   password: z.string().min(8).max(200),
-  role: z.enum(["owner", "manager"]),
+  role: z.enum(["owner", "manager", "staff"]),
   locationIds: z.array(z.uuid()),
 })
 
@@ -139,7 +139,8 @@ export async function createTeamMember(
     password: await ctx.password.hash(data.password),
   })
 
-  if (data.role === "manager" && data.locationIds.length > 0) {
+  // Owners reach every branch; managers and staff are scoped to their memberships.
+  if (data.role !== "owner" && data.locationIds.length > 0) {
     await db
       .insert(locationMembers)
       .values(
@@ -152,7 +153,7 @@ export async function createTeamMember(
 
 const assignmentSchema = z.object({
   userId: z.string().min(1),
-  role: z.enum(["owner", "manager"]),
+  role: z.enum(["owner", "manager", "staff"]),
   locationIds: z.array(z.uuid()),
 })
 
@@ -177,7 +178,8 @@ export async function updateTeamMember(
     .delete(locationMembers)
     .where(eq(locationMembers.userId, data.userId))
 
-  if (data.role === "manager" && data.locationIds.length > 0) {
+  // Owners reach every branch; managers and staff are scoped to their memberships.
+  if (data.role !== "owner" && data.locationIds.length > 0) {
     await db.insert(locationMembers).values(
       data.locationIds.map((locationId) => ({
         userId: data.userId,

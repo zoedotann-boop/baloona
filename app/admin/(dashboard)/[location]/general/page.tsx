@@ -12,7 +12,7 @@ export default async function GeneralSettingsPage({
   params,
 }: PageProps<"/admin/[location]/general">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "settings")
   const data = await getGeneralSettings(location.id)
   if (!data) notFound()
 

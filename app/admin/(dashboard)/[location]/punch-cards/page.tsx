@@ -6,7 +6,7 @@ export default async function AdminPunchCardsPage({
   params,
 }: PageProps<"/admin/[location]/punch-cards">) {
   const { location: slug } = await params
-  await requireLocationAccess(slug)
+  await requireLocationAccess(slug, "operations")
 
   // Blank query = the most recent customers, so the console opens with context.
   const initial = await searchPunchCards({ slug })

@@ -35,7 +35,7 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["owner", "manager"],
+        type: ["owner", "manager", "staff"],
         defaultValue: "manager",
         // Assigned by owners through the admin UI, never by the client.
         input: false,

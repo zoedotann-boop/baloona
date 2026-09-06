@@ -7,7 +7,7 @@ export default async function AdminTermsPage({
   params,
 }: PageProps<"/admin/[location]/terms">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "content")
   const data = await getTermsEditor(location.id)
 
   return <TermsForm slug={slug} initial={{ terms: toLocalized(data?.terms) }} />

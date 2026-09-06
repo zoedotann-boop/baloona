@@ -30,7 +30,7 @@ export type SyncResult =
 export async function syncGoogleReviews(
   input: z.input<typeof schema>
 ): Promise<SyncResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = schema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
