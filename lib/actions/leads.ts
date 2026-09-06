@@ -27,6 +27,7 @@ import {
 
 export type SubmitResult = { ok: true } | { ok: false; error: string }
 
+// react-doctor-disable-next-line react-doctor/server-auth-actions -- public form
 export async function submitContactLead(
   input: z.input<typeof contactLeadSchema>
 ): Promise<SubmitResult> {
@@ -87,6 +88,7 @@ const birthdaySchema = z.object({
   honeypot: z.string().optional(),
 })
 
+// react-doctor-disable-next-line react-doctor/server-auth-actions -- public form
 export async function submitBirthdayLead(
   input: z.input<typeof birthdaySchema>
 ): Promise<SubmitResult> {

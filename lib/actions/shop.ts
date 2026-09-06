@@ -20,6 +20,7 @@ type CheckoutResult =
   | { ok: true; token: string }
   | { ok: false; error: string }
 
+// react-doctor-disable-next-line react-doctor/server-auth-actions -- public checkout
 export async function startPunchCardCheckout(
   input: z.input<typeof checkoutSchema>
 ): Promise<CheckoutResult> {
