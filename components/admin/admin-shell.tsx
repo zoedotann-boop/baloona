@@ -12,6 +12,8 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  PanelRightClose,
+  PanelRightOpen,
   ScrollText,
   Settings,
   ShoppingBag,
@@ -22,13 +24,38 @@ import {
   Users,
   X,
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useSyncExternalStore } from "react"
 
 import { ToastProvider } from "@/components/admin/toast"
 import { Logo } from "@/components/brand/logo"
 import { authClient } from "@/lib/auth-client"
 import { ADMIN_LOGIN_PATH } from "@/lib/admin/routes"
 import { cn } from "@/lib/utils"
+
+// Remembers the desktop rail state across visits so it survives navigation and
+// full reloads. Collapse only applies at md+; the mobile drawer is unaffected.
+// Read through useSyncExternalStore so SSR (expanded) and the client agree on
+// first paint, and so a toggle in one tab syncs to the others.
+const SIDEBAR_COLLAPSED_KEY = "baloona.admin.sidebarCollapsed"
+const collapseListeners = new Set<() => void>()
+
+function subscribeCollapsed(callback: () => void) {
+  collapseListeners.add(callback)
+  window.addEventListener("storage", callback)
+  return () => {
+    collapseListeners.delete(callback)
+    window.removeEventListener("storage", callback)
+  }
+}
+
+function getCollapsedSnapshot() {
+  return localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1"
+}
+
+function setCollapsed(next: boolean) {
+  localStorage.setItem(SIDEBAR_COLLAPSED_KEY, next ? "1" : "0")
+  collapseListeners.forEach((listener) => listener())
+}
 
 interface AdminShellLocation {
   slug: string
@@ -50,6 +77,14 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
   // The sidebar is a static column on desktop and a slide-in drawer on mobile.
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
+
+  // Desktop-only: collapse the column to an icon rail.
+  const collapsed = useSyncExternalStore(
+    subscribeCollapsed,
+    getCollapsedSnapshot,
+    () => false
+  )
+  const toggleCollapsed = () => setCollapsed(!collapsed)
 
   // Branch-scoped routes are `/admin/<slug>/…`; owner pages are not. Reading it
   // from the path keeps the shell in the layout, above the `[location]` segment.
@@ -147,12 +182,34 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
 
         <aside
           className={cn(
-            "fixed inset-y-0 right-0 z-50 flex w-[232px] shrink-0 flex-col border-e border-border bg-white transition-transform duration-200 md:static md:translate-x-0",
-            open ? "translate-x-0" : "translate-x-full md:translate-x-0"
+            "fixed inset-y-0 right-0 z-50 flex w-[232px] shrink-0 flex-col border-e border-border bg-white transition-[transform,width] duration-200 md:static md:translate-x-0",
+            open ? "translate-x-0" : "translate-x-full md:translate-x-0",
+            collapsed && "md:w-16"
           )}
         >
-          <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
-            <Logo size="sm" />
+          <div
+            className={cn(
+              "flex items-center justify-between border-b border-border px-4 py-2.5",
+              collapsed && "md:justify-center md:px-2"
+            )}
+          >
+            <span className={cn(collapsed && "md:hidden")}>
+              <Logo size="sm" />
+            </span>
+            {/* Desktop: collapse the column to an icon rail. */}
+            <button
+              type="button"
+              onClick={toggleCollapsed}
+              aria-label={collapsed ? t("expandSidebar") : t("collapseSidebar")}
+              className="hidden size-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted md:flex"
+            >
+              {collapsed ? (
+                <PanelRightOpen className="size-5" />
+              ) : (
+                <PanelRightClose className="size-5" />
+              )}
+            </button>
+            {/* Mobile: close the drawer. */}
             <button
               type="button"
               onClick={close}
@@ -164,7 +221,12 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
           </div>
 
           {locations.length > 0 && (
-            <div className="border-b border-border p-2">
+            <div
+              className={cn(
+                "border-b border-border p-2",
+                collapsed && "md:hidden"
+              )}
+            >
               <div className="relative">
                 <select
                   value={active?.slug ?? ""}
@@ -192,18 +254,21 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
               label={t("sectionContent")}
               links={contentLinks}
               pathname={pathname}
+              collapsed={collapsed}
               onNavigate={close}
             />
             <NavGroup
               label={t("sectionOperations")}
               links={operationLinks}
               pathname={pathname}
+              collapsed={collapsed}
               onNavigate={close}
             />
             <NavGroup
               label={t("sectionAccount")}
               links={accountLinks}
               pathname={pathname}
+              collapsed={collapsed}
               onNavigate={close}
             />
           </nav>
@@ -214,20 +279,43 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
                 href={`/${active.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-8 items-center gap-2.5 rounded-xl px-3 text-[13px] font-bold text-muted-foreground transition hover:bg-muted"
+                title={collapsed ? t("viewSite") : undefined}
+                aria-label={collapsed ? t("viewSite") : undefined}
+                className={cn(
+                  "flex h-8 items-center gap-2.5 rounded-xl px-3 text-[13px] font-bold text-muted-foreground transition hover:bg-muted",
+                  collapsed && "md:justify-center md:gap-0 md:px-0"
+                )}
               >
-                <ExternalLink className="size-4" />
-                {t("viewSite")}
+                <ExternalLink className="size-4 shrink-0" />
+                <span className={cn(collapsed && "md:hidden")}>
+                  {t("viewSite")}
+                </span>
               </a>
             )}
             <button
               type="button"
               onClick={signOut}
-              className="flex h-8 w-full items-center gap-2.5 rounded-xl px-3 text-start text-[13px] font-bold text-muted-foreground transition hover:bg-muted"
+              title={collapsed ? t("signOut") : undefined}
+              aria-label={collapsed ? t("signOut") : undefined}
+              className={cn(
+                "flex h-8 w-full items-center gap-2.5 rounded-xl px-3 text-start text-[13px] font-bold text-muted-foreground transition hover:bg-muted",
+                collapsed && "md:justify-center md:gap-0 md:px-0"
+              )}
             >
               <LogOut className="size-4 shrink-0" />
-              <span className="truncate text-brand-plum">{user.name}</span>
-              <span className="ms-auto shrink-0">{t("signOut")}</span>
+              <span
+                className={cn(
+                  "truncate text-brand-plum",
+                  collapsed && "md:hidden"
+                )}
+              >
+                {user.name}
+              </span>
+              <span
+                className={cn("ms-auto shrink-0", collapsed && "md:hidden")}
+              >
+                {t("signOut")}
+              </span>
             </button>
           </div>
         </aside>
@@ -263,11 +351,13 @@ function NavGroup({
   label,
   links,
   pathname,
+  collapsed,
   onNavigate,
 }: {
   label: string
   links: { href: string; label: string; icon: React.ElementType }[]
   pathname: string
+  collapsed: boolean
   onNavigate: () => void
 }) {
   if (links.length === 0) return null
@@ -285,15 +375,20 @@ function NavGroup({
               href={link.href}
               onClick={onNavigate}
               aria-current={isActive ? "page" : undefined}
+              // When collapsed the label is hidden from the desktop a11y tree,
+              // so restore the name via aria-label and a hover tooltip.
+              title={collapsed ? link.label : undefined}
+              aria-label={collapsed ? link.label : undefined}
               className={cn(
                 "flex h-8 items-center gap-2.5 rounded-xl px-3 text-[13px] transition",
+                collapsed && "md:justify-center md:gap-0 md:px-0",
                 isActive
                   ? "bg-brand-pink font-extrabold text-brand-plum"
                   : "font-bold text-muted-foreground hover:bg-muted"
               )}
             >
-              <Icon className="size-4" />
-              {link.label}
+              <Icon className="size-4 shrink-0" />
+              <span className={cn(collapsed && "md:hidden")}>{link.label}</span>
             </Link>
           </li>
         )
