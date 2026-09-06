@@ -321,9 +321,9 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          {/* Mobile top bar — the only way to reach the nav on a phone. */}
+          {/* Mobile top bar — the only way to reach the nav on a phone.
+              Hamburger sits at the start (right in RTL), logo at the end. */}
           <div className="flex items-center justify-between border-b border-border bg-white px-4 py-2.5 md:hidden">
-            <Logo size="sm" />
             <button
               type="button"
               onClick={() => setOpen(true)}
@@ -332,6 +332,7 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
             >
               <Menu className="size-5" />
             </button>
+            <Logo size="sm" />
           </div>
 
           {/* The only scroll container on the page. */}

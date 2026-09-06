@@ -227,46 +227,48 @@ function GeneralSettingsForm({
           {draft.hours.map((day, index) => (
             <div
               key={day.weekday}
-              className="flex flex-wrap items-center gap-3"
+              className="flex flex-wrap items-center gap-x-3 gap-y-2"
             >
-              <span className="w-20 shrink-0 text-[14px] font-bold text-brand-plum">
+              <span className="w-full text-[14px] font-bold text-brand-plum sm:w-20 sm:shrink-0">
                 {dayNames[day.weekday]}
               </span>
-              <AdminInput
-                type="time"
-                aria-label={`${dayNames[day.weekday]} · ${t("opensAt")}`}
-                value={day.opensAt}
-                disabled={day.isClosed}
-                onChange={(event) =>
-                  update(
-                    "hours",
-                    draft.hours.map((row, i) =>
-                      i === index
-                        ? { ...row, opensAt: event.target.value }
-                        : row
+              <div className="flex min-w-0 flex-1 items-center gap-2">
+                <AdminInput
+                  type="time"
+                  aria-label={`${dayNames[day.weekday]} · ${t("opensAt")}`}
+                  value={day.opensAt}
+                  disabled={day.isClosed}
+                  onChange={(event) =>
+                    update(
+                      "hours",
+                      draft.hours.map((row, i) =>
+                        i === index
+                          ? { ...row, opensAt: event.target.value }
+                          : row
+                      )
                     )
-                  )
-                }
-                className="w-32 disabled:opacity-40"
-              />
-              <span className="text-muted-foreground">—</span>
-              <AdminInput
-                type="time"
-                aria-label={`${dayNames[day.weekday]} · ${t("closesAt")}`}
-                value={day.closesAt}
-                disabled={day.isClosed}
-                onChange={(event) =>
-                  update(
-                    "hours",
-                    draft.hours.map((row, i) =>
-                      i === index
-                        ? { ...row, closesAt: event.target.value }
-                        : row
+                  }
+                  className="min-w-0 flex-1 disabled:opacity-40 sm:w-32 sm:flex-none"
+                />
+                <span className="text-muted-foreground">—</span>
+                <AdminInput
+                  type="time"
+                  aria-label={`${dayNames[day.weekday]} · ${t("closesAt")}`}
+                  value={day.closesAt}
+                  disabled={day.isClosed}
+                  onChange={(event) =>
+                    update(
+                      "hours",
+                      draft.hours.map((row, i) =>
+                        i === index
+                          ? { ...row, closesAt: event.target.value }
+                          : row
+                      )
                     )
-                  )
-                }
-                className="w-32 disabled:opacity-40"
-              />
+                  }
+                  className="min-w-0 flex-1 disabled:opacity-40 sm:w-32 sm:flex-none"
+                />
+              </div>
               <AdminToggle
                 label={t("closed")}
                 checked={day.isClosed}
