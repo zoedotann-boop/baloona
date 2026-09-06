@@ -6,7 +6,9 @@ import { and, eq } from "drizzle-orm"
 
 import { db } from "@/lib/db"
 import { customers, punchCardOrders, punchCards } from "@/lib/db/schema"
+import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
 import { getSale } from "@/lib/payme/client"
+import { siteOrigin } from "@/lib/site-url"
 
 /**
  * Punch-card order fulfilment — the server-side half of the shop checkout.
@@ -32,9 +34,12 @@ export async function issueCard(input: {
   let customerId: string
   if (existing) {
     customerId = existing.id
+    // This is the customer buying for themselves, so the details they just typed
+    // are authoritative — refresh the name/email to what they entered rather than
+    // keeping a stale value from an earlier purchase.
     const patch: Partial<typeof customers.$inferInsert> = {}
-    if (input.fullName && !existing.fullName) patch.fullName = input.fullName
-    if (input.email && !existing.email) patch.email = input.email
+    if (input.fullName) patch.fullName = input.fullName
+    if (input.email) patch.email = input.email
     if (Object.keys(patch).length > 0) {
       await db.update(customers).set(patch).where(eq(customers.id, customerId))
     }
@@ -120,6 +125,18 @@ export async function fulfilOrder(orderId: string): Promise<string | null> {
     .update(punchCardOrders)
     .set({ cardId })
     .where(eq(punchCardOrders.id, order.id))
+
+  // Confirmation with the card link, sent once — this runs only for the caller
+  // that won the `pending → paid` claim above, so a repeated callback or a
+  // success-page revisit never re-sends it. Best-effort: the card is already
+  // issued, so a mail failure is logged rather than surfaced.
+  const result = await sendPunchCardConfirmation({
+    to: order.email,
+    cardUrl: `${await siteOrigin()}/card/${token}`,
+    entries: order.entries,
+  })
+  if (!result.sent)
+    console.error("punch card confirmation email:", result.error)
 
   return token
 }

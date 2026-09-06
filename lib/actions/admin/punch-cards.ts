@@ -10,8 +10,13 @@ import { type Locale } from "@/i18n/routing"
 import { requireLocationAccess } from "@/lib/admin/access"
 import { db } from "@/lib/db"
 import { searchCustomerCards } from "@/lib/db/queries/admin"
-import { customers, punchCards, punchEvents } from "@/lib/db/schema"
-import { pickLocale } from "@/lib/localized"
+import {
+  customers,
+  punchCardOrders,
+  punchCards,
+  punchEvents,
+} from "@/lib/db/schema"
+import { formatPrice, pickLocale } from "@/lib/localized"
 import { type CustomerCardsView } from "@/lib/punch-cards"
 
 import { OK, type ActionResult } from "./shared"
@@ -29,6 +34,10 @@ function toView(
   rows: Awaited<ReturnType<typeof searchCustomerCards>>,
   locale: Locale
 ): CustomerCardsView[] {
+  const dateFormat = new Intl.DateTimeFormat(
+    locale === "he" ? "he-IL" : "en-US",
+    { dateStyle: "short", timeStyle: "short" }
+  )
   return rows.map((customer) => ({
     id: customer.id,
     fullName: customer.fullName,
@@ -44,6 +53,13 @@ function toView(
         ? pickLocale(card.issuedByLocation.name, locale)
         : null,
       note: card.note,
+      createdAt: dateFormat.format(card.createdAt),
+      payment: card.order
+        ? {
+            paid: card.order.status === "paid",
+            price: formatPrice(card.order.amount, locale),
+          }
+        : null,
     })),
   }))
 }
@@ -287,6 +303,27 @@ export async function deleteCard(
   if (!parsed.success) return { ok: false, error: "invalid" }
 
   await db.delete(punchCards).where(eq(punchCards.id, parsed.data.cardId))
+
+  return OK
+}
+
+/**
+ * Mark the online order behind a card as paid — the front desk records that the
+ * customer settled up at the branch (cash/card) after ordering online. Only
+ * touches the order tied to this card, so a card issued at the desk is a no-op.
+ */
+export async function markCardPaid(
+  input: z.input<typeof cardActionSchema>
+): Promise<ActionResult> {
+  await requireLocationAccess(input.slug)
+
+  const parsed = cardActionSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, error: "invalid" }
+
+  await db
+    .update(punchCardOrders)
+    .set({ status: "paid", paidAt: new Date() })
+    .where(eq(punchCardOrders.cardId, parsed.data.cardId))
 
   return OK
 }

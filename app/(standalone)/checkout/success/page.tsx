@@ -1,8 +1,10 @@
 import { getTranslations } from "next-intl/server"
 
-import { PillButton } from "@/components/brand/pill-button"
+import { SkyBackdrop } from "@/components/brand/sky-backdrop"
 import { BrandShell } from "@/components/layout/brand-shell"
+import { Section } from "@/components/layout/section"
 import { SiteChrome } from "@/components/layout/site-chrome"
+import { CheckoutResultCard } from "@/components/shop/checkout-result-card"
 import { fulfilOrder } from "@/lib/shop/orders"
 import { listPublishedLocations } from "@/lib/db/queries/site"
 
@@ -39,29 +41,20 @@ export default async function CheckoutSuccessPage({
   const token = orderId ? await fulfilOrder(orderId) : null
 
   const content = (
-    <div className="mx-auto max-w-lg px-5 py-16 md:py-20">
-      <div className="rounded-[26px] border border-border bg-brand-lavender-soft p-8 text-center">
-        <p className="font-heading text-[22px] font-black text-brand-plum">
-          {token ? t("successTitle") : t("pendingTitle")}
-        </p>
-        <p className="mt-2 text-[16px] leading-relaxed text-brand-ink-soft">
-          {token ? t("successBody") : t("pendingBody")}
-        </p>
-        {token ? (
-          <PillButton href={`/card/${token}`} size="md" className="mt-5">
-            {t("viewCard")}
-          </PillButton>
-        ) : (
-          <PillButton
-            href={from ? `/${from}#shop` : "/"}
-            size="md"
-            className="mt-5"
-          >
-            {t("noProductCta")}
-          </PillButton>
-        )}
+    <Section spacing="md" className="relative isolate overflow-hidden">
+      <SkyBackdrop />
+      <div className="mx-auto max-w-lg">
+        <CheckoutResultCard
+          title={token ? t("successTitle") : t("pendingTitle")}
+          body={token ? t("successBody") : t("pendingBody")}
+          cta={
+            token
+              ? { label: t("viewCard"), href: `/card/${token}` }
+              : { label: t("noProductCta"), href: from ? `/${from}#shop` : "/" }
+          }
+        />
       </div>
-    </div>
+    </Section>
   )
 
   return hasBranch ? (

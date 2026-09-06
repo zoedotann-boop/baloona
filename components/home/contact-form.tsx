@@ -4,15 +4,13 @@ import { useTranslations } from "next-intl"
 import { useState, useTransition } from "react"
 
 import { PillButton } from "@/components/brand/pill-button"
+import { FieldError, fieldInputClass } from "@/components/forms/field"
 import { HoneypotField } from "@/components/forms/honeypot-field"
 import { submitContactLead } from "@/lib/actions/leads"
 import { collectFieldErrors, type FieldErrors } from "@/lib/forms/field-errors"
 import { HONEYPOT_FIELD } from "@/lib/forms/honeypot"
 import { contactLeadSchema } from "@/lib/forms/schemas"
 import { cn } from "@/lib/utils"
-
-const inputClass =
-  "w-full h-12 rounded-xl bg-white border border-border px-4 text-[16px] text-foreground placeholder:text-muted-foreground focus:bg-white focus:border-primary focus:outline-none transition"
 
 interface ContactFormProps {
   locationId: string
@@ -78,7 +76,10 @@ function ContactForm({ locationId, subjects }: ContactFormProps) {
             name="fullName"
             required
             aria-invalid={Boolean(errors.fullName)}
-            className={cn(inputClass, errors.fullName && "border-destructive")}
+            className={cn(
+              fieldInputClass,
+              errors.fullName && "border-destructive"
+            )}
             placeholder={t("namePlaceholder")}
           />
           <FieldError message={errors.fullName} />
@@ -91,7 +92,7 @@ function ContactForm({ locationId, subjects }: ContactFormProps) {
             dir="ltr"
             aria-invalid={Boolean(errors.phone)}
             className={cn(
-              inputClass,
+              fieldInputClass,
               "text-right",
               errors.phone && "border-destructive"
             )}
@@ -126,7 +127,7 @@ function ContactForm({ locationId, subjects }: ContactFormProps) {
             rows={5}
             aria-invalid={Boolean(errors.message)}
             className={cn(
-              inputClass,
+              fieldInputClass,
               "h-auto resize-none py-3",
               errors.message && "border-destructive"
             )}
@@ -150,16 +151,6 @@ function ContactForm({ locationId, subjects }: ContactFormProps) {
         </PillButton>
       </div>
     </form>
-  )
-}
-
-/** Inline, RTL-friendly validation message shown under a field. */
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null
-  return (
-    <p role="alert" className="mt-1.5 text-[13px] font-bold text-destructive">
-      {message}
-    </p>
   )
 }
 

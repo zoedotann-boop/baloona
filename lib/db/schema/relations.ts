@@ -31,6 +31,7 @@ import {
 } from "./locations"
 import { menuCategories, menuContents, menuItems } from "./menu"
 import { customers, punchCards, punchEvents } from "./punch-cards"
+import { punchCardOrders } from "./shop"
 
 /**
  * Relations live in one file so the table modules stay a directed graph
@@ -279,7 +280,21 @@ export const punchCardsRelations = relations(punchCards, ({ one, many }) => ({
     references: [locations.id],
   }),
   events: many(punchEvents),
+  // The online purchase behind this card, when it was bought through the shop
+  // (a card issued at the desk has none). Carries the payment status the
+  // front-desk console shows.
+  order: one(punchCardOrders),
 }))
+
+export const punchCardOrdersRelations = relations(
+  punchCardOrders,
+  ({ one }) => ({
+    card: one(punchCards, {
+      fields: [punchCardOrders.cardId],
+      references: [punchCards.id],
+    }),
+  })
+)
 
 export const punchEventsRelations = relations(punchEvents, ({ one }) => ({
   card: one(punchCards, {

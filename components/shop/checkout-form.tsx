@@ -5,6 +5,7 @@ import { useState, useTransition } from "react"
 
 import { ConsentCheckbox } from "@/components/brand/consent-checkbox"
 import { PillButton } from "@/components/brand/pill-button"
+import { FieldError, fieldInputClass } from "@/components/forms/field"
 import { HoneypotField } from "@/components/forms/honeypot-field"
 import { startPunchCardCheckout } from "@/lib/actions/shop"
 import { collectFieldErrors, type FieldErrors } from "@/lib/forms/field-errors"
@@ -12,16 +13,16 @@ import { HONEYPOT_FIELD } from "@/lib/forms/honeypot"
 import { checkoutSchema } from "@/lib/forms/schemas"
 import { cn } from "@/lib/utils"
 
+import { CheckoutResultCard } from "./checkout-result-card"
 import { PunchCardArt } from "./punch-card-art"
-
-const inputClass =
-  "w-full h-12 rounded-xl bg-white border border-border px-4 text-[16px] text-foreground placeholder:text-muted-foreground focus:bg-white focus:border-primary focus:outline-none transition"
 
 interface CheckoutFormProps {
   productId: string
   productName: string
   entriesLabel: string
   productPrice: string
+  /** Which card design to preview, matching the product's shop artwork. */
+  theme: "age12" | "age2"
   /** Branch the visitor came from, recorded as the card's issuing branch. */
   from: string
   /** Link to the terms page, opened from the consent label. */
@@ -38,6 +39,7 @@ function CheckoutForm({
   productName,
   entriesLabel,
   productPrice,
+  theme,
   from,
   termsHref,
 }: CheckoutFormProps) {
@@ -91,19 +93,13 @@ function CheckoutForm({
 
   if (status === "done") {
     return (
-      <div className="rounded-[26px] border border-border bg-brand-lavender-soft p-8 text-center">
-        <p className="font-heading text-[22px] font-black text-brand-plum">
-          {t("successTitle")}
-        </p>
-        <p className="mt-2 text-[16px] leading-relaxed text-brand-ink-soft">
-          {t("successBody")}
-        </p>
-        {token && (
-          <PillButton href={`/card/${token}`} size="md" className="mt-5">
-            {t("viewCard")}
-          </PillButton>
-        )}
-      </div>
+      <CheckoutResultCard
+        title={t("successTitle")}
+        body={t("successBody")}
+        cta={
+          token ? { label: t("viewCard"), href: `/card/${token}` } : undefined
+        }
+      />
     )
   }
 
@@ -111,11 +107,18 @@ function CheckoutForm({
     <form
       onSubmit={onSubmit}
       noValidate
-      className="rounded-[26px] border border-border bg-white p-8"
+      className="rounded-[28px] border border-border bg-white p-8"
     >
       <div className="mb-6 flex flex-col items-center">
         <div className="w-full max-w-[320px] overflow-hidden rounded-[28px] shadow-sm ring-1 ring-border">
-          <PunchCardArt theme="age12" caption={tShop("cardCaptions.age12")} />
+          <PunchCardArt
+            theme={theme}
+            caption={
+              theme === "age2"
+                ? tShop("cardCaptions.age2")
+                : tShop("cardCaptions.age12")
+            }
+          />
         </div>
         <div className="mt-4 text-center">
           <div className="font-heading text-[19px] font-black text-brand-plum">
@@ -136,7 +139,10 @@ function CheckoutForm({
             name="fullName"
             required
             aria-invalid={Boolean(errors.fullName)}
-            className={cn(inputClass, errors.fullName && "border-destructive")}
+            className={cn(
+              fieldInputClass,
+              errors.fullName && "border-destructive"
+            )}
             placeholder={t("namePlaceholder")}
             autoComplete="name"
           />
@@ -150,7 +156,7 @@ function CheckoutForm({
             dir="ltr"
             aria-invalid={Boolean(errors.phone)}
             className={cn(
-              inputClass,
+              fieldInputClass,
               "text-right",
               errors.phone && "border-destructive"
             )}
@@ -167,7 +173,7 @@ function CheckoutForm({
             dir="ltr"
             aria-invalid={Boolean(errors.email)}
             className={cn(
-              inputClass,
+              fieldInputClass,
               "text-right",
               errors.email && "border-destructive"
             )}
@@ -211,6 +217,10 @@ function CheckoutForm({
           </p>
         )}
 
+        <p className="text-center text-[14px] font-bold text-brand-ink-soft">
+          {t("paymentNote")}
+        </p>
+
         <PillButton
           type="submit"
           className="w-full"
@@ -221,16 +231,6 @@ function CheckoutForm({
         </PillButton>
       </div>
     </form>
-  )
-}
-
-/** Inline, RTL-friendly validation message shown under a field. */
-function FieldError({ message }: { message?: string }) {
-  if (!message) return null
-  return (
-    <p role="alert" className="mt-1.5 text-[13px] font-bold text-destructive">
-      {message}
-    </p>
   )
 }
 

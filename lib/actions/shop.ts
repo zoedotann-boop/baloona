@@ -3,6 +3,7 @@
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 
+import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
 import { defaultLocale } from "@/i18n/routing"
 import { db } from "@/lib/db"
 import { locations, products, punchCardOrders } from "@/lib/db/schema"
@@ -51,15 +52,40 @@ export async function startPunchCardCheckout(
       })
     : null
 
-  // No PayMe key: keep the pre-payment behaviour and issue the card at once.
+  // No PayMe key: online payment is off, so issue the card at once and record a
+  // pending order alongside it. The customer walks away with their card and pays
+  // at the branch (cash/card); the pending order is what the front-desk console
+  // tracks so staff can see who still owes and mark it paid on collection.
   if (!paymeConfig()) {
-    const { token } = await issueCard({
+    const { token, cardId } = await issueCard({
       entries: product.entries,
       fullName,
       phone,
       email,
       fromLocationId: branch?.id ?? null,
     })
+    await db.insert(punchCardOrders).values({
+      productId: product.id,
+      fullName,
+      phone,
+      email,
+      fromLocationId: branch?.id ?? null,
+      entries: product.entries,
+      amount: product.price,
+      status: "pending",
+      cardId,
+    })
+
+    // Courtesy confirmation with the card link — best-effort, so a mail failure
+    // never fails a checkout whose card is already issued.
+    const result = await sendPunchCardConfirmation({
+      to: email,
+      cardUrl: `${await siteOrigin()}/card/${token}`,
+      entries: product.entries,
+    })
+    if (!result.sent)
+      console.error("punch card confirmation email:", result.error)
+
     return { ok: true, token }
   }
 

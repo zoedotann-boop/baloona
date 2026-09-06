@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl"
 import {
+  BadgeCheck,
+  CalendarClock,
   Check,
   Copy,
   ExternalLink,
@@ -10,6 +12,7 @@ import {
   Plus,
   Search,
   Trash2,
+  Wallet,
 } from "lucide-react"
 import { useRef, useState, useTransition } from "react"
 
@@ -20,6 +23,7 @@ import { PillButton } from "@/components/brand/pill-button"
 import {
   deleteCard,
   issuePunchCard,
+  markCardPaid,
   punchCard,
   searchPunchCards,
   undoLastPunch,
@@ -323,6 +327,26 @@ function CardRowView({
               </span>
             )}
           </div>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[13px]">
+            <span className="inline-flex items-center gap-1 text-muted-foreground">
+              <CalendarClock className="size-3.5" aria-hidden />
+              {card.payment
+                ? t("purchasedOn", { date: card.createdAt })
+                : t("issuedOn", { date: card.createdAt })}
+            </span>
+            {card.payment &&
+              (card.payment.paid ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-brand-mint px-2 py-0.5 text-[12px] font-bold text-brand-plum">
+                  <BadgeCheck className="size-3.5" aria-hidden />
+                  {t("paidBadge")}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-brand-banana px-2 py-0.5 text-[12px] font-bold text-brand-plum">
+                  <Wallet className="size-3.5" aria-hidden />
+                  {t("unpaidBadge", { price: card.payment.price })}
+                </span>
+              ))}
+          </div>
         </div>
       </div>
 
@@ -354,6 +378,20 @@ function CardRowView({
           }
           disabled={pending || card.usedPunches === 0}
         />
+        {card.payment && !card.payment.paid && (
+          <ActionChip
+            icon={<Wallet className="size-4" />}
+            label={t("markPaid")}
+            tooltip={t("markPaidTip")}
+            onClick={() =>
+              start(async () => {
+                await markCardPaid({ slug, cardId: card.id })
+                onChanged()
+              })
+            }
+            disabled={pending}
+          />
+        )}
         <ActionChip
           icon={
             copied ? <Check className="size-4" /> : <Copy className="size-4" />
