@@ -4,13 +4,11 @@ import { cn } from "@/lib/utils"
 interface ReviewCardProps extends React.HTMLAttributes<HTMLDivElement> {
   text: string
   name: string
-  /** Initial(s) shown in the avatar circle. */
   initials: string
   ago: string
   rating?: number
 }
 
-/** Family testimonial card — star rating, quote and an avatar footer. */
 function ReviewCard({
   text,
   name,

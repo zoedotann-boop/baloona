@@ -15,22 +15,10 @@ export type SyncResult =
   | { ok: true; imported: number; updated: number; reviews: ReviewDraft[] }
   | { ok: false; error: string }
 
-/**
- * The admin's "sync now" button.
- *
- * It publishes exactly what the nightly cron would: on a branch with automatic
- * sync off, imports arrive unpublished for an editor to approve, and on one
- * that opted in, 4-star-and-up reviews go live immediately. Pressing the button
- * should never produce a different site than waiting for the job would.
- *
- * The sync writes straight to the database, which would leave the open form
- * showing a stale list — so the refreshed rows come back with the result and
- * the table re-renders on what was actually imported.
- */
 export async function syncGoogleReviews(
   input: z.input<typeof schema>
 ): Promise<SyncResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = schema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

@@ -10,35 +10,19 @@ import { EmailLayout } from "./email-layout"
 const { color, font } = emailTheme
 
 export interface PunchCardConfirmationEmailProps {
-  /** Locale the email is written in. */
   locale: Locale
-  /** Absolute origin the logo + background are loaded from. */
   baseUrl?: string
-  /** Inbox preview line. */
   preview: string
-  /** Pill above the heading — the site's eyebrow badge. */
   eyebrow: string
-  /** Warm confirmation headline. */
   heading: string
-  /** Opening paragraph, e.g. "thanks for your purchase". */
   intro: string
-  /** Card details laid out as soft rows (e.g. number of entries). */
   rows: DetailRow[]
-  /** Label of the call-to-action button. */
   buttonLabel: string
-  /** Absolute link to the customer's digital card (`/card/<token>`). */
   cardUrl: string
-  /** Closing line, e.g. "See you soon, the Baloona team". */
   signoff: string
-  /** Shared footer copy. */
   footer: string
 }
 
-/**
- * Confirmation email sent to a customer once their digital punch card is issued:
- * the card details plus a prominent button that opens the shareable card page.
- * Built on the shared {@link EmailLayout} so it matches every other Baloona email.
- */
 export function PunchCardConfirmationEmail({
   locale,
   baseUrl,

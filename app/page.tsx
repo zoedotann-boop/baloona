@@ -6,10 +6,6 @@ import { LocationChooser } from "@/components/locations/location-chooser"
 import { listPublishedLocations } from "@/lib/db/queries/site"
 import { pickLocale } from "@/lib/localized"
 
-/**
- * Branch picker. With a single published branch there is nothing to choose, so
- * visitors go straight there.
- */
 export default async function Page() {
   const [locale, locations] = await Promise.all([
     getLocale(),

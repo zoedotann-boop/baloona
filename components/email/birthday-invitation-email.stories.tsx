@@ -8,8 +8,6 @@ import {
   type BirthdayInvitationEmailProps,
 } from "./birthday-invitation-email"
 
-// Emails render to a full HTML document, so preview them inside an iframe rather
-// than mounting <Html>/<Body> into the Storybook DOM.
 function EmailPreview(props: BirthdayInvitationEmailProps) {
   const html = renderToStaticMarkup(<BirthdayInvitationEmail {...props} />)
   return (

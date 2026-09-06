@@ -1,13 +1,6 @@
 import { locationPaths, whatsappLink } from "@/lib/site-links"
 import type { ContactDetails, HoursRow } from "@/lib/view-models"
 
-/**
- * Sample content for Storybook.
- *
- * Sections take plain, already-localized props, so stories can render the real
- * components without a database or an intl namespace behind them.
- */
-
 export const storyPaths = locationPaths("kiryat-ono")
 
 export const storyHours: HoursRow[] = [

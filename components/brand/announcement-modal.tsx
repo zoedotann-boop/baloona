@@ -7,7 +7,6 @@ import { useEffect, useId, useRef, useSyncExternalStore } from "react"
 import { PillButton } from "@/components/brand/pill-button"
 
 interface AnnouncementModalProps {
-  /** Scopes the "seen" flag; bump it in the admin to re-show the pop-up. */
   storageKey: string
   title: string
   body?: string
@@ -16,8 +15,6 @@ interface AnnouncementModalProps {
   ctaHref?: string
 }
 
-// localStorage is an external system, so we read it through
-// useSyncExternalStore rather than mirroring it into React state in an effect.
 const listeners = new Set<() => void>()
 
 function subscribe(onChange: () => void) {
@@ -34,10 +31,6 @@ function markSeen(storageKey: string) {
   listeners.forEach((notify) => notify())
 }
 
-/**
- * Site-wide announcement pop-up (e.g. holiday opening hours). Opens once per
- * browser until dismissed, then stays closed for this announcement version.
- */
 function AnnouncementModal({
   storageKey,
   title,
@@ -51,8 +44,6 @@ function AnnouncementModal({
   const titleId = useId()
   const bodyId = useId()
 
-  // Treat as seen during SSR and first paint so the server markup is stable;
-  // the real localStorage value takes over after hydration.
   const seen = useSyncExternalStore(
     subscribe,
     () => localStorage.getItem(storageKey) === "seen",
@@ -60,7 +51,6 @@ function AnnouncementModal({
   )
   const open = !seen
 
-  // While open: lock scroll, focus the dialog and close on Escape.
   useEffect(() => {
     if (!open) return
     const previous = document.body.style.overflow

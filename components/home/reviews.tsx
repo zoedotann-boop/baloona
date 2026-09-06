@@ -19,17 +19,11 @@ interface ReviewContent {
 interface ReviewsProps {
   title: string
   items: ReviewContent[]
-  /** Venue photos woven between the quotes to break up the masonry. */
   photos: { url: string; alt: string }[]
 }
 
 const PHOTO_ASPECTS = ["aspect-[3/4]", "aspect-square"]
 
-/**
- * Testimonials — a playful editorial masonry of quotes, photos and color
- * blocks. Every child is a direct child of the columns container so the
- * `break-inside-avoid` rule applies to each tile.
- */
 function Reviews({ title, items, photos }: ReviewsProps) {
   if (items.length === 0) return null
 

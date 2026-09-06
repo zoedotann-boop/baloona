@@ -12,7 +12,6 @@ interface BirthdayCtaProps {
   imageUrl?: string
 }
 
-/** Lavender promo card for birthday party bookings. */
 function BirthdayCta({
   title,
   description,
@@ -26,7 +25,6 @@ function BirthdayCta({
         tone="lavender"
         className="mx-auto grid max-w-6xl items-center gap-10 overflow-hidden md:grid-cols-2"
       >
-        {/* The illustrated scene shows through when no photo is set. */}
         <div className="relative block h-[280px]">
           <BirthdayScene className="absolute inset-0 h-full w-full" />
           {imageUrl && (

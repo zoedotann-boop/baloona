@@ -17,7 +17,6 @@ interface ContactFormProps {
   subjects: string[]
 }
 
-/** Contact form: subject chips plus a message, stored as a lead on submit. */
 function ContactForm({ locationId, subjects }: ContactFormProps) {
   const t = useTranslations("contact")
   const tErrors = useTranslations("forms")

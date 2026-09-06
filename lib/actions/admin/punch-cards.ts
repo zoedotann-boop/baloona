@@ -21,15 +21,6 @@ import { type CustomerCardsView } from "@/lib/punch-cards"
 
 import { OK, type ActionResult } from "./shared"
 
-/**
- * כרטיסיות — the front-desk loyalty programme.
- *
- * Punch cards are brand-global (a customer redeems at any branch), but every
- * action still goes through `requireLocationAccess(slug)`: it is the house auth
- * gate *and* it tells us which branch the acting clerk is working from, which we
- * record on each punch for the multi-branch audit trail.
- */
-
 function toView(
   rows: Awaited<ReturnType<typeof searchCustomerCards>>,
   locale: Locale
@@ -69,11 +60,10 @@ const searchSchema = z.object({
   query: z.string().optional(),
 })
 
-/** Find customers + cards by phone / email / name (blank query = most recent). */
 export async function searchPunchCards(
   input: z.input<typeof searchSchema>
 ): Promise<CustomerCardsView[]> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = searchSchema.safeParse(input)
   if (!parsed.success) return []
@@ -99,15 +89,10 @@ const issueSchema = z
     path: ["remainingPunches"],
   })
 
-/**
- * Issue a card to a customer (upserting them by phone). A fresh card sets
- * `remainingPunches === totalPunches`; migrating a physical card sets it lower,
- * so `usedPunches` reflects the punches the paper card already had.
- */
 export async function issuePunchCard(
   input: z.input<typeof issueSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "operations")
 
   const parsed = issueSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -121,7 +106,6 @@ export async function issuePunchCard(
   let customerId: string
   if (existing) {
     customerId = existing.id
-    // Backfill contact details the customer didn't have yet, never overwrite.
     const patch: Partial<typeof customers.$inferInsert> = {}
     if (fullName && !existing.fullName) patch.fullName = fullName
     if (email && !existing.email) patch.email = email
@@ -155,11 +139,13 @@ const cardActionSchema = z.object({
   cardId: z.uuid(),
 })
 
-/** Redeem one punch, recording the acting branch + clerk for the audit trail. */
 export async function punchCard(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  const { user, location } = await requireLocationAccess(input.slug)
+  const { user, location } = await requireLocationAccess(
+    input.slug,
+    "operations"
+  )
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -191,11 +177,10 @@ export async function punchCard(
   return OK
 }
 
-/** Undo the most recent punch (front-desk misclicks). */
 export async function undoLastPunch(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -212,7 +197,6 @@ export async function undoLastPunch(
     .set({ usedPunches: card.usedPunches - 1, status: "active" })
     .where(eq(punchCards.id, card.id))
 
-  // Migrated physical punches carry no event, so there may be nothing to remove.
   const lastEvent = await db.query.punchEvents.findFirst({
     where: eq(punchEvents.cardId, card.id),
     orderBy: [desc(punchEvents.createdAt)],
@@ -237,11 +221,10 @@ const updateCustomerSchema = z.object({
   email: z.string().trim().default(""),
 })
 
-/** Correct a customer's name / email (phone stays their key). */
 export async function updateCustomerDetails(
   input: z.input<typeof updateCustomerSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = updateCustomerSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -264,11 +247,10 @@ const updateCardSchema = z.object({
   note: z.string().trim().default(""),
 })
 
-/** Adjust a card's size / note; used punches are clamped to the new total. */
 export async function updateCardDetails(
   input: z.input<typeof updateCardSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = updateCardSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -293,11 +275,10 @@ export async function updateCardDetails(
   return OK
 }
 
-/** Delete a card entirely (its punch events cascade away). */
 export async function deleteCard(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -307,15 +288,10 @@ export async function deleteCard(
   return OK
 }
 
-/**
- * Mark the online order behind a card as paid — the front desk records that the
- * customer settled up at the branch (cash/card) after ordering online. Only
- * touches the order tied to this card, so a card issued at the desk is a no-op.
- */
 export async function markCardPaid(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

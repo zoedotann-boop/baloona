@@ -17,8 +17,6 @@ interface ContactSectionProps {
   subjects: string[]
 }
 
-/** Contact block: readable contact details beside a message form, over the
- *  festive "party" wall scene with dark ink text. */
 function ContactSection({
   locationId,
   title,

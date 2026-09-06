@@ -29,10 +29,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The "up to age 12" pink flamingo card. */
 export const Age12: Story = {}
 
-/** The "up to age 2" blue balloons card. */
 export const Age2: Story = {
   args: {
     name: "כרטיסייה 5 כניסות",

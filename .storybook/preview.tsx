@@ -5,8 +5,6 @@ import type { CSSProperties } from "react"
 import messages from "../messages/he.json"
 import "../app/globals.css"
 
-// Fonts are loaded via Google Fonts in preview-head.html; map them onto the
-// CSS variables the design tokens expect.
 const fontVars: CSSProperties = {
   "--font-sans": "'Assistant', sans-serif",
   "--font-heading": "'Fredoka', sans-serif",
@@ -32,7 +30,6 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      // Every story renders RTL with the Baloona fonts + design tokens applied.
       <NextIntlClientProvider
         locale="he"
         messages={messages}

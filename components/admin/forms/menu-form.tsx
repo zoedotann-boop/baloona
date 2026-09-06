@@ -34,7 +34,6 @@ interface MenuDraft {
   }[]
 }
 
-/** ניהול תפריט — categories and their priced items. */
 function MenuForm({ slug, initial }: { slug: string; initial: MenuDraft }) {
   const t = useTranslations("admin.menu")
   const common = useTranslations("admin.common")

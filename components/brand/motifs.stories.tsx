@@ -19,7 +19,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The generative, token-driven motifs, sized off their wrappers. */
 export const Gallery: Story = {
   render: () => (
     <div className="flex flex-wrap items-end gap-8">
@@ -34,7 +33,6 @@ export const Gallery: Story = {
   ),
 }
 
-/** A flamingo on the mint hills, as on the pink punch card. */
 export const FlamingoOnHills: Story = {
   render: () => (
     <div className="relative h-64 w-72 overflow-hidden rounded-[28px] bg-brand-pink">

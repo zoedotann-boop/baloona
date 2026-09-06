@@ -9,7 +9,7 @@ export default async function AdminPricingPage({
   params,
 }: PageProps<"/admin/[location]/pricing">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "content")
   const data = await getPricingEditor(location.id)
   if (!data?.pricing) notFound()
 

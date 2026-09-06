@@ -7,14 +7,6 @@ import { PillButton } from "@/components/brand/pill-button"
 
 import { AdminDialog } from "./admin-dialog"
 
-/**
- * The admin's edit dialog — one row's full form, opened from its table row.
- *
- * There is no save button of its own: a dialog edits the section's draft in
- * place, and the draft is published from the page header like every other
- * change. Closing is therefore always safe, which is why the only footer
- * action is "done".
- */
 function AdminModal({
   open,
   onClose,

@@ -60,7 +60,6 @@ export interface NewLocationInput {
   leadRecipientEmail: string
   isPublished?: boolean
   sortOrder?: number
-  /** `[opensAt, closesAt, isClosed]` per weekday, Sunday first. */
   hours?: [string, string, boolean][]
 }
 
@@ -74,13 +73,6 @@ const DEFAULT_HOURS: [string, string, boolean][] = [
   ["09:00", "19:00", false],
 ]
 
-/**
- * Create a location together with a complete set of starter content.
- *
- * Opening a branch is a data operation, not a deploy: the new site is fully
- * populated from the shared blueprint and the manager edits it from there,
- * which is also why "add location" in the admin can be a single form.
- */
 export async function provisionLocation(
   input: NewLocationInput
 ): Promise<string> {
@@ -169,8 +161,6 @@ export async function provisionLocation(
       sortOrder,
     }))
   )
-
-  // No starter reviews on purpose — see the note in `seed-content.ts`.
 
   const tiers = await db
     .insert(priceTiers)

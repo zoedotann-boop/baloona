@@ -67,12 +67,6 @@ interface GeneralSettingsDraft {
   }
 }
 
-/**
- * הגדרות כלליות — contact details, hours, the pop-up and SEO in one publish.
- *
- * The page maps to four save actions but a single button: an editor changing a
- * phone number and a meta description thinks of it as one edit.
- */
 function GeneralSettingsForm({
   slug,
   initial,
@@ -106,7 +100,6 @@ function GeneralSettingsForm({
     ])
     const failure = results.find((result) => !result.ok)
     if (failure && !failure.ok) return { ok: false, error: failure.error }
-    // The bump is a one-shot: keep it from re-firing on the next publish.
     setDraft((current) => ({
       ...current,
       announcement: { ...current.announcement, bumpVersion: false },

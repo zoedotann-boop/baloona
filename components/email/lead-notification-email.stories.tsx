@@ -8,9 +8,6 @@ import {
   type LeadNotificationEmailProps,
 } from "./lead-notification-email"
 
-// Emails render to a full HTML document, so preview them inside an iframe rather
-// than mounting <Html>/<Body> into the Storybook DOM (which would nest a second
-// document and confuse the a11y checks).
 function EmailPreview(props: LeadNotificationEmailProps) {
   const html = renderToStaticMarkup(<LeadNotificationEmail {...props} />)
   return (

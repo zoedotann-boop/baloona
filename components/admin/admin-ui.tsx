@@ -6,24 +6,11 @@ import { cn } from "@/lib/utils"
 
 import { InfoTooltip } from "./info-tooltip"
 
-/**
- * Small building blocks shared by every admin form.
- *
- * The admin uses the same brand tokens as the site (never ad-hoc colors) but a
- * denser, tool-like rhythm: small labels, tight cards, and inputs that read as
- * editable rather than decorative.
- *
- * `AdminField` mints the control's id and hands it to whichever `AdminInput` /
- * `AdminTextarea` / `AdminSelect` sits inside it, so every control is labelled
- * without each call site having to wire `htmlFor` by hand.
- */
-
 const FieldIdContext = createContext<string | undefined>(undefined)
 
 const controlClass =
   "w-full rounded-xl border border-border bg-white px-3.5 text-[15px] text-foreground transition placeholder:text-muted-foreground focus:border-primary focus:outline-none"
 
-/** A section of the admin, matching one save action. */
 function AdminCard({
   title,
   description,
@@ -56,7 +43,6 @@ function AdminCard({
   )
 }
 
-/** Label + optional info tooltip around a control, which it also labels. */
 function AdminField({
   label,
   tooltip,
@@ -65,9 +51,7 @@ function AdminField({
   className,
 }: {
   label: string
-  /** Guidance shown on an info icon beside the label — "what goes here". */
   tooltip?: string
-  /** Rendered on the label row, e.g. the "fill with AI" button. */
   action?: React.ReactNode
   children: React.ReactNode
   className?: string
@@ -90,13 +74,6 @@ function AdminField({
   )
 }
 
-/**
- * Adopt the surrounding `AdminField`'s id — unless the control names itself.
- *
- * A control that carries its own `aria-label` is one of several inside a field
- * (a row of list lines, an opening-hours pair), so it must not also answer to
- * the field's single label id.
- */
 function useControlId(ownId?: string, ariaLabel?: string): string | undefined {
   const fieldId = useContext(FieldIdContext)
   if (ownId) return ownId
@@ -142,7 +119,6 @@ function AdminSelect({
   )
 }
 
-/** On/off switch used for publish flags and visibility. */
 function AdminToggle({
   checked,
   onChange,
@@ -152,7 +128,6 @@ function AdminToggle({
   checked: boolean
   onChange: (value: boolean) => void
   label: string
-  /** Guidance shown on an info icon beside the label — "what this does". */
   tooltip?: string
 }) {
   return (
@@ -184,12 +159,6 @@ function AdminToggle({
   )
 }
 
-/**
- * Compact on/off marker for a table cell.
- *
- * A row's toggles live in its dialog, so the table needs to say "is this live?"
- * in the width of a word rather than repeat the switch.
- */
 function AdminFlag({ on, label }: { on: boolean; label: string }) {
   return (
     <span

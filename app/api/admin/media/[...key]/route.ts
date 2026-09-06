@@ -4,23 +4,12 @@ import { canWriteMediaKey, parseMediaKey } from "@/lib/admin/media-access"
 import { usingLocalStorage } from "@/lib/storage"
 import { writeObject } from "@/lib/storage/local"
 
-/**
- * Receives a browser upload for the local-disk storage fallback.
- *
- * Vercel Blob signs a client token and takes the bytes directly; the local
- * backend has no such flow, so it points the browser here instead. The endpoint
- * mirrors that flow's authorization — an admin with access to the branch named
- * in the key — since, unlike a signed upload, a same-origin route is reachable
- * by any caller.
- */
-
 const MAX_BYTES = 10 * 1024 * 1024
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ key: string[] }> }
 ) {
-  // Only the dev disk fallback serves this route; Blob and production never do.
   if (!usingLocalStorage()) {
     return NextResponse.json({ error: "not-found" }, { status: 404 })
   }

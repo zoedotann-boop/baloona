@@ -38,13 +38,6 @@ interface ManagedLocation {
   address: string
 }
 
-/**
- * סניפים — the owner's list of branches, plus the form that opens a new one.
- *
- * Creating a branch provisions a full starter site, so the form only asks for
- * what is genuinely unique to the venue; everything else is edited afterwards
- * in the branch's own sections.
- */
 function LocationsManager({ locations }: { locations: ManagedLocation[] }) {
   const t = useTranslations("admin.locations")
   const common = useTranslations("admin.common")
@@ -129,7 +122,6 @@ function NewLocationForm({ onCancel }: { onCancel: () => void }) {
         whatsapp: text("whatsapp"),
         email: text("email"),
       })
-      // A successful create redirects, so anything returned here is an error.
       if (!result.ok)
         setError(result.error === "slug-taken" ? t("slugTaken") : result.error)
     })

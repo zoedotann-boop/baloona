@@ -14,7 +14,6 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
-// Peeking behind a card corner — the real usage.
 export const BehindCard: Story = {
   render: () => (
     <div className="relative inline-block">

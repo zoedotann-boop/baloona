@@ -18,39 +18,16 @@ import { emailTheme } from "./email-theme"
 const { color, font, radius } = emailTheme
 
 export interface EmailLayoutProps {
-  /** Locale the email is written in — drives `lang` and RTL/LTR direction. */
   locale: Locale
-  /**
-   * Absolute origin the logo + background are loaded from (e.g.
-   * `https://baloona.co.il`). Left blank in Storybook, where `public/` is served
-   * at the root; production senders pass {@link emailAssetsBaseUrl}.
-   */
   baseUrl?: string
-  /** Inbox preview line (rendered hidden, before the body). */
   preview: string
-  /** Optional pill above the heading — the site's eyebrow badge, e.g. a label. */
   eyebrow?: string
-  /** Card title, shown under the wordmark. */
   heading: string
-  /** Optional line under the heading — typically the venue name. */
   subheading?: string
-  /** Shared footer copy, supplied by the caller so this stays copy-free. */
   footer: string
   children: ReactNode
 }
 
-/**
- * The shell every Baloona email shares, tuned to read like the site: the Baloona
- * wordmark logo sitting on the cream "cream-rainbow" hero background used across
- * the site, a candy accent bar, an eyebrow pill + plum heading, and a footer
- * closed by a row of brand dots. The Fredoka + Assistant brand fonts load from
- * Google Fonts (clients that honour web fonts render them; the rest fall back to
- * the inline stacks). Everything is inline-styled, RTL-aware and table-safe.
- *
- * Templates provide only the card body via `children`; all copy
- * (eyebrow/heading/subheading/footer/preview) arrives as props because emails
- * render outside the next-intl provider.
- */
 export function EmailLayout({
   locale,
   baseUrl = "",
@@ -68,10 +45,6 @@ export function EmailLayout({
   return (
     <Html dir={dir} lang={locale}>
       <Head>
-        {/* Brand fonts for clients that honour <link> web fonts (Apple Mail,
-            iOS). Gmail strips <head> styles, so it uses the inline fallbacks.
-            This is an email document, not a Next.js page — the page-font rule
-            (which points at pages/_document) does not apply. */}
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           rel="stylesheet"
@@ -170,9 +143,6 @@ const containerStyle: CSSProperties = {
 const headerStyle: CSSProperties = {
   padding: "34px 32px",
   textAlign: "center",
-  // The site's "cream-rainbow" hero art (flower, crown, castle, cloud) is set
-  // inline per-render (it needs the base URL). The solid cream is the
-  // Outlook/Gmail fallback when the background image is dropped.
   backgroundColor: color.cream,
   backgroundSize: "cover",
   backgroundPosition: "center",

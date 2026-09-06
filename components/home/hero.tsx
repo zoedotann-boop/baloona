@@ -10,11 +10,9 @@ import { Section } from "@/components/layout/section"
 import type { HoursRow } from "@/lib/view-models"
 
 interface HeroProps {
-  /** Live opening-status line (green/red dot). Omitted when hours are unknown. */
   statusLabel?: string
   title: string
   description: string
-  /** Up to three photos: the first spans the mosaic's full width. */
   images: string[]
   wazeHref: string
   whatsappHref: string
@@ -22,11 +20,6 @@ interface HeroProps {
   isOpen: boolean
 }
 
-/**
- * Editorial hero — an eyebrow, a big two-line headline, CTAs and hours on one
- * side, an asymmetric photo collage with accent squares on the other. Sits on a
- * soft-pink surface.
- */
 function Hero({
   statusLabel,
   title,
@@ -92,7 +85,6 @@ function Hero({
         </Reveal>
 
         <Reveal delay={120} className="relative">
-          {/* Playful photo mosaic. */}
           <div className="grid grid-cols-2 gap-3">
             <Photo
               src={lead}

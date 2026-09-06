@@ -10,7 +10,6 @@ interface VisionPanelProps {
   imageUrl?: string
 }
 
-/** Vision — a lavender panel with flowing text beside a photo. */
 function VisionPanel({ title, body, imageUrl }: VisionPanelProps) {
   return (
     <Section>

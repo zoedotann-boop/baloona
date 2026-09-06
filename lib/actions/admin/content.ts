@@ -39,10 +39,6 @@ import {
   type ActionResult,
 } from "./shared"
 
-/** Content sections of the admin: home page, pricing, menu, birthdays, media. */
-
-// --- עמוד הבית --------------------------------------------------------------
-
 const homeSchema = z.object({
   slug: z.string().min(1),
   home: z.object({
@@ -87,7 +83,7 @@ const homeSchema = z.object({
 export async function saveHomeContent(
   input: z.input<typeof homeSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = homeSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -165,8 +161,6 @@ export async function saveHomeContent(
   return OK
 }
 
-// --- מחירונים ---------------------------------------------------------------
-
 const pricingSchema = z.object({
   slug: z.string().min(1),
   title: localizedSchema,
@@ -192,7 +186,7 @@ const pricingSchema = z.object({
 export async function savePricing(
   input: z.input<typeof pricingSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = pricingSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -209,7 +203,6 @@ export async function savePricing(
     columns: { id: true },
   })
 
-  // Insert new tiers first so their rows have a parent id to hang from.
   const tierIds = new Map<number, string>()
   for (const [index, tier] of data.tiers.entries()) {
     if (tier.id) {
@@ -268,8 +261,6 @@ export async function savePricing(
   return OK
 }
 
-// --- ניהול תפריט ------------------------------------------------------------
-
 const menuSchema = z.object({
   slug: z.string().min(1),
   title: localizedSchema,
@@ -296,7 +287,7 @@ const menuSchema = z.object({
 export async function saveMenu(
   input: z.input<typeof menuSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = menuSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -373,8 +364,6 @@ export async function saveMenu(
   return OK
 }
 
-// --- ימי הולדת --------------------------------------------------------------
-
 const birthdaySchema = z.object({
   slug: z.string().min(1),
   content: z.object({
@@ -449,7 +438,7 @@ const birthdaySchema = z.object({
 export async function saveBirthdays(
   input: z.input<typeof birthdaySchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = birthdaySchema.safeParse(input)
   if (!parsed.success)
@@ -558,11 +547,8 @@ export async function saveBirthdays(
   return OK
 }
 
-// --- ביקורות ----------------------------------------------------------------
-
 const reviewsSchema = z.object({
   slug: z.string().min(1),
-  /** Opts the branch into the nightly `/api/cron/google-reviews` job. */
   autoSync: z.boolean(),
   reviews: z.array(
     z.object({
@@ -574,7 +560,6 @@ const reviewsSchema = z.object({
       publishedAt: z.string(),
     })
   ),
-  /** Photos woven between the quotes in the "הורים מספרים" masonry. */
   photos: z.array(
     z.object({
       id: rowIdSchema,
@@ -587,7 +572,7 @@ const reviewsSchema = z.object({
 export async function saveReviews(
   input: z.input<typeof reviewsSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = reviewsSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -616,8 +601,6 @@ export async function saveReviews(
   })
   await syncCollection({
     existingIds: existingPhotos.map((row) => row.id),
-    // Rows the editor added but never gave an image are dropped rather than
-    // saved as broken tiles.
     incoming: parsed.data.photos
       .filter((photo) => photo.url.trim())
       .map((row, sortOrder) => ({ ...row, sortOrder })),
@@ -628,8 +611,6 @@ export async function saveReviews(
     update: (row) =>
       db.update(reviewPhotos).set(row).where(eq(reviewPhotos.id, row.id)),
     remove: async (ids) => {
-      // Drop the objects too, so removing a photo does not leave it billable
-      // and publicly reachable in the bucket.
       const removed = existingPhotos.filter((row) => ids.includes(row.id))
       await db.delete(reviewPhotos).where(inArray(reviewPhotos.id, ids))
       await Promise.all(
@@ -641,8 +622,6 @@ export async function saveReviews(
     },
   })
 
-  // The auto-sync flag lives on `site_setting` but is edited here, next to the
-  // sync button it controls, rather than buried in the SEO settings screen.
   await db
     .update(siteSettings)
     .set({ googleReviewsAutoSync: parsed.data.autoSync })
@@ -650,8 +629,6 @@ export async function saveReviews(
 
   return OK
 }
-
-// --- מדיה -------------------------------------------------------------------
 
 const gallerySchema = z.object({
   slug: z.string().min(1),
@@ -667,7 +644,7 @@ const gallerySchema = z.object({
 export async function saveGallery(
   input: z.input<typeof gallerySchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = gallerySchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -690,8 +667,6 @@ export async function saveGallery(
     update: (row) =>
       db.update(galleryImages).set(row).where(eq(galleryImages.id, row.id)),
     remove: async (ids) => {
-      // Drop the objects too, so removing a photo does not leave it billable
-      // and publicly reachable in the bucket.
       const removed = existing.filter((row) => ids.includes(row.id))
       await db.delete(galleryImages).where(inArray(galleryImages.id, ids))
       await Promise.all(
@@ -706,8 +681,6 @@ export async function saveGallery(
   return OK
 }
 
-// --- תקנון ומדיניות ביטול ----------------------------------------------------
-
 const termsSchema = z.object({
   slug: z.string().min(1),
   terms: localizedSchema,
@@ -716,7 +689,7 @@ const termsSchema = z.object({
 export async function saveTerms(
   input: z.input<typeof termsSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = termsSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

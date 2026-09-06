@@ -15,27 +15,17 @@ import { generateSale } from "@/lib/payme/client"
 import { issueCard } from "@/lib/shop/orders"
 import { siteOrigin } from "@/lib/site-url"
 
-/**
- * `redirect` — payments on: go pay at PayMe, the card is issued on confirmation.
- * `token` — payments off: the card was issued immediately (dev/no-key fallback).
- */
 type CheckoutResult =
   | { ok: true; redirect: string }
   | { ok: true; token: string }
   | { ok: false; error: string }
 
-// Deliberately unauthenticated: it backs the public checkout. With PayMe
-// configured it creates a pending order and hands back a hosted payment page —
-// the card is only issued once payment is confirmed (see `fulfilOrder`, reached
-// from the PayMe callback and the success page). Without a PayMe key it falls
-// back to issuing the card immediately so the shop still works in dev.
 // react-doctor-disable-next-line react-doctor/server-auth-actions -- public checkout
 export async function startPunchCardCheckout(
   input: z.input<typeof checkoutSchema>
 ): Promise<CheckoutResult> {
   const parsed = checkoutSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
-  // Drop bot submissions silently — the honeypot is invisible to humans.
   if (isHoneypotFilled(parsed.data.honeypot))
     return { ok: false, error: "invalid" }
   const { productId, fullName, phone, email, from } = parsed.data
@@ -52,10 +42,6 @@ export async function startPunchCardCheckout(
       })
     : null
 
-  // No PayMe key: online payment is off, so issue the card at once and record a
-  // pending order alongside it. The customer walks away with their card and pays
-  // at the branch (cash/card); the pending order is what the front-desk console
-  // tracks so staff can see who still owes and mark it paid on collection.
   if (!paymeConfig()) {
     const { token, cardId } = await issueCard({
       entries: product.entries,
@@ -76,8 +62,6 @@ export async function startPunchCardCheckout(
       cardId,
     })
 
-    // Courtesy confirmation with the card link — best-effort, so a mail failure
-    // never fails a checkout whose card is already issued.
     const result = await sendPunchCardConfirmation({
       to: email,
       cardUrl: `${await siteOrigin()}/card/${token}`,
@@ -103,8 +87,6 @@ export async function startPunchCardCheckout(
     .returning({ id: punchCardOrders.id })
 
   const origin = await siteOrigin()
-  // Carry `from` back so the success page can wear the same branch chrome the
-  // checkout did.
   const returnQuery = from ? `&from=${encodeURIComponent(from)}` : ""
   const sale = await generateSale({
     amount: product.price,

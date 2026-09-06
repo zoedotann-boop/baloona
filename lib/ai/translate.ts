@@ -5,7 +5,6 @@ import { GoogleGenAI } from "@google/genai"
 import { type Locale } from "@/i18n/routing"
 import { geminiApiKey } from "@/lib/env"
 
-/** Flash is fast and cheap, and this is short marketing copy, not reasoning. */
 const MODEL = "gemini-2.5-flash"
 
 const LANGUAGE_NAMES: Record<Locale, string> = {
@@ -16,13 +15,6 @@ const LANGUAGE_NAMES: Record<Locale, string> = {
 export type TranslationResult =
   { ok: true; values: string[] } | { ok: false; error: string }
 
-/**
- * Draft translations for the admin's "מלא עם AI" button.
- *
- * The output is a starting point an editor reviews and corrects, never
- * published blind — which is why it returns plain strings and the admin form
- * drops them straight into an editable input.
- */
 export async function translateValues(
   values: string[],
   from: Locale,

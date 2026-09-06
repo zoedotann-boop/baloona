@@ -12,33 +12,21 @@ interface ShopProduct {
   perEntryLabel: string
   price: string
   featured: boolean
-  /** Checkout link for this product. */
   href: string
 }
 
 interface ShopSectionProps {
   title: string
   subtitle: string
-  /** Cross-branch validity note, e.g. "תקף בכל הסניפים". */
   note: string
-  /** How the customer pays — payment is completed at the branch, not online. */
   paymentNote: string
-  /** Selling points shown on every card. */
   benefits: string[]
-  /** Badge for the featured package. */
   popularLabel: string
   buyLabel: string
-  /** Decorative captions drawn on the two alternating card designs. */
   cardCaptions: { age12: string; age2: string }
   products: ShopProduct[]
 }
 
-/**
- * The punch cards, inlined into the home page: the packages a visitor can buy,
- * each linking to the global `/checkout`. Renders nothing when there are no
- * active products, so an empty catalog simply drops off the page. Sits on the
- * page background with a confetti scatter, matching the reassurance section.
- */
 function ShopSection({
   title,
   subtitle,
@@ -103,7 +91,6 @@ function ShopSection({
           })}
         </div>
 
-        {/* Shared selling points — stated once for the whole shop, not per card. */}
         <Reveal>
           <ul className="mx-auto mt-12 flex max-w-4xl flex-col gap-3 sm:flex-row sm:justify-center sm:gap-8">
             {benefits.map((benefit) => (

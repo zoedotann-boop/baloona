@@ -10,7 +10,6 @@ import { defaultLocale } from "@/i18n/routing"
 import { translateForLocation } from "@/lib/actions/admin-tools"
 import type { Localized, LocalizedList } from "@/lib/localized"
 
-/** "Fill with AI" — shown only while editing a language other than Hebrew. */
 function TranslateButton({
   sources,
   onTranslated,
@@ -58,11 +57,6 @@ interface LocalizedFieldProps {
   className?: string
 }
 
-/**
- * A translatable text field. It edits whichever language the section is set to,
- * so switching language once re-labels the whole page rather than making the
- * editor toggle every input.
- */
 function LocalizedField({
   label,
   tooltip,
@@ -116,7 +110,6 @@ interface LocalizedListFieldProps {
   addLabel: string
 }
 
-/** A translatable list of short lines (pop-up bullets, pricing rules, rules). */
 function LocalizedListField({
   label,
   tooltip,
@@ -129,7 +122,6 @@ function LocalizedListField({
   const source = value[defaultLocale] ?? []
   const lines = value[locale] ?? []
 
-  // Rows are indexed positionally across languages, so keep the arrays aligned.
   const length = Math.max(source.length, lines.length)
   const rows = Array.from({ length }, (_, index) => lines[index] ?? "")
 

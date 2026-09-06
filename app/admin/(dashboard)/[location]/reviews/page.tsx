@@ -9,7 +9,7 @@ export default async function AdminReviewsPage({
   params,
 }: PageProps<"/admin/[location]/reviews">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "content")
   const data = await getReviewsEditor(location.id)
   if (!data) notFound()
 

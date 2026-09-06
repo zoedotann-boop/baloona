@@ -9,16 +9,9 @@ const spacings = {
 } as const
 
 interface SectionProps extends React.ComponentProps<"section"> {
-  /** Vertical rhythm preset. Defaults to the site-wide `lg` band. */
   spacing?: keyof typeof spacings
 }
 
-/**
- * Full-bleed page band. Owns the shared horizontal gutter (`px-5 md:px-9`) and
- * a vertical rhythm preset so every public section lines up; backgrounds and
- * extra layout come through `className`, and the inner column is a
- * {@link Container}.
- */
 function Section({ spacing = "lg", className, ...props }: SectionProps) {
   return (
     <section

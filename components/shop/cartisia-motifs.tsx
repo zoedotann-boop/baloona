@@ -1,13 +1,3 @@
-/**
- * Baloona punch-card brand art — the exact vectors exported from the printed
- * "כרטיסיות של בלונה" cards, inlined as SVG so {@link PunchCardArt} can compose
- * them crisply with no image payload. Each keeps the artboard viewBox it was cut
- * from, so callers position it with `x`/`y`/`width`/`height` inside the card.
- *
- * Generated data — do not hand-edit; regenerate from the source SVGs if the art
- * changes. Decorative only (rendered `aria-hidden` by the parent).
- */
-
 function CartisiaLogo(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="59.23 61.046 89.273 28.523" {...props}>

@@ -1,13 +1,5 @@
 import type { Localized, LocalizedList } from "@/lib/localized"
 
-/**
- * Starting content for a new location.
- *
- * This is the shape `bun run db:seed` writes and what "duplicate location"
- * copies, so a fresh branch opens with a complete, publishable site that the
- * admin then edits rather than an empty shell.
- */
-
 const l = (he: string, en: string): Localized => ({ he, en })
 const list = (he: string[], en: string[]): LocalizedList => ({ he, en })
 
@@ -24,7 +16,6 @@ export interface LocationBlueprint {
     email: string
     leadRecipientEmail: string
   }
-  /** `[opensAt, closesAt, isClosed]` per weekday, Sunday first. */
   hours: [string, string, boolean][]
 }
 
@@ -440,11 +431,6 @@ export const birthdayUpgradeRows = [
   { label: l("כוס ברד לכל ילד", "A slushie per child"), amount: 6 },
 ]
 
-/**
- * The booking form's default questions. `fullName`, `phone` and `email` are
- * mirrored onto the lead's own columns so the inbox can list and search them;
- * every other answer is stored as key/value under `formData`.
- */
 export const birthdayFormFieldRows = [
   {
     key: "eventDate",
@@ -530,11 +516,6 @@ export const galleryImageRows = [
   },
 ]
 
-/**
- * Photos woven between the quotes in the "הורים מספרים" section. Seeded with a
- * few venue moments so the masonry has images the day real reviews arrive; an
- * editor curates them from ניהול ביקורות.
- */
 export const reviewPhotoRows = [
   { url: "/assets/gallery/gallery-4.png", alt: l("רגעים מהמתחם", "Moments") },
   {
@@ -546,16 +527,6 @@ export const reviewPhotoRows = [
     alt: l("בריכת הכדורים", "Ball pit"),
   },
 ]
-
-/*
- * There are deliberately no starter reviews.
- *
- * Every other row here is generic copy about Baloona that an editor rewrites.
- * A review is different in kind: it is a statement attributed to a named
- * customer, and inventing one puts words in a stranger's mouth on a live site.
- * A new branch starts with an empty reviews section — which renders nothing —
- * until real ones are written in ניהול ביקורות or synced from Google.
- */
 
 export const announcementContent = {
   isActive: false,

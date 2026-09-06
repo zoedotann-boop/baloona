@@ -10,19 +10,7 @@ import {
 
 import { locations } from "./locations"
 
-/**
- * Better Auth core tables.
- *
- * The property names must stay camelCase: the Drizzle adapter resolves columns
- * by Better Auth's own field names (`emailVerified`, `userId`, …). The physical
- * column names are snake_cased by the `casing` option on the Drizzle client.
- */
-
-/**
- * `owner` manages every location and may create, delete and staff them.
- * `manager` only sees the locations listed for it in `locationMembers`.
- */
-export const userRole = pgEnum("user_role", ["owner", "manager"])
+export const userRole = pgEnum("user_role", ["owner", "manager", "staff"])
 
 export type UserRole = (typeof userRole.enumValues)[number]
 
@@ -77,7 +65,6 @@ export const verifications = pgTable("verification", {
   updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 })
 
-/** Which locations a `manager` may edit. Owners bypass this table entirely. */
 export const locationMembers = pgTable(
   "location_member",
   {

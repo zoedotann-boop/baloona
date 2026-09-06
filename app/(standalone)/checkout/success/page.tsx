@@ -17,13 +17,6 @@ export async function generateMetadata() {
   return { title: t("title") }
 }
 
-/**
- * Landing page after PayMe redirects a paid buyer back. It re-verifies the
- * payment and issues the card (idempotent with the server callback, and a
- * safety net if that callback is delayed). A confirmed order shows the card
- * link; an unconfirmed one shows a "still processing" note. It wears the source
- * branch's chrome when `from` is a known branch, mirroring the checkout page.
- */
 export default async function CheckoutSuccessPage({
   searchParams,
 }: PageProps<"/checkout/success">) {

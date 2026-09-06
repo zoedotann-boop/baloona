@@ -48,7 +48,6 @@ interface HomeContentDraft {
   contactSubjects: LabelledRow[]
 }
 
-/** עמוד הבית — every string and image the home page and footer render. */
 function HomeContentForm({
   slug,
   initial,
@@ -78,8 +77,6 @@ function HomeContentForm({
       site: { ...current.site, [key]: value },
     }))
 
-  // The hero mosaic always renders three slots; empty ones fall back to the
-  // placeholder frame rather than collapsing the layout.
   const heroImages = [0, 1, 2].map(
     (index) => draft.home.heroImages[index] ?? ""
   )

@@ -111,10 +111,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - Routes live under `app/admin/(dashboard)/…`; `app/admin/login` sits outside the
   group so it stays reachable while signed out.
-- Auth is Better Auth (email + password, sign-up disabled). Roles: `owner` (all
-  branches, can add/delete and manage the team) and `manager` (only branches listed
-  in `location_member`). `lib/admin/access.ts` is the single gate — it is
-  `server-only`, so client components import route constants from `lib/admin/routes.ts`.
+- Auth is Better Auth (email + password, sign-up disabled). Roles form a strict
+  hierarchy: `owner` (everything, can add/delete branches and manage the team),
+  `manager` (branch settings, enquiries and punch cards) and `staff` (punch cards
+  only). Managers and staff are scoped to the branches listed in `location_member`.
+  Each branch section maps to a capability in `lib/admin/permissions.ts`; pages and
+  actions pass it to `requireLocationAccess(slug, capability)` and the sidebar reads
+  the same map. `lib/admin/access.ts` is the single gate — it is `server-only`, so
+  client components import route constants from `lib/admin/routes.ts` and the
+  capability map from `lib/admin/permissions.ts`.
 - Each section is one `<SectionForm>`: it holds the whole draft in state, publishes it
   in one action, and provides the language switch plus the AI translate shortcut
   through context.
@@ -243,7 +248,12 @@ See `.env.example`.
 - Where appropriate, evaluate whether the database schema can be simplified or improved to better align with best practices. Proactively suggest schema enhancements that would make the system clearer, more scalable, or easier to maintain.
 - Ensure comprehensive test coverage for all newly introduced functionality, including both happy paths and relevant edge cases. There is no unit-test runner here: coverage means a `*.stories.tsx` for every new brand primitive, home section and admin primitive, with the a11y addon clean.
 - Before review, all of these must pass: `bun run lint`, `bun run typecheck`,
-  `bun run format:check`, `bun run knip`, `bun run build-storybook`.
+  `bun run format:check`, `bun run knip`, `bun run comments`, `bun run build-storybook`.
+- No comments in `.ts`/`.tsx` sources. `bun run comments` (commentless) enforces this in
+  CI: code should read on its own, and anything a comment would explain belongs in a name,
+  a type, or a story. Only functional directives survive (`eslint-disable*`,
+  `@ts-expect-error`, license headers, etc.); run `bunx commentless . --write` to strip the
+  rest.
 - `ajv` is a direct dependency on purpose even though nothing imports it: it pins ajv@8
   as the hoisted copy so `ajv-formats` (pulled in by `@rjsf/validator-ajv8`) can never
   resolve eslint's ajv@6 and break the production build. Don't remove it — see

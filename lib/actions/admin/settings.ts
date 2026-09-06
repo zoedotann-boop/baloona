@@ -20,8 +20,6 @@ import {
   type ActionResult,
 } from "./shared"
 
-/** הגדרות כלליות — contact details, opening hours, the pop-up, SEO and tracking. */
-
 const contactSchema = z.object({
   slug: z.string().min(1),
   city: localizedSchema,
@@ -42,7 +40,7 @@ const contactSchema = z.object({
 export async function saveContact(
   input: z.input<typeof contactSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "settings")
 
   const parsed = contactSchema.safeParse(input)
   if (!parsed.success)
@@ -79,7 +77,7 @@ const hoursSchema = z.object({
 export async function saveOpeningHours(
   input: z.input<typeof hoursSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "settings")
 
   const parsed = hoursSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -111,14 +109,13 @@ const announcementSchema = z.object({
   lines: localizedListSchema,
   ctaLabel: localizedSchema,
   ctaHref: z.string().trim().max(500),
-  /** Set by the editor's "show again to everyone" control. */
   bumpVersion: z.boolean().default(false),
 })
 
 export async function saveAnnouncement(
   input: z.input<typeof announcementSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "settings")
 
   const parsed = announcementSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -171,7 +168,7 @@ const seoSchema = z.object({
 export async function saveSeo(
   input: z.input<typeof seoSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "settings")
 
   const parsed = seoSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

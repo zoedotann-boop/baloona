@@ -1,15 +1,5 @@
 import { cn } from "@/lib/utils"
 
-/**
- * A handful of generative, token-driven Baloona motifs — the pieces the scenes
- * recolour on the fly (tinted clouds, rolling hills, the smiling sun) or that
- * have no vector-art counterpart (the punch-card flamingo). The faithful mural
- * cast — animals, balloons, castle, tractor — lives in {@link file://./scene-art.tsx}
- * ported straight from the painted walls. Every motif is decorative: it renders
- * `aria-hidden` with `pointer-events-none` and takes its size from the wrapping
- * element (`h-*` / `w-*`).
- */
-
 type MotifProps = React.SVGProps<SVGSVGElement>
 
 function svgProps({ className, ...props }: MotifProps) {
@@ -21,7 +11,6 @@ function svgProps({ className, ...props }: MotifProps) {
   }
 }
 
-/** Fluffy flat-bottomed cloud — the sky filler across every Baloona scene. */
 function Cloud({ fill = "#ffffff", ...props }: MotifProps & { fill?: string }) {
   return (
     <svg viewBox="0 0 200 96" {...svgProps(props)}>
@@ -33,7 +22,6 @@ function Cloud({ fill = "#ffffff", ...props }: MotifProps & { fill?: string }) {
   )
 }
 
-/** A single love-heart — scattered in the mural sky. */
 function Heart({
   fill = "var(--brand-rose)",
   ...props
@@ -48,14 +36,9 @@ function Heart({
   )
 }
 
-/**
- * The Baloona flamingo — the mascot on the pink punch card, standing on one leg
- * with an S-curved neck, coral legs and a soft-blue wing. Faithful but flat.
- */
 function Flamingo(props: MotifProps) {
   return (
     <svg viewBox="0 0 120 210" {...svgProps(props)}>
-      {/* legs — one standing, one tucked up */}
       <path
         d="M52 130l-3 66M49 196l-9 8M49 196l9 8"
         fill="none"
@@ -70,11 +53,8 @@ function Flamingo(props: MotifProps) {
         strokeWidth="4"
         strokeLinecap="round"
       />
-      {/* body */}
       <ellipse cx="56" cy="120" rx="32" ry="22" fill="#ffffff" />
-      {/* wing */}
       <path d="M34 112c16-8 36-6 46 4-8 12-32 16-46 4Z" fill="#bcdff0" />
-      {/* long S-curved neck */}
       <path
         d="M64 108C50 84 46 50 62 34c14-14 30-6 24 8"
         fill="none"
@@ -82,21 +62,14 @@ function Flamingo(props: MotifProps) {
         strokeWidth="12"
         strokeLinecap="round"
       />
-      {/* head */}
       <circle cx="82" cy="30" r="8" fill="#ffffff" />
-      {/* down-curved beak, dark tip */}
       <path d="M88 30l16 4-14 10Z" fill="#f0a94e" />
       <path d="M96 40l8-1-6 6Z" fill="var(--brand-ink)" />
-      {/* eye */}
       <circle cx="83" cy="28" r="1.6" fill="var(--brand-ink)" />
     </svg>
   )
 }
 
-/**
- * A band of overlapping rolling hills — the ground line under every scene.
- * Sized by the wrapper; sits flush to the bottom edge.
- */
 function Hills({
   back = "var(--scene-hill-back)",
   front = "var(--scene-hill-front)",
@@ -110,7 +83,6 @@ function Hills({
   )
 }
 
-/** A single round party balloon on a string — the birthday sky accent. */
 function PartyBalloon({
   color = "var(--brand-rose)",
   ...props
@@ -132,7 +104,6 @@ function PartyBalloon({
   )
 }
 
-/** Smiling sun with a burst of rays — the mural's happy sky. */
 function Sun(props: MotifProps) {
   return (
     <svg viewBox="0 0 100 100" {...svgProps(props)}>
@@ -161,7 +132,6 @@ function Sun(props: MotifProps) {
   )
 }
 
-/** A row of pastel rooftops — a stretchy town skyline for a scene's foot. */
 function TownSilhouette({
   fill = "var(--scene-town)",
   ...props
