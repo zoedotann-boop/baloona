@@ -10,7 +10,7 @@ import { createMediaUpload } from "@/lib/actions/admin-tools"
 import { AdminField, AdminInput } from "./admin-ui"
 import { useSectionContext } from "./section-form"
 
-type UploadFolder = "gallery" | "hero" | "steps" | "branding"
+type UploadFolder = "gallery" | "reviews" | "hero" | "steps" | "branding"
 
 interface ImageFieldProps {
   label: string

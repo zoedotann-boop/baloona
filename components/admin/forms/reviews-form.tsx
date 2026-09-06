@@ -12,16 +12,20 @@ import {
   AdminTextarea,
   AdminToggle,
 } from "@/components/admin/admin-ui"
+import { ImageField } from "@/components/admin/image-field"
+import { LocalizedField } from "@/components/admin/localized-field"
 import { RowTable } from "@/components/admin/row-table"
 import { SectionForm } from "@/components/admin/section-form"
 import { useToast } from "@/components/admin/toast"
 import type { ReviewDraft } from "@/lib/admin/drafts"
 import { saveReviews } from "@/lib/actions/admin/content"
 import { syncGoogleReviews } from "@/lib/actions/admin/google-reviews"
+import { emptyLocalized, type Localized } from "@/lib/localized"
 
 interface ReviewsDraft {
   autoSync: boolean
   reviews: ReviewDraft[]
+  photos: { id?: string; url: string; alt: Localized }[]
 }
 
 /** ניהול ביקורות — hand-written reviews plus a Google Places import. */
@@ -80,6 +84,9 @@ function ReviewsForm({
           reviews: value.reviews.map(
             ({ source: _source, ...review }) => review
           ),
+          // Rows the editor added but never gave an image are dropped rather
+          // than saved as broken tiles.
+          photos: value.photos.filter((photo) => photo.url.trim()),
         })
       }
     >
@@ -219,6 +226,53 @@ function ReviewsForm({
                 label={t("published")}
                 checked={review.isPublished}
                 onChange={(isPublished) => update({ ...review, isPublished })}
+              />
+            </div>
+          )}
+        />
+      </AdminCard>
+
+      <AdminCard title={t("photosTitle")} description={t("photosDescription")}>
+        <RowTable
+          items={draft.photos}
+          onChange={(photos) => setDraft({ ...draft, photos })}
+          createItem={() => ({ url: "", alt: emptyLocalized() })}
+          addLabel={t("addPhoto")}
+          emptyLabel={common("empty")}
+          columns={[
+            {
+              header: t("photoAlt"),
+              tooltip: t("photoAltTip"),
+              cell: (photo) => photo.alt.he,
+            },
+            {
+              header: t("photoImage"),
+              tooltip: t("photoImageTip"),
+              cell: (photo) => (
+                <span
+                  dir="ltr"
+                  className="line-clamp-1 text-start text-muted-foreground"
+                >
+                  {photo.url}
+                </span>
+              ),
+            },
+          ]}
+          editTitle={(photo) => photo.alt.he || t("addPhoto")}
+          renderRow={(photo, _index, update) => (
+            <div className="space-y-3">
+              <ImageField
+                label={t("photoImage")}
+                tooltip={t("photoImageTip")}
+                folder="reviews"
+                value={photo.url}
+                onChange={(url) => update({ ...photo, url })}
+              />
+              <LocalizedField
+                label={t("photoAlt")}
+                tooltip={t("photoAltTip")}
+                value={photo.alt}
+                onChange={(alt) => update({ ...photo, alt })}
               />
             </div>
           )}

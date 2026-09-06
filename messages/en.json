@@ -687,7 +687,14 @@
       "authorTip": "The author's name shown next to the review.",
       "ratingTip": "Star rating, between 1 and 5.",
       "dateTip": "The date the review was written.",
-      "textTip": "The review's content as shown on the site."
+      "textTip": "The review's content as shown on the site.",
+      "photosTitle": "Photos in the \"What parents say\" section",
+      "photosDescription": "Photos woven between the reviews on the home page. Drag to reorder.",
+      "addPhoto": "Add photo",
+      "photoAlt": "Accessibility description",
+      "photoAltTip": "A short description of the image for screen readers and accessibility.",
+      "photoImage": "Upload a photo",
+      "photoImageTip": "Upload an image file or paste a URL. Supported formats: JPG, PNG, WEBP."
     },
     "media": {
       "title": "Home page gallery",

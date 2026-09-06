@@ -16,7 +16,13 @@ import { getAdminUser } from "./access"
  * the branch it names before letting bytes through.
  */
 
-export const MEDIA_FOLDERS = ["gallery", "hero", "steps", "branding"] as const
+export const MEDIA_FOLDERS = [
+  "gallery",
+  "reviews",
+  "hero",
+  "steps",
+  "branding",
+] as const
 type MediaFolder = (typeof MEDIA_FOLDERS)[number]
 
 const FOLDER_SET = new Set<string>(MEDIA_FOLDERS)

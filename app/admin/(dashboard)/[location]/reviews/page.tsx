@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 
 import { ReviewsForm } from "@/components/admin/forms/reviews-form"
 import { requireLocationAccess } from "@/lib/admin/access"
-import { toReviewDraft } from "@/lib/admin/drafts"
+import { toLocalized, toReviewDraft } from "@/lib/admin/drafts"
 import { getReviewsEditor } from "@/lib/db/queries/admin"
 
 export default async function AdminReviewsPage({
@@ -20,6 +20,11 @@ export default async function AdminReviewsPage({
       initial={{
         autoSync: data.settings?.googleReviewsAutoSync ?? false,
         reviews: data.reviews.map(toReviewDraft),
+        photos: data.reviewPhotos.map((photo) => ({
+          id: photo.id,
+          url: photo.url,
+          alt: toLocalized(photo.alt),
+        })),
       }}
     />
   )

@@ -69,6 +69,7 @@ export async function getHomePage(slug: string) {
         with: { rows: { orderBy: (r) => [asc(r.sortOrder)] } },
       },
       galleryImages: { orderBy: (g) => [asc(g.sortOrder)] },
+      reviewPhotos: { orderBy: (p) => [asc(p.sortOrder)] },
       reviews: {
         where: (r) => eq(r.isPublished, true),
         // `sortOrder` first so an editor can pin a favourite to the top, then

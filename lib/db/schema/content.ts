@@ -143,6 +143,25 @@ export const galleryImages = pgTable("gallery_image", {
   ...timestamps,
 })
 
+/**
+ * Photos woven between the quotes in the "הורים מספרים" (parents-tell) masonry.
+ *
+ * A collection of its own rather than a slice of `gallery_image`: the two
+ * sections tell different stories — the gallery is the venue, these are the
+ * moments beside a review — so an editor curates them independently from
+ * ניהול ביקורות.
+ */
+export const reviewPhotos = pgTable("review_photo", {
+  id: uuid().primaryKey().defaultRandom(),
+  locationId: uuid()
+    .notNull()
+    .references(() => locations.id, { onDelete: "cascade" }),
+  url: text().notNull(),
+  alt: localized().notNull(),
+  sortOrder: integer().notNull().default(0),
+  ...timestamps,
+})
+
 /** Where a review came from. Google reviews are refreshed by the Places sync. */
 export const reviewSource = pgEnum("review_source", ["manual", "google"])
 

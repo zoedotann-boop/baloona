@@ -23,6 +23,7 @@ import {
   priceRows,
   priceTiers,
   pricingContents,
+  reviewPhotos,
   reviews,
   siteContents,
   siteSettings,
@@ -573,6 +574,14 @@ const reviewsSchema = z.object({
       publishedAt: z.string(),
     })
   ),
+  /** Photos woven between the quotes in the "הורים מספרים" masonry. */
+  photos: z.array(
+    z.object({
+      id: rowIdSchema,
+      url: z.string().min(1).max(500),
+      alt: localizedSchema,
+    })
+  ),
 })
 
 export async function saveReviews(
@@ -600,6 +609,36 @@ export async function saveReviews(
       db.insert(reviews).values(rows.map((row) => ({ ...row, locationId }))),
     update: (row) => db.update(reviews).set(row).where(eq(reviews.id, row.id)),
     remove: (ids) => db.delete(reviews).where(inArray(reviews.id, ids)),
+  })
+
+  const existingPhotos = await db.query.reviewPhotos.findMany({
+    where: eq(reviewPhotos.locationId, locationId),
+  })
+  await syncCollection({
+    existingIds: existingPhotos.map((row) => row.id),
+    // Rows the editor added but never gave an image are dropped rather than
+    // saved as broken tiles.
+    incoming: parsed.data.photos
+      .filter((photo) => photo.url.trim())
+      .map((row, sortOrder) => ({ ...row, sortOrder })),
+    insert: (rows) =>
+      db
+        .insert(reviewPhotos)
+        .values(rows.map((row) => ({ ...row, locationId }))),
+    update: (row) =>
+      db.update(reviewPhotos).set(row).where(eq(reviewPhotos.id, row.id)),
+    remove: async (ids) => {
+      // Drop the objects too, so removing a photo does not leave it billable
+      // and publicly reachable in the bucket.
+      const removed = existingPhotos.filter((row) => ids.includes(row.id))
+      await db.delete(reviewPhotos).where(inArray(reviewPhotos.id, ids))
+      await Promise.all(
+        removed
+          .map((row) => keyFromUrl(row.url))
+          .filter((key): key is string => Boolean(key))
+          .map((key) => deleteObject(key))
+      )
+    },
   })
 
   // The auto-sync flag lives on `site_setting` but is edited here, next to the
