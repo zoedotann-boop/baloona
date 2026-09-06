@@ -3,11 +3,17 @@ import { getLocale, getTranslations } from "next-intl/server"
 import { ArrowRight } from "lucide-react"
 
 import { PillButton } from "@/components/brand/pill-button"
+import { SkyBackdrop } from "@/components/brand/sky-backdrop"
 import { BrandShell } from "@/components/layout/brand-shell"
+import { Section } from "@/components/layout/section"
 import { SiteChrome } from "@/components/layout/site-chrome"
 import { CheckoutForm } from "@/components/shop/checkout-form"
 import { type Locale } from "@/i18n/routing"
-import { getProductById, listPublishedLocations } from "@/lib/db/queries/site"
+import {
+  getProductById,
+  listActiveProducts,
+  listPublishedLocations,
+} from "@/lib/db/queries/site"
 import { formatPrice, pickLocale } from "@/lib/localized"
 
 const UUID_RE =
@@ -24,10 +30,11 @@ export default async function CheckoutPage({
   searchParams,
 }: PageProps<"/checkout">) {
   const { product: productParam, from: fromParam } = await searchParams
-  const [locale, t, published] = await Promise.all([
+  const [locale, t, published, activeProducts] = await Promise.all([
     getLocale() as Promise<Locale>,
     getTranslations("checkout"),
     listPublishedLocations(),
+    listActiveProducts(),
   ])
 
   // `from` is the branch the visitor came from, so "back" returns to its shop
@@ -41,41 +48,58 @@ export default async function CheckoutPage({
   const id = typeof productParam === "string" ? productParam : ""
   const product = UUID_RE.test(id) ? await getProductById(id) : undefined
 
-  const content = !product ? (
-    <div className="mx-auto max-w-md px-5 py-20 text-center">
-      <h1 className="font-heading text-[28px] font-black text-brand-plum">
-        {t("noProductTitle")}
-      </h1>
-      <p className="mt-3 text-[16px] text-muted-foreground">
-        {t("noProductBody")}
-      </p>
-      <PillButton href={backHref} size="md" className="mt-6">
-        {t("noProductCta")}
-      </PillButton>
-    </div>
-  ) : (
-    <div className="mx-auto max-w-lg px-5 py-12 md:py-16">
-      <Link
-        href={backHref}
-        className="mb-6 inline-flex items-center gap-1.5 text-[15px] font-bold text-brand-plum transition hover:text-foreground"
-      >
-        <ArrowRight className="size-4" aria-hidden />
-        {t("back")}
-      </Link>
+  // The two card designs alternate down the shop catalog (see ShopSection), so a
+  // product's artwork follows its position there — this keeps the checkout card
+  // matching the one the visitor tapped. Unknown/inactive products fall back to
+  // the first design.
+  const catalogIndex = product
+    ? activeProducts.findIndex((p) => p.id === product.id)
+    : -1
+  const cardTheme = catalogIndex % 2 === 1 ? "age2" : "age12"
 
-      <h1 className="mb-8 text-center font-heading text-[clamp(30px,4vw,44px)] leading-[1.08] font-black text-brand-plum">
-        {t("title")}
-      </h1>
+  // Wear the site's soft sky behind the checkout so the buying process sits in
+  // the same branded world as the shop and the card page, not a bare page.
+  const content = (
+    <Section spacing="md" className="relative isolate overflow-hidden">
+      <SkyBackdrop />
+      {!product ? (
+        <div className="mx-auto max-w-lg text-center">
+          <h1 className="font-heading text-[28px] font-black text-brand-plum">
+            {t("noProductTitle")}
+          </h1>
+          <p className="mt-3 text-[16px] text-muted-foreground">
+            {t("noProductBody")}
+          </p>
+          <PillButton href={backHref} size="md" className="mt-6">
+            {t("noProductCta")}
+          </PillButton>
+        </div>
+      ) : (
+        <div className="mx-auto max-w-lg">
+          <Link
+            href={backHref}
+            className="mb-6 inline-flex items-center gap-1.5 text-[15px] font-bold text-brand-plum transition hover:text-foreground"
+          >
+            <ArrowRight className="size-4" aria-hidden />
+            {t("back")}
+          </Link>
 
-      <CheckoutForm
-        productId={product.id}
-        productName={pickLocale(product.name, locale)}
-        entriesLabel={t("entries", { count: product.entries })}
-        productPrice={formatPrice(product.price, locale)}
-        from={from}
-        termsHref={from ? `/${from}/terms` : "/"}
-      />
-    </div>
+          <h1 className="mb-8 text-center font-heading text-[clamp(30px,4vw,44px)] leading-[1.08] font-black text-brand-plum">
+            {t("title")}
+          </h1>
+
+          <CheckoutForm
+            productId={product.id}
+            productName={pickLocale(product.name, locale)}
+            entriesLabel={t("entries", { count: product.entries })}
+            productPrice={formatPrice(product.price, locale)}
+            theme={cardTheme}
+            from={from}
+            termsHref={from ? `/${from}/terms` : "/"}
+          />
+        </div>
+      )}
+    </Section>
   )
 
   return hasBranch ? (

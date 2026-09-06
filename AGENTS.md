@@ -18,6 +18,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Styling & theme
 
+- **See `DESIGN.md` for the full design-system reference** — tokens, primitives,
+  the public-form field pattern, and the buying-process conventions. The essentials:
 - Fonts: **Fredoka** (rounded display) for headings + the wordmark (`--font-heading`),
   **Assistant** for body (`--font-sans`); both wired via `next/font` in `app/layout.tsx`.
   Fredoka's axis maxes at 700, so `font-black`/`font-extrabold` headings clamp to 700.

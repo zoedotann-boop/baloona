@@ -14,6 +14,14 @@ interface CardView {
   status: "active" | "completed"
   issuedByLocationName: string | null
   note: string | null
+  /** When the card was created, preformatted for display (date + time). */
+  createdAt: string
+  /**
+   * The online purchase behind this card, when it was bought through the shop.
+   * `null` for a card issued at the desk. `paid` is the pay-at-branch status the
+   * front desk toggles; `price` is the amount owed, preformatted with currency.
+   */
+  payment: { paid: boolean; price: string } | null
 }
 
 /** A customer and their cards, shaped for the manager. */

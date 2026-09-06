@@ -158,7 +158,11 @@ export async function searchCustomerCards(query?: string, limit = 20) {
     with: {
       cards: {
         orderBy: (card) => [desc(card.createdAt)],
-        with: { issuedByLocation: { columns: { name: true } } },
+        with: {
+          issuedByLocation: { columns: { name: true } },
+          // The online purchase behind the card (if any), for payment status.
+          order: { columns: { status: true, amount: true, paidAt: true } },
+        },
       },
     },
   })

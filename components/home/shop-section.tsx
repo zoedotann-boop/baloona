@@ -1,4 +1,4 @@
-import { Check, MapPin } from "lucide-react"
+import { Check, CreditCard, MapPin } from "lucide-react"
 
 import { Reveal } from "@/components/brand/reveal"
 import { SkyBackdrop } from "@/components/brand/sky-backdrop"
@@ -21,6 +21,8 @@ interface ShopSectionProps {
   subtitle: string
   /** Cross-branch validity note, e.g. "תקף בכל הסניפים". */
   note: string
+  /** How the customer pays — payment is completed at the branch, not online. */
+  paymentNote: string
   /** Selling points shown on every card. */
   benefits: string[]
   /** Badge for the featured package. */
@@ -41,6 +43,7 @@ function ShopSection({
   title,
   subtitle,
   note,
+  paymentNote,
   benefits,
   popularLabel,
   buyLabel,
@@ -63,10 +66,16 @@ function ShopSection({
           <p className="mx-auto mt-4 max-w-[520px] text-[17px] leading-relaxed text-brand-ink-soft">
             {subtitle}
           </p>
-          <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-[14px] font-bold text-brand-plum">
-            <MapPin className="size-4 text-accent" aria-hidden />
-            {note}
-          </span>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-[14px] font-bold text-brand-plum">
+              <MapPin className="size-4 text-accent" aria-hidden />
+              {note}
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-4 py-2 text-[14px] font-bold text-brand-plum">
+              <CreditCard className="size-4 text-accent" aria-hidden />
+              {paymentNote}
+            </span>
+          </div>
         </Reveal>
 
         <div className="mt-12 flex flex-wrap items-stretch justify-center gap-6">

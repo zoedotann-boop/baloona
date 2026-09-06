@@ -26,6 +26,14 @@ function HoneypotField({ ref }: HoneypotFieldProps) {
         tabIndex={-1}
         autoComplete="off"
         defaultValue=""
+        readOnly
+        onFocus={(event) => event.currentTarget.removeAttribute("readonly")}
+        // Keep browser autofill and password managers away from the trap — an
+        // auto-filled honeypot would flag a real person as a bot.
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore="true"
+        data-form-type="other"
       />
     </div>
   )
