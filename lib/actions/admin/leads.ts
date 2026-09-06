@@ -20,7 +20,7 @@ const statusSchema = z.object({
 export async function updateLeadStatus(
   input: z.input<typeof statusSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "leads")
 
   const parsed = statusSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -41,7 +41,7 @@ const deleteSchema = z.object({ slug: z.string().min(1), leadId: z.uuid() })
 export async function deleteLead(
   input: z.input<typeof deleteSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "leads")
 
   const parsed = deleteSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

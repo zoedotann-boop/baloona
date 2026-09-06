@@ -87,7 +87,7 @@ const homeSchema = z.object({
 export async function saveHomeContent(
   input: z.input<typeof homeSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = homeSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -192,7 +192,7 @@ const pricingSchema = z.object({
 export async function savePricing(
   input: z.input<typeof pricingSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = pricingSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -296,7 +296,7 @@ const menuSchema = z.object({
 export async function saveMenu(
   input: z.input<typeof menuSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = menuSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -449,7 +449,7 @@ const birthdaySchema = z.object({
 export async function saveBirthdays(
   input: z.input<typeof birthdaySchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = birthdaySchema.safeParse(input)
   if (!parsed.success)
@@ -587,7 +587,7 @@ const reviewsSchema = z.object({
 export async function saveReviews(
   input: z.input<typeof reviewsSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = reviewsSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -667,7 +667,7 @@ const gallerySchema = z.object({
 export async function saveGallery(
   input: z.input<typeof gallerySchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = gallerySchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -716,7 +716,7 @@ const termsSchema = z.object({
 export async function saveTerms(
   input: z.input<typeof termsSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "content")
 
   const parsed = termsSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

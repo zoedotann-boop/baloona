@@ -29,7 +29,9 @@ import { useState, useSyncExternalStore } from "react"
 import { ToastProvider } from "@/components/admin/toast"
 import { Logo } from "@/components/brand/logo"
 import { authClient } from "@/lib/auth-client"
+import { branchHomeSection, can } from "@/lib/admin/permissions"
 import { ADMIN_LOGIN_PATH } from "@/lib/admin/routes"
+import type { UserRole } from "@/lib/db/schema"
 import { cn } from "@/lib/utils"
 
 // Remembers the desktop rail state across visits so it survives navigation and
@@ -64,7 +66,7 @@ interface AdminShellLocation {
 }
 
 interface AdminShellProps {
-  user: { name: string; isOwner: boolean }
+  user: { name: string; role: UserRole }
   locations: AdminShellLocation[]
   children: React.ReactNode
 }
@@ -91,72 +93,83 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
   const activeSlug = pathname.split("/")[2]
   const active = locations.find((location) => location.slug === activeSlug)
 
-  const contentLinks = active
-    ? [
-        {
-          href: `/admin/${active.slug}/general`,
-          label: t("general"),
-          icon: Settings,
-        },
-        {
-          href: `/admin/${active.slug}/home`,
-          label: t("home"),
-          icon: LayoutDashboard,
-        },
-        {
-          href: `/admin/${active.slug}/pricing`,
-          label: t("pricing"),
-          icon: Tag,
-        },
-        {
-          href: `/admin/${active.slug}/menu`,
-          label: t("menu"),
-          icon: UtensilsCrossed,
-        },
-        {
-          href: `/admin/${active.slug}/birthdays`,
-          label: t("birthdays"),
-          icon: Cake,
-        },
-        {
-          href: `/admin/${active.slug}/media`,
-          label: t("media"),
-          icon: ImageIcon,
-        },
-        {
-          href: `/admin/${active.slug}/reviews`,
-          label: t("reviews"),
-          icon: Star,
-        },
-        {
-          href: `/admin/${active.slug}/shop`,
-          label: t("shop"),
-          icon: ShoppingBag,
-        },
-        {
-          href: `/admin/${active.slug}/terms`,
-          label: t("terms"),
-          icon: ScrollText,
-        },
-      ]
-    : []
+  // Each group maps to one capability (see lib/admin/permissions.ts), so the
+  // sidebar shows a role exactly the sections its actions and pages allow.
+  const settingsLinks =
+    active && can(user.role, "settings")
+      ? [
+          {
+            href: `/admin/${active.slug}/general`,
+            label: t("general"),
+            icon: Settings,
+          },
+        ]
+      : []
 
-  const operationLinks = active
-    ? [
-        {
-          href: `/admin/${active.slug}/punch-cards`,
-          label: t("punchCards"),
-          icon: Ticket,
-        },
-      ]
-    : []
+  const contentLinks =
+    active && can(user.role, "content")
+      ? [
+          {
+            href: `/admin/${active.slug}/home`,
+            label: t("home"),
+            icon: LayoutDashboard,
+          },
+          {
+            href: `/admin/${active.slug}/pricing`,
+            label: t("pricing"),
+            icon: Tag,
+          },
+          {
+            href: `/admin/${active.slug}/menu`,
+            label: t("menu"),
+            icon: UtensilsCrossed,
+          },
+          {
+            href: `/admin/${active.slug}/birthdays`,
+            label: t("birthdays"),
+            icon: Cake,
+          },
+          {
+            href: `/admin/${active.slug}/media`,
+            label: t("media"),
+            icon: ImageIcon,
+          },
+          {
+            href: `/admin/${active.slug}/reviews`,
+            label: t("reviews"),
+            icon: Star,
+          },
+          {
+            href: `/admin/${active.slug}/shop`,
+            label: t("shop"),
+            icon: ShoppingBag,
+          },
+          {
+            href: `/admin/${active.slug}/terms`,
+            label: t("terms"),
+            icon: ScrollText,
+          },
+        ]
+      : []
 
-  const accountLinks = user.isOwner
-    ? [
-        { href: "/admin/locations", label: t("locations"), icon: Building2 },
-        { href: "/admin/team", label: t("team"), icon: Users },
-      ]
-    : []
+  const operationLinks =
+    active && can(user.role, "operations")
+      ? [
+          {
+            href: `/admin/${active.slug}/punch-cards`,
+            label: t("punchCards"),
+            icon: Ticket,
+          },
+        ]
+      : []
+
+  const accountLinks =
+    user.role === "owner"
+      ? [
+          { href: "/admin/locations", label: t("locations"), icon: Building2 },
+          { href: "/admin/team", label: t("team"), icon: Users },
+        ]
+      : []
 
   async function signOut() {
     close()
@@ -233,7 +246,9 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
                   aria-label={t("locations")}
                   onChange={(event) => {
                     close()
-                    router.push(`/admin/${event.target.value}/general`)
+                    router.push(
+                      `/admin/${event.target.value}/${branchHomeSection(user.role)}`
+                    )
                   }}
                   className="h-10 w-full appearance-none rounded-xl border border-border bg-white ps-3 pe-9 text-[14px] font-bold text-brand-plum focus:border-primary focus:outline-none"
                 >
@@ -250,6 +265,13 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
           )}
 
           <nav className="min-h-0 flex-1 overflow-y-auto px-2 py-1">
+            <NavGroup
+              label={t("sectionSettings")}
+              links={settingsLinks}
+              pathname={pathname}
+              collapsed={collapsed}
+              onNavigate={close}
+            />
             <NavGroup
               label={t("sectionContent")}
               links={contentLinks}

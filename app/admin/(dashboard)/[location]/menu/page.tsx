@@ -9,7 +9,7 @@ export default async function AdminMenuPage({
   params,
 }: PageProps<"/admin/[location]/menu">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "content")
   const data = await getMenuEditor(location.id)
   if (!data?.menu) notFound()
 

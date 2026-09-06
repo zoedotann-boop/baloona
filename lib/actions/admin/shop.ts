@@ -41,7 +41,7 @@ const productsSchema = z.object({
 export async function saveProducts(
   input: z.input<typeof productsSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "content")
 
   const parsed = productsSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

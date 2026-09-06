@@ -9,7 +9,7 @@ export default async function AdminMediaPage({
   params,
 }: PageProps<"/admin/[location]/media">) {
   const { location: slug } = await params
-  const { location } = await requireLocationAccess(slug)
+  const { location } = await requireLocationAccess(slug, "content")
   const data = await getGalleryEditor(location.id)
   if (!data) notFound()
 

@@ -127,6 +127,7 @@ function RolePicker({
     >
       <option value="owner">{t("owner")}</option>
       <option value="manager">{t("manager")}</option>
+      <option value="staff">{t("staff")}</option>
     </AdminSelect>
   )
 }
@@ -239,7 +240,7 @@ function NewMemberForm({
           </AdminField>
         </div>
 
-        {role === "manager" && (
+        {role !== "owner" && (
           <LocationPicker
             locations={locations}
             selected={locationIds}
@@ -287,7 +288,9 @@ function MemberRow({
   const [error, setError] = useState<string | null>(null)
   const [pending, start] = useTransition()
 
-  const save = () =>
+  // The dialog has no separate save button: "done" saves the assignment and, on
+  // success, closes. A failed save keeps the dialog open so the error shows.
+  const saveAndClose = () =>
     start(async () => {
       setError(null)
       const result = await updateTeamMember({
@@ -295,7 +298,8 @@ function MemberRow({
         role,
         locationIds,
       })
-      if (!result.ok)
+      if (result.ok) setEditing(false)
+      else
         setError(
           result.error === "cannot-demote-self"
             ? t("cannotDemoteSelf")
@@ -327,9 +331,7 @@ function MemberRow({
           {member.email}
         </span>
       </td>
-      <td className={cn(adminCell, "w-36")}>
-        {role === "owner" ? t("owner") : t("manager")}
-      </td>
+      <td className={cn(adminCell, "w-36")}>{t(role)}</td>
       <td className={cn(adminCell, "w-48")}>
         <span className="line-clamp-1 text-muted-foreground">
           {branchNames || "—"}
@@ -388,11 +390,7 @@ function MemberRow({
           confirmLabel={t("delete")}
         />
 
-        <AdminModal
-          open={editing}
-          onClose={() => setEditing(false)}
-          title={member.name}
-        >
+        <AdminModal open={editing} onClose={saveAndClose} title={member.name}>
           <RolePicker
             value={role}
             onChange={(next) => {
@@ -401,7 +399,7 @@ function MemberRow({
             }}
           />
 
-          {role === "manager" && (
+          {role !== "owner" && (
             <LocationPicker
               locations={locations}
               selected={locationIds}
@@ -414,16 +412,6 @@ function MemberRow({
               {error}
             </p>
           )}
-
-          <PillButton
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={save}
-            disabled={pending}
-          >
-            {pending ? common("saving") : t("update")}
-          </PillButton>
         </AdminModal>
 
         {member.isSelf && (

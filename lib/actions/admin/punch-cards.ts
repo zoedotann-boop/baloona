@@ -73,7 +73,7 @@ const searchSchema = z.object({
 export async function searchPunchCards(
   input: z.input<typeof searchSchema>
 ): Promise<CustomerCardsView[]> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = searchSchema.safeParse(input)
   if (!parsed.success) return []
@@ -107,7 +107,7 @@ const issueSchema = z
 export async function issuePunchCard(
   input: z.input<typeof issueSchema>
 ): Promise<ActionResult> {
-  const { location } = await requireLocationAccess(input.slug)
+  const { location } = await requireLocationAccess(input.slug, "operations")
 
   const parsed = issueSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -159,7 +159,10 @@ const cardActionSchema = z.object({
 export async function punchCard(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  const { user, location } = await requireLocationAccess(input.slug)
+  const { user, location } = await requireLocationAccess(
+    input.slug,
+    "operations"
+  )
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -195,7 +198,7 @@ export async function punchCard(
 export async function undoLastPunch(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -241,7 +244,7 @@ const updateCustomerSchema = z.object({
 export async function updateCustomerDetails(
   input: z.input<typeof updateCustomerSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = updateCustomerSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -268,7 +271,7 @@ const updateCardSchema = z.object({
 export async function updateCardDetails(
   input: z.input<typeof updateCardSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = updateCardSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -297,7 +300,7 @@ export async function updateCardDetails(
 export async function deleteCard(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
@@ -315,7 +318,7 @@ export async function deleteCard(
 export async function markCardPaid(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {
-  await requireLocationAccess(input.slug)
+  await requireLocationAccess(input.slug, "operations")
 
   const parsed = cardActionSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }

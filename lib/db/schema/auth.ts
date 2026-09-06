@@ -19,10 +19,15 @@ import { locations } from "./locations"
  */
 
 /**
- * `owner` manages every location and may create, delete and staff them.
- * `manager` only sees the locations listed for it in `locationMembers`.
+ * Admin roles, from most to least privileged. Each is a strict superset of the
+ * one below it (see `lib/admin/permissions.ts`):
+ * - `owner` manages every location and may create, delete and staff them.
+ * - `manager` edits branch settings, leads and punch cards for the locations
+ *   listed for it in `locationMembers`.
+ * - `staff` (צוות בלונה) is a junior role limited to punch cards on those same
+ *   locations.
  */
-export const userRole = pgEnum("user_role", ["owner", "manager"])
+export const userRole = pgEnum("user_role", ["owner", "manager", "staff"])
 
 export type UserRole = (typeof userRole.enumValues)[number]
 
@@ -77,7 +82,10 @@ export const verifications = pgTable("verification", {
   updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 })
 
-/** Which locations a `manager` may edit. Owners bypass this table entirely. */
+/**
+ * Which locations a `manager` or `staff` member is scoped to. Owners bypass this
+ * table entirely.
+ */
 export const locationMembers = pgTable(
   "location_member",
   {
