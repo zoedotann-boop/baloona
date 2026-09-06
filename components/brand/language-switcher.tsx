@@ -12,18 +12,10 @@ const LANGUAGES = [
   { code: "en", label: "English", short: "EN" },
 ] as const
 
-// Persist the chosen locale so the server picks it up on the next request.
 function persistLocale(code: string) {
   document.cookie = `NEXT_LOCALE=${code};path=/;max-age=31536000;samesite=lax`
 }
 
-/**
- * Persists the chosen locale in a cookie the server reads on the next request,
- * then refreshes so every server component re-renders in the new language.
- *
- * `dropUp` opens the menu above the button — use it in the footer, where a
- * downward menu would spill off the page.
- */
 function LanguageSwitcher({
   className,
   dropUp = false,
@@ -65,7 +57,6 @@ function LanguageSwitcher({
 
       {open && (
         <>
-          {/* Click-away layer */}
           <button
             type="button"
             aria-label="close"

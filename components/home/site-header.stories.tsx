@@ -19,7 +19,6 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
 
-/** Brand-global variant: wordmark only, no branch nav. */
 export const BrandGlobal: Story = {
   args: {
     paths: undefined,

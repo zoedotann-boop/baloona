@@ -13,7 +13,6 @@ interface TermsDraft {
   terms: Localized
 }
 
-/** תקנון ומדיניות ביטול — the editable body of the branch's /terms page. */
 function TermsForm({ slug, initial }: { slug: string; initial: TermsDraft }) {
   const t = useTranslations("admin.termsEditor")
   const [draft, setDraft] = useState(initial)

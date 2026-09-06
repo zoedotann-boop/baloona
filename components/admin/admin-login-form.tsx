@@ -10,7 +10,6 @@ import { authClient } from "@/lib/auth-client"
 
 import { AdminInput } from "./admin-ui"
 
-/** Email + password sign-in. Sign-up is closed; owners create accounts. */
 function AdminLoginForm() {
   const t = useTranslations("admin.signIn")
   const router = useRouter()

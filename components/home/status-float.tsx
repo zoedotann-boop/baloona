@@ -1,18 +1,10 @@
 import { cn } from "@/lib/utils"
 
 interface StatusFloatProps {
-  /** Full opening-status line from the venue's real hours. */
   label: string
-  /** Green pill when open, red when closed. */
   isOpen: boolean
 }
 
-/**
- * Desktop floating open/closed chip that scrolls with the page, pinned to the
- * bottom-start corner. Mobile carries its own compact chip
- * ({@link import("./mobile-actions").MobileActions}); this covers every larger
- * viewport, where the header no longer shows the status inline.
- */
 function StatusFloat({ label, isOpen }: StatusFloatProps) {
   return (
     <div className="pointer-events-none fixed bottom-6 left-4 z-40 hidden md:block">

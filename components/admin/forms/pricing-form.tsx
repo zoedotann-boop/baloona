@@ -36,7 +36,6 @@ interface PricingDraft {
   }[]
 }
 
-/** מחירונים — the entry price cards shown on the home page. */
 function PricingForm({
   slug,
   initial,

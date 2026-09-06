@@ -28,17 +28,9 @@ export interface SiteChrome {
   contact: ContactDetails
   hours: HoursRow[]
   isOpen: boolean
-  /** "פתוח עכשיו · עד 19:00", or undefined when no hours are configured. */
   statusLabel?: string
 }
 
-/**
- * Resolve a location slug into everything the site chrome needs, localized and
- * pre-formatted.
- *
- * Layout and pages both need this, and computing it once here keeps the
- * components free of `Localized` values, timezones and href building.
- */
 export async function loadSiteChrome(slug: string): Promise<SiteChrome> {
   const chrome = await getLocationChrome(slug)
   if (!chrome) notFound()

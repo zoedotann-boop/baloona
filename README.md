@@ -79,10 +79,13 @@ build, so you can run locally with only the database configured.
 | `bun run typecheck`       | `tsc --noEmit`                          |
 | `bun run format:check`    | Prettier                                |
 | `bun run knip`            | Unused files, exports and dependencies  |
+| `bun run comments`        | commentless — fails on any comment      |
 | `bun run build-storybook` | Storybook build                         |
 
-All of `lint`, `typecheck`, `format:check`, `knip` and `build-storybook` must
-pass before review.
+All of `lint`, `typecheck`, `format:check`, `knip`, `comments` and
+`build-storybook` must pass before review. `comments` enforces a no-comment
+policy on `.ts`/`.tsx` sources (only functional directives such as
+`eslint-disable` survive); run `bunx commentless . --write` to strip any.
 
 ## How content flows
 

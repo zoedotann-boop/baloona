@@ -3,9 +3,6 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-// The Baloona "indoor playground" wordmark lockup. Sized by height; width
-// follows the intrinsic aspect ratio. Ships on transparent, so it reads on any
-// surface (e.g. the white site header).
 const logoVariants = cva("inline-block w-auto select-none", {
   variants: {
     size: {
@@ -22,11 +19,9 @@ const logoVariants = cva("inline-block w-auto select-none", {
 
 interface LogoProps extends VariantProps<typeof logoVariants> {
   className?: string
-  /** Accessible name for the mark. */
   label?: string
 }
 
-/** Baloona wordmark lockup. */
 function Logo({ className, size, label = "Baloona" }: LogoProps) {
   return (
     <Image

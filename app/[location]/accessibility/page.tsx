@@ -23,7 +23,6 @@ export async function generateMetadata({
   }
 }
 
-/** Legal accessibility statement, with the branch's own contact details. */
 export default async function AccessibilityPage({
   params,
 }: PageProps<"/[location]/accessibility">) {

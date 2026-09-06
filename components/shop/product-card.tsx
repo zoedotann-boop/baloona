@@ -4,28 +4,16 @@ import { PunchCardArt, type PunchCardTheme } from "./punch-card-art"
 
 interface ProductCardProps {
   name: string
-  /** Marketing line, e.g. "רק 32.5 ₪ לכניסה!". */
   perEntryLabel: string
-  /** Formatted price, e.g. "350 ₪". */
   price: string
-  /** Highlight this package as the popular choice. */
   featured: boolean
-  /** Badge text for the featured card, e.g. "הבחירה הפופולרית". */
   popularLabel: string
   buyLabel: string
-  /** Which printed card design to show. */
   theme?: PunchCardTheme
-  /** Decorative caption drawn on the card art, e.g. "כרטיסיית כניסה…". */
   cardCaption: string
-  /** Checkout link for this product. */
   href: string
 }
 
-/**
- * A punch-card package in the shop: the illustrated Baloona entry card
- * ({@link PunchCardArt}, drawn as inline SVG) with the price and CTA on a frosted
- * footer. Dumb component; the page passes plain strings + the theme.
- */
 function ProductCard({
   name,
   perEntryLabel,

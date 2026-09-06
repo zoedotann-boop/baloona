@@ -13,10 +13,6 @@ import {
 import { localized, localizedList, timestamps } from "./_shared"
 import { locations } from "./locations"
 
-/**
- * Copy that appears on every page (footer strapline, the contact block above
- * the footer) rather than only on the home page.
- */
 export const siteContents = pgTable("site_content", {
   locationId: uuid()
     .primaryKey()
@@ -24,17 +20,10 @@ export const siteContents = pgTable("site_content", {
   footerTagline: localized().notNull(),
   contactTitle: localized().notNull(),
   contactEyebrow: localized().notNull(),
-  /** Terms & cancellation policy body for `/<slug>/terms`; the `/terms` page
-   *  falls back to the default copy in `messages` while this is empty. */
   terms: localized(),
   ...timestamps,
 })
 
-/**
- * Home page copy. One row per location, one column per editable string, so the
- * admin form and the page render from the same shape and a missing translation
- * is visible rather than silently absent.
- */
 export const homeContents = pgTable("home_content", {
   locationId: uuid()
     .primaryKey()
@@ -42,7 +31,6 @@ export const homeContents = pgTable("home_content", {
 
   heroTitle: localized().notNull(),
   heroDescription: localized().notNull(),
-  /** Three images for the hero mosaic, largest first. */
   heroImages: jsonb().$type<string[]>().notNull().default([]),
 
   aboutTitle: localized().notNull(),
@@ -70,7 +58,6 @@ export const homeContents = pgTable("home_content", {
   ...timestamps,
 })
 
-/** The three "what you get" columns under the hero. */
 export const homeFeatures = pgTable("home_feature", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -82,7 +69,6 @@ export const homeFeatures = pgTable("home_feature", {
   ...timestamps,
 })
 
-/** Category chips in the home page's menu teaser. */
 export const menuTeaserTiles = pgTable("menu_teaser_tile", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -93,7 +79,6 @@ export const menuTeaserTiles = pgTable("menu_teaser_tile", {
   ...timestamps,
 })
 
-/** Heading, footnote and "good to know" rules around the price tiers. */
 export const pricingContents = pgTable("pricing_content", {
   locationId: uuid()
     .primaryKey()
@@ -104,7 +89,6 @@ export const pricingContents = pgTable("pricing_content", {
   ...timestamps,
 })
 
-/** One entry-price card (weekdays, weekend, punch card, …). */
 export const priceTiers = pgTable("price_tier", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -117,10 +101,6 @@ export const priceTiers = pgTable("price_tier", {
   ...timestamps,
 })
 
-/**
- * A price line inside a tier. Amounts are whole shekels: storing a number keeps
- * the admin input numeric and leaves currency formatting to the render layer.
- */
 export const priceRows = pgTable("price_row", {
   id: uuid().primaryKey().defaultRandom(),
   tierId: uuid()
@@ -143,14 +123,6 @@ export const galleryImages = pgTable("gallery_image", {
   ...timestamps,
 })
 
-/**
- * Photos woven between the quotes in the "הורים מספרים" (parents-tell) masonry.
- *
- * A collection of its own rather than a slice of `gallery_image`: the two
- * sections tell different stories — the gallery is the venue, these are the
- * moments beside a review — so an editor curates them independently from
- * ניהול ביקורות.
- */
 export const reviewPhotos = pgTable("review_photo", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()
@@ -162,7 +134,6 @@ export const reviewPhotos = pgTable("review_photo", {
   ...timestamps,
 })
 
-/** Where a review came from. Google reviews are refreshed by the Places sync. */
 export const reviewSource = pgEnum("review_source", ["manual", "google"])
 
 export type ReviewSource = (typeof reviewSource.enumValues)[number]
@@ -174,17 +145,8 @@ export const reviews = pgTable("review", {
     .references(() => locations.id, { onDelete: "cascade" }),
   authorName: text().notNull(),
   rating: smallint().notNull().default(5),
-  /**
-   * The review as its author wrote it, in whatever language that was.
-   *
-   * Not `localized()` like the rest of the site's copy: a review is someone
-   * else's words, so there is nothing to translate into — rendering a machine
-   * translation under a real person's name would be putting words in their
-   * mouth. It is stored once and shown as-is in every locale.
-   */
   text: text().notNull(),
   source: reviewSource().notNull().default("manual"),
-  /** Google's review id, used to upsert on re-sync. Null for manual reviews. */
   externalId: text(),
   publishedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   isPublished: boolean().notNull().default(true),
@@ -192,7 +154,6 @@ export const reviews = pgTable("review", {
   ...timestamps,
 })
 
-/** Subject chips offered by the contact form. */
 export const contactSubjects = pgTable("contact_subject", {
   id: uuid().primaryKey().defaultRandom(),
   locationId: uuid()

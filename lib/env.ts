@@ -1,14 +1,5 @@
 import "server-only"
 
-/**
- * Server-side environment access.
- *
- * Every integration is optional: the site renders from the database alone, and
- * a missing key degrades one feature (uploads, AI translation, Google reviews,
- * outgoing mail) instead of breaking the build. Only `DATABASE_URL` and the
- * Better Auth secret are hard requirements.
- */
-
 function required(name: string): string {
   const value = process.env[name]
   if (!value) {
@@ -33,58 +24,21 @@ export const resendConfig = () => {
   return apiKey && from ? { apiKey, from } : null
 }
 
-/**
- * Absolute base URL for the assets embedded in outgoing email (the logo and the
- * header background). Email clients fetch these over HTTPS when the recipient
- * opens the message, so the URL must be publicly reachable — a relative or
- * `localhost` path never loads in an inbox. Defaults to the production domain;
- * override with `EMAIL_ASSETS_BASE_URL` on preview deployments. The trailing
- * slash is trimmed so callers can safely append `/assets/…`.
- */
 export function emailAssetsBaseUrl(): string {
   const base = optional("EMAIL_ASSETS_BASE_URL") || "https://baloona.co.il"
   return base.replace(/\/+$/, "")
 }
 
-/**
- * Vercel Blob read-write token. Present in production once a Blob store is
- * connected to the project (Vercel injects it); locally it arrives via
- * `vercel env pull`. `handleUpload` needs this static token specifically — an
- * OIDC token cannot sign the client tokens that browser uploads use.
- */
 export const blobToken = () => optional("BLOB_READ_WRITE_TOKEN")
 
 export const geminiApiKey = () => optional("GEMINI_API_KEY")
 
-/**
- * SerpApi key, used to read a branch's Google reviews. One key for the whole
- * brand; the per-branch Place ID lives in `site_setting`.
- */
 export const serpApiKey = () => optional("SERPAPI_API_KEY")
 
-/**
- * Shared secret for the scheduled jobs under `/api/cron`. Vercel sends it as
- * `Authorization: Bearer …` on every cron invocation. Unset means the cron
- * endpoints refuse every request rather than running unauthenticated.
- */
 export const cronSecret = () => optional("CRON_SECRET")
 
-/**
- * Kill switch for PayMe online payments. The hosted payment page is currently
- * down, so payments are forced off regardless of `PAYME_SELLER_ID`: the
- * punch-card checkout issues the card immediately and records a pending order
- * paid at the branch. Flip back to `true` to re-enable the online flow.
- */
 const PAYME_ENABLED = false
 
-/**
- * PayMe (PayMeService) online payments. `PAYME_SELLER_ID` is the account's
- * "Payme Id" / API key, sent in the request body — there is no separate secret.
- * Returns null (online payments off) when the kill switch is off or the seller
- * id is unset; the punch-card checkout then falls back to issuing the card
- * immediately. `PAYME_SANDBOX=true` targets the preprod environment for testing
- * without moving real money.
- */
 export const paymeConfig = () => {
   if (!PAYME_ENABLED) return null
   const sellerId = optional("PAYME_SELLER_ID")

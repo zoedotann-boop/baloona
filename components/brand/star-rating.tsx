@@ -1,12 +1,10 @@
 import { cn } from "@/lib/utils"
 
 interface StarRatingProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Number of filled stars out of `max`. */
   rating?: number
   max?: number
 }
 
-/** Row of stars in the brand yellow. */
 function StarRating({
   rating = 5,
   max = 5,

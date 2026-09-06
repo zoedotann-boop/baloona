@@ -45,15 +45,6 @@ interface BirthdayLeadFormProps {
 
 type Answers = Record<string, unknown>
 
-/**
- * Birthday booking form.
- *
- * The questions come from the location's `birthdayFormFields` rows, compiled
- * into a JSON Schema and rendered by `@rjsf/shadcn`, so an editor can add or
- * remove a question without a code change. The parts that carry legal weight —
- * upgrades, cancellation consent and the signature — stay hand-written around
- * the generated fields.
- */
 function BirthdayLeadForm({
   locationId,
   title,
@@ -88,8 +79,6 @@ function BirthdayLeadForm({
     [fields]
   )
 
-  // AJV speaks English by default; rewrite the validation messages a visitor
-  // sees into the site's own Hebrew copy, keyed off the failing rule.
   const localizeErrors = useCallback(
     (errors: RJSFValidationError[]): RJSFValidationError[] =>
       errors.map((error) => {
@@ -231,7 +220,6 @@ function BirthdayLeadForm({
                 </div>
               )}
 
-              {/* Package summary */}
               <div className="mt-6 flex items-center justify-between gap-4 rounded-[20px] bg-brand-pink-soft p-4">
                 <div>
                   <div className="font-heading text-[17px] font-black text-brand-plum">

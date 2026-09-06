@@ -22,10 +22,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The pink flamingo "up to age 12" card. */
 export const Age12: Story = {}
 
-/** The blue hot-air-balloon "up to age 2" card. */
 export const Age2: Story = {
   args: {
     theme: "age2",
@@ -33,8 +31,6 @@ export const Age2: Story = {
   },
 }
 
-/** A customer's own card mid-way through: four of the ten slots stamped. */
 export const Punched: Story = { args: { used: 4 } }
 
-/** A fully redeemed card — every slot stamped. */
 export const Full: Story = { args: { used: 10 } }

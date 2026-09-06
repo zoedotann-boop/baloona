@@ -18,7 +18,6 @@ type Story = StoryObj<typeof meta>
 
 export const Open: Story = {}
 
-/** Closed — the pill turns red. */
 export const Closed: Story = {
   args: { isOpen: false, label: "סגור · נפתח ביום חמישי ב-09:00" },
 }

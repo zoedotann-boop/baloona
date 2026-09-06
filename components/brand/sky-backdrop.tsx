@@ -7,9 +7,6 @@ import {
 } from "@/components/brand/scene-art"
 import { cn } from "@/lib/utils"
 
-// A fixed, hand-placed sky of Baloona motifs — the same cast as the printed
-// signage. Positions are percentages so it scales with the layer; no randomness
-// keeps the SSR/CSR output stable and the a11y snapshot deterministic.
 const CLOUDS = [
   { top: "8%", left: "6%", w: 130, o: 0.95 },
   { top: "22%", left: "74%", w: 170, o: 0.85 },
@@ -25,20 +22,10 @@ const BALLOONS = [
 const HEARTS = [{ top: "30%", left: "60%", w: 26 }]
 
 interface SkyBackdropProps extends React.HTMLAttributes<HTMLDivElement> {
-  /**
-   * `"sky"` (default) floats pink-striped hot-air balloons; `"party"` swaps them
-   * for balloon bunches — the birthday flavour.
-   */
   variant?: "sky" | "party"
-  /** Add the mint hills + flamingo along the bottom edge (the punch-card scene). */
   ground?: boolean
 }
 
-/**
- * A soft sky of clouds, balloons and hearts as a decorative background layer.
- * Drop inside a `relative overflow-hidden` element; renders behind content via
- * `-z-10`, purely ornamental (`aria-hidden`).
- */
 function SkyBackdrop({
   variant = "sky",
   ground = false,

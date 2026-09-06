@@ -15,7 +15,6 @@ interface MediaDraft {
   images: { id?: string; url: string; alt: Localized }[]
 }
 
-/** מדיה — the home page gallery. The first image is the large cover tile. */
 function MediaForm({ slug, initial }: { slug: string; initial: MediaDraft }) {
   const t = useTranslations("admin.media")
   const common = useTranslations("admin.common")
@@ -31,8 +30,6 @@ function MediaForm({ slug, initial }: { slug: string; initial: MediaDraft }) {
       onSave={(value) =>
         saveGallery({
           slug,
-          // Rows the editor added but never gave an image are dropped rather
-          // than saved as broken tiles.
           images: value.images.filter((image) => image.url.trim()),
         })
       }

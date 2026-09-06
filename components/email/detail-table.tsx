@@ -14,13 +14,6 @@ interface DetailTableProps {
   rows: DetailRow[]
 }
 
-/**
- * The submitted details of a lead, laid out as soft rounded bands — one per
- * field — echoing the site's rounded cards. Each band stacks a muted caption
- * over the bold value, which stays readable in RTL and never truncates a long
- * message. Rows with an empty value are dropped so optional fields never render
- * as blanks. Alignment is inherited from the RTL-aware wrapper in EmailLayout.
- */
 export function DetailTable({ rows }: DetailTableProps) {
   const filled = rows.filter((row) => row.value.trim())
   if (!filled.length) return null

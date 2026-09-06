@@ -17,7 +17,6 @@ interface FeaturesProps {
   ctaHref: string
 }
 
-/** Flowing feature columns with balloon icons, plus a pill CTA. */
 function Features({ items, ctaLabel, ctaHref }: FeaturesProps) {
   return (
     <Section className="relative isolate overflow-hidden">

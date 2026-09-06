@@ -5,12 +5,6 @@ import { type Locale } from "@/i18n/routing"
 import { listManageableLocations, requireAdminUser } from "@/lib/admin/access"
 import { pickLocale } from "@/lib/localized"
 
-/**
- * Guard + frame for every signed-in admin page.
- *
- * The login page sits outside this group so it stays reachable while signed
- * out; everything inside it can assume an authenticated user.
- */
 export default async function AdminDashboardLayout({
   children,
 }: LayoutProps<"/admin">) {

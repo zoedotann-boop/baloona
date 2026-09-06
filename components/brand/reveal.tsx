@@ -12,21 +12,11 @@ import { cn } from "@/lib/utils"
 
 interface RevealProps extends React.HTMLAttributes<HTMLElement> {
   children: ReactNode
-  /** Element to render as (e.g. "li", "section"). Defaults to a div. */
   as?: ElementType
-  /** Stagger offset in ms, applied as transition-delay (for rows of cards). */
   delay?: number
-  /** Reveal only once (default). If false, re-hides when scrolled out of view. */
   once?: boolean
 }
 
-/**
- * Scroll-reveal wrapper: gentle fade-in + slide-up when the element enters the
- * viewport, via IntersectionObserver. The visual is a CSS `.reveal` utility
- * (see app/globals.css) toggled through `data-visible`, so prefers-reduced-motion
- * and the no-JS fallback are handled purely in CSS. Only vertical translate is
- * used, so it is RTL-safe.
- */
 function Reveal({
   children,
   as,
@@ -44,8 +34,6 @@ function Reveal({
     const el = ref.current
     if (!el) return
 
-    // Reduced-motion is handled entirely in CSS: the `.reveal` utility is forced
-    // visible under `prefers-reduced-motion`, so the observer can run as usual.
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {

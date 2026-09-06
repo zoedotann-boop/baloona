@@ -8,12 +8,6 @@ import { getLocationChrome, getSeoEntry } from "@/lib/db/queries/site"
 import type { SeoPage } from "@/lib/db/schema"
 import { pickLocale } from "@/lib/localized"
 
-/**
- * Metadata for one page of one branch, from the SEO rows the admin edits.
- *
- * Each branch owns its title, description, share image and favicon, so two
- * venues never compete for the same search result.
- */
 export async function buildPageMetadata(
   slug: string,
   page: SeoPage

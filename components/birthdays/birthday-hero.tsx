@@ -14,7 +14,6 @@ interface BirthdayHeroProps {
   imageUrl?: string
 }
 
-/** Birthdays page hero. */
 function BirthdayHero({ title, description, imageUrl }: BirthdayHeroProps) {
   const t = useTranslations("birthdays")
 

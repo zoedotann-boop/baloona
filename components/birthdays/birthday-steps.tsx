@@ -15,13 +15,11 @@ interface BirthdayStepsProps {
   steps: BirthdayStepContent[]
 }
 
-/** "How it works" — a flat numbered timeline of what every birthday includes. */
 function BirthdaySteps({ title, note, steps }: BirthdayStepsProps) {
   if (steps.length === 0) return null
 
   return (
     <Section className="relative overflow-hidden bg-brand-cloud">
-      {/* Light party-balloon accents above the heading. */}
       <PartyBalloon
         aria-hidden
         color="var(--brand-lavender)"
@@ -40,7 +38,6 @@ function BirthdaySteps({ title, note, steps }: BirthdayStepsProps) {
         </Reveal>
 
         <ol className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Connector line behind the numbers on wide screens. */}
           <div
             aria-hidden="true"
             className="absolute inset-x-[12%] top-7 hidden h-0.5 bg-border lg:block"

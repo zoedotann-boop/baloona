@@ -6,19 +6,6 @@ import { db } from "@/lib/db"
 import { LOCATION_BLUEPRINTS } from "@/lib/db/seed-content"
 import { locations, users } from "@/lib/db/schema"
 
-/**
- * Bootstrap a fresh database: one owner account plus the starter locations.
- *
- * Safe to re-run — existing users and locations are left untouched, so this
- * doubles as "add the branch I forgot" without clobbering live edits.
- *
- *   bun run db:migrate && bun run db:seed
- *
- * The `db:seed` script passes `--conditions=react-server` because this reaches
- * modules guarded by `server-only`, which otherwise resolves to the entry that
- * throws outside a React Server Component.
- */
-
 async function seedOwner() {
   const email = process.env.ADMIN_EMAIL
   const password = process.env.ADMIN_PASSWORD
@@ -39,9 +26,6 @@ async function seedOwner() {
     return
   }
 
-  // Public sign-up is disabled, so create the account through Better Auth's
-  // internal adapter rather than the sign-up endpoint. This is the one place
-  // allowed to do that.
   const ctx = await auth.$context
   const user = await ctx.internalAdapter.createUser({
     email,

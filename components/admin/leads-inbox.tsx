@@ -27,7 +27,6 @@ interface InboxLead {
   email: string
   subject: string | null
   message: string | null
-  /** Answers to the branch's editable form questions, as label → value. */
   details: { label: string; value: string }[]
   upgrades: { label: string; price: string }[]
   total: string | null
@@ -36,13 +35,6 @@ interface InboxLead {
   notifyError: string | null
 }
 
-/**
- * פניות — the inbox for birthday bookings and contact messages.
- *
- * Birthday answers render as a plain label/value list because the questions are
- * editor-defined: whatever the form asks today shows up here without the inbox
- * needing to know about it.
- */
 function LeadsInbox({ slug, leads }: { slug: string; leads: InboxLead[] }) {
   const t = useTranslations("admin.leads")
   const common = useTranslations("admin.common")

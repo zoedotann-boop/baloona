@@ -19,9 +19,6 @@ export default async function AdminLeadsPage({
     getFormatter(),
   ])
 
-  // Answers are stored by field key; look the current label up so the inbox
-  // reads the way the form does, and fall back to the raw key for questions
-  // that have since been removed.
   const labels = new Map(
     (editor?.formFields ?? []).map((field) => [
       field.key,

@@ -24,7 +24,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** The shape every admin section repeats: a card of labelled controls. */
 export const Section: Story = {
   render: (args) => (
     <AdminCard {...args}>

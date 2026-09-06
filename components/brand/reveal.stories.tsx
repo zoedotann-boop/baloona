@@ -6,7 +6,6 @@ const meta = {
   title: "Brand/Reveal",
   component: Reveal,
   parameters: { backgrounds: { value: "lavender" } },
-  // Each story overrides via `render`; `children` satisfies the required prop.
   args: { children: null },
 } satisfies Meta<typeof Reveal>
 
@@ -21,8 +20,6 @@ function DemoCard({ label }: { label: string }) {
   )
 }
 
-// In Storybook the content already sits inside the viewport, so it reveals on
-// mount — you see the settled (revealed) state rather than the scroll trigger.
 export const Default: Story = {
   render: () => (
     <div className="w-[320px]">

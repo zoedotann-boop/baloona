@@ -9,8 +9,6 @@ import { leads } from "@/lib/db/schema"
 
 import { OK, type ActionResult } from "./shared"
 
-/** פניות — triaging the inbox. */
-
 const statusSchema = z.object({
   slug: z.string().min(1),
   leadId: z.uuid(),

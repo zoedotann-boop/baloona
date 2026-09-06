@@ -1,16 +1,11 @@
 import { cn } from "@/lib/utils"
 
 interface BalloonClusterIconProps extends React.HTMLAttributes<HTMLSpanElement> {
-  /** Petal color. Defaults to the brand rose. */
   color?: string
-  /** Overall box size in pixels. */
   size?: number
-  /** Fill the centre with the petal color instead of white (no "hole"). */
   solidCenter?: boolean
 }
 
-// Six petals arranged radially around a white center — the recurring
-// balloon/flower motif from the Baloona design.
 const PETAL_ANGLES = [0, 60, 120, 180, 240, 300]
 
 function BalloonClusterIcon({

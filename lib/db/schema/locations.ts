@@ -11,11 +11,6 @@ import {
 
 import { localized, localizedList, timestamps } from "./_shared"
 
-/**
- * A venue. Every piece of editable content hangs off a location, so opening a
- * branch is "insert a row and seed its content" rather than a code change.
- * Visitors reach a location at `/<slug>`; `/` lists them all.
- */
 export const locations = pgTable("location", {
   id: uuid().primaryKey().defaultRandom(),
   slug: text().notNull().unique(),
@@ -25,7 +20,6 @@ export const locations = pgTable("location", {
   ...timestamps,
 })
 
-/** Contact details and socials. One row per location. */
 export const locationContacts = pgTable("location_contact", {
   locationId: uuid()
     .primaryKey()
@@ -33,10 +27,8 @@ export const locationContacts = pgTable("location_contact", {
   city: localized().notNull(),
   address: localized().notNull(),
   phone: text().notNull().default(""),
-  /** International format without `+`, e.g. `972501234567`. */
   whatsapp: text().notNull().default(""),
   email: text().notNull().default(""),
-  /** Where lead notifications are emailed. Falls back to `email` when blank. */
   leadRecipientEmail: text().notNull().default(""),
   instagramUrl: text(),
   facebookUrl: text(),
@@ -44,11 +36,6 @@ export const locationContacts = pgTable("location_contact", {
   ...timestamps,
 })
 
-/**
- * Opening hours, one row per weekday (0 = Sunday … 6 = Saturday). Times are
- * stored as `HH:mm` strings: the site only ever prints them, and a `time`
- * column would drag timezone semantics into a purely presentational value.
- */
 export const openingHours = pgTable(
   "opening_hour",
   {
@@ -70,17 +57,11 @@ export const openingHours = pgTable(
   ]
 )
 
-/** Analytics, sharing images and third-party ids. One row per location. */
 export const siteSettings = pgTable("site_setting", {
   locationId: uuid()
     .primaryKey()
     .references(() => locations.id, { onDelete: "cascade" }),
-  /** Used by the reviews sync to pull this branch's Google reviews. */
   googlePlaceId: text(),
-  /**
-   * Opts this branch into the nightly Google reviews cron. Off by default, so
-   * a new branch never publishes reviews before someone asks it to.
-   */
   googleReviewsAutoSync: boolean().notNull().default(false),
   gaMeasurementId: text(),
   metaPixelId: text(),
@@ -90,7 +71,6 @@ export const siteSettings = pgTable("site_setting", {
   ...timestamps,
 })
 
-/** Public pages that carry their own `<title>` and description. */
 export const seoPage = pgEnum("seo_page", ["home", "menu", "birthdays"])
 
 export type SeoPage = (typeof seoPage.enumValues)[number]
@@ -113,11 +93,6 @@ export const seoEntries = pgTable(
   ]
 )
 
-/**
- * The site-wide pop-up: a title plus any combination of a paragraph, bullet
- * lines and a call to action — editors fill only the parts they need. Bumping
- * `version` re-shows the pop-up to visitors who already dismissed it.
- */
 export const announcements = pgTable("announcement", {
   locationId: uuid()
     .primaryKey()

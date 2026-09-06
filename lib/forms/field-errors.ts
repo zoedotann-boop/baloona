@@ -1,11 +1,3 @@
-/**
- * Reduce a failed zod `safeParse` to one message per field.
- *
- * Copy stays in `messages/*.json`: the caller passes a translator scoped to the
- * `forms` namespace, and the message is chosen from the field and its value —
- * an empty value reads as "required", a bad phone/email reads as its format
- * message, and anything else falls back to a generic "too long".
- */
 export type FieldErrors = Record<string, string>
 
 export function collectFieldErrors(

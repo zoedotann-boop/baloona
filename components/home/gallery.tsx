@@ -23,16 +23,8 @@ interface GalleryProps {
   images: GalleryImage[]
 }
 
-/**
- * Venue photo gallery with a click-to-open lightbox.
- *
- * Two presentations share one image list: a swipeable snap-slider on mobile
- * (where a grid would shrink every tile to a thumbnail) and a featured mosaic
- * on desktop. Both open the same RTL-aware lightbox.
- */
 function Gallery({ title, images }: GalleryProps) {
   const t = useTranslations("gallery")
-  // Index of the image shown in the lightbox, or null when it is closed.
   const [active, setActive] = useState<number | null>(null)
   const isOpen = active !== null
   const total = images.length
@@ -47,7 +39,6 @@ function Gallery({ title, images }: GalleryProps) {
     [total]
   )
 
-  // Keyboard controls + body scroll lock while the lightbox is open.
   useEffect(() => {
     if (!isOpen) return
     function onKey(e: KeyboardEvent) {
@@ -65,7 +56,6 @@ function Gallery({ title, images }: GalleryProps) {
     }
   }, [isOpen, close, next, prev])
 
-  // Physical swipe in the lightbox: drag left → next, drag right → previous.
   const touchStartX = useRef<number | null>(null)
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
@@ -89,7 +79,6 @@ function Gallery({ title, images }: GalleryProps) {
           </h2>
         </Reveal>
 
-        {/* Mobile: swipeable snap slider with a peek of the next photo. */}
         <Reveal className="md:hidden">
           <MobileSlider
             images={images}
@@ -99,7 +88,6 @@ function Gallery({ title, images }: GalleryProps) {
           />
         </Reveal>
 
-        {/* Desktop: featured mosaic — the first photo leads at double size. */}
         <Reveal className="hidden auto-rows-[150px] grid-cols-3 gap-4 md:grid">
           {images.map((image, index) => (
             <button
@@ -141,7 +129,6 @@ function Gallery({ title, images }: GalleryProps) {
             <X className="size-6" />
           </button>
 
-          {/* RTL: previous sits on the right (start), next on the left (end). */}
           <button
             type="button"
             onClick={(e) => {
@@ -191,11 +178,6 @@ function Gallery({ title, images }: GalleryProps) {
   )
 }
 
-/**
- * The mobile presentation: a horizontal scroll-snap track. Each slide is a bit
- * narrower than the viewport so the neighbouring photo peeks, signalling that
- * the row slides; the dots below track and jump between photos.
- */
 function MobileSlider({
   images,
   onOpen,
@@ -210,8 +192,6 @@ function MobileSlider({
   const trackRef = useRef<HTMLDivElement>(null)
   const [current, setCurrent] = useState(0)
 
-  // Derive the active slide from whichever tile is nearest the track's centre.
-  // Reading geometry (not scrollLeft) keeps it correct under RTL scrolling.
   const syncCurrent = useCallback(() => {
     const track = trackRef.current
     if (!track) return

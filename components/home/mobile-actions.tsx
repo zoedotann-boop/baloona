@@ -8,22 +8,13 @@ import { cn } from "@/lib/utils"
 
 interface MobileActionsProps {
   whatsappHref: string
-  /** Drives the status chip from the venue's real opening hours. */
   isOpen: boolean
 }
 
-/**
- * Mobile-only floating controls: a small open/closed status chip plus WhatsApp
- * and back-to-top buttons that stay in view while scrolling. Rendered at the
- * site-chrome root (never inside an `isolate`/`overflow` section) so the fixed
- * layer always paints above page content. The desktop counterpart is
- * {@link import("./status-float").StatusFloat}.
- */
 function MobileActions({ whatsappHref, isOpen }: MobileActionsProps) {
   const site = useTranslations("site")
   const status = useTranslations("status")
   const mobile = useTranslations("mobile")
-  // The back-to-top button only appears once the visitor has scrolled down.
   const [showTop, setShowTop] = useState(false)
 
   useEffect(() => {
@@ -41,9 +32,7 @@ function MobileActions({ whatsappHref, isOpen }: MobileActionsProps) {
 
   return (
     <div className="md:hidden">
-      {/* Floating action buttons, styled to match the site's soft, rounded look */}
       <div className="fixed bottom-6 left-4 z-50 flex flex-col items-center gap-3">
-        {/* Open / closed status chip */}
         <span
           className={cn(
             "relative flex size-14 flex-col items-center justify-center rounded-full px-1 text-center font-heading text-[11px] leading-tight font-black text-white ring-4 ring-white/70",
@@ -56,7 +45,6 @@ function MobileActions({ whatsappHref, isOpen }: MobileActionsProps) {
           </span>
         </span>
 
-        {/* WhatsApp — the primary action */}
         <a
           href={whatsappHref}
           target="_blank"
@@ -67,7 +55,6 @@ function MobileActions({ whatsappHref, isOpen }: MobileActionsProps) {
           <Icon name="whatsapp" className="size-7" />
         </a>
 
-        {/* Back to top — revealed only after scrolling down the page */}
         <button
           type="button"
           onClick={scrollToTop}

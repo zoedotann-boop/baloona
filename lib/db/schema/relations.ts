@@ -34,12 +34,6 @@ import { menuCategories, menuContents, menuItems } from "./menu"
 import { customers, punchCards, punchEvents } from "./punch-cards"
 import { punchCardOrders } from "./shop"
 
-/**
- * Relations live in one file so the table modules stay a directed graph
- * (everything imports `locations`, nothing imports back) while Drizzle's
- * relational query API can still load a whole location in a single call.
- */
-
 export const locationsRelations = relations(locations, ({ one, many }) => ({
   contact: one(locationContacts),
   settings: one(siteSettings),
@@ -289,9 +283,6 @@ export const punchCardsRelations = relations(punchCards, ({ one, many }) => ({
     references: [locations.id],
   }),
   events: many(punchEvents),
-  // The online purchase behind this card, when it was bought through the shop
-  // (a card issued at the desk has none). Carries the payment status the
-  // front-desk console shows.
   order: one(punchCardOrders),
 }))
 

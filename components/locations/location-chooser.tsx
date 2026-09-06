@@ -16,12 +16,6 @@ interface LocationCard {
   imageUrl?: string
 }
 
-/**
- * The `/` landing content: one card per published branch. With every venue
- * owning its own content, the root has nothing of its own to show — so it sends
- * visitors to a branch rather than guessing which one they want. It renders
- * inside the shared brand-global shell, so this is just the pink hero band.
- */
 function LocationChooser({ locations }: { locations: LocationCard[] }) {
   const t = useTranslations("locations")
 

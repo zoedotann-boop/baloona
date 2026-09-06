@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils"
 
-/** Playful gift-and-balloons illustration for the birthday card. */
 function BirthdayScene({
   className,
   ...props
@@ -19,7 +18,6 @@ function BirthdayScene({
         preserveAspectRatio="xMidYMid meet"
         className="h-full w-full"
       >
-        {/* dotted texture */}
         <defs>
           <pattern
             id="bd-dots"
@@ -32,7 +30,6 @@ function BirthdayScene({
         </defs>
         <rect width="420" height="280" fill="url(#bd-dots)" />
 
-        {/* balloons */}
         <g className="animate-baloona-float">
           <ellipse cx="120" cy="70" rx="30" ry="36" fill="#dda99e" />
           <path d="M120 106 l5 9 h-10 z" fill="#dda99e" />
@@ -67,7 +64,6 @@ function BirthdayScene({
           <ellipse cx="230" cy="67" rx="5" ry="8" fill="#fff" opacity=".35" />
         </g>
 
-        {/* gift box */}
         <g transform="translate(150 150)">
           <rect x="0" y="34" width="120" height="80" rx="8" fill="#ffffff" />
           <rect x="0" y="34" width="120" height="24" rx="8" fill="#b3e5fc" />
@@ -82,7 +78,6 @@ function BirthdayScene({
           />
         </g>
 
-        {/* confetti */}
         <circle cx="70" cy="150" r="4" fill="#81d4fa" />
         <circle cx="330" cy="120" r="4" fill="#ffe066" />
         <circle cx="300" cy="210" r="4" fill="#dda99e" />

@@ -5,18 +5,6 @@ import { useEffect, useRef } from "react"
 
 import { AdminDialog } from "./admin-dialog"
 
-/**
- * "Are you sure?" for an action worth a second look — deleting a row, a branch,
- * a team member, an enquiry.
- *
- * The caller owns the wording, because the consequence genuinely differs: a row
- * removed from a draft list comes back if the editor never publishes, while a
- * branch delete is immediate and permanent. A shared component that claimed
- * "this cannot be undone" everywhere would be lying half the time.
- *
- * Cancel takes focus rather than confirm, so Enter on an accidental open backs
- * out instead of destroying something.
- */
 function ConfirmModal({
   open,
   onClose,
@@ -28,9 +16,7 @@ function ConfirmModal({
   open: boolean
   onClose: () => void
   onConfirm: () => void
-  /** What is being acted on — usually the row's own name. */
   title: string
-  /** What will actually happen, in the caller's words. */
   message: string
   confirmLabel?: string
 }) {

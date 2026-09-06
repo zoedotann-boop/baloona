@@ -7,19 +7,12 @@ const pillButtonVariants = cva(
   {
     variants: {
       variant: {
-        // Baby-pink solid — the primary call to action. Definition comes from
-        // the hover-lift (see base) and dark text, not a drop-shadow glow.
         primary: "bg-brand-pink text-brand-plum",
-        // White with a dark outline.
         outline:
           "border-2 border-foreground bg-white text-foreground hover:bg-muted",
-        // Soft cloud surface — used on a colored background (e.g. birthday card).
         soft: "bg-brand-cloud text-foreground",
       },
       size: {
-        // Matches the admin's control height (h-9), so it lines up with the
-        // language switch and the outline buttons beside it. The site's own
-        // CTAs stay on `md`/`lg`.
         sm: "h-9 px-4 text-[14px]",
         md: "h-[46px] px-6 text-base",
         lg: "h-[54px] px-7 text-[17px]",
@@ -38,7 +31,6 @@ type PillButtonProps = VariantProps<typeof pillButtonVariants> &
     | ({ href?: undefined } & React.ButtonHTMLAttributes<HTMLButtonElement>)
   )
 
-/** Fully-rounded brand button. Renders an `<a>` when `href` is provided. */
 function PillButton({ className, variant, size, ...props }: PillButtonProps) {
   const classes = cn(pillButtonVariants({ variant, size }), className)
 

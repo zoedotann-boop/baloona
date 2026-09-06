@@ -27,7 +27,6 @@ interface SectionContext {
 
 const Context = createContext<SectionContext | null>(null)
 
-/** Which language the surrounding form is editing, and for which branch. */
 export function useSectionContext(): SectionContext {
   const context = useContext(Context)
   if (!context)
@@ -45,14 +44,6 @@ interface SectionFormProps<T> {
   children: React.ReactNode
 }
 
-/**
- * The frame every admin section shares: a heading, a language switch, the
- * "translate this page with AI" shortcut and the publish bar.
- *
- * Sections hold their whole draft in one state object and publish it in one
- * action — which is what "edit a few things, then hit publish" means to an
- * editor, and keeps each save a single, reviewable payload.
- */
 export function SectionForm<T>({
   slug,
   title,
@@ -104,9 +95,6 @@ export function SectionForm<T>({
   return (
     <Context.Provider value={{ slug, locale }}>
       <form onSubmit={submit}>
-        {/* Title on one side, every action on the other. Sticky so publishing
-            stays one click away on a long section, and stretched past the
-            content gutter so it covers what scrolls underneath it. */}
         <header className="sticky top-0 z-30 -mx-4 -mt-4 mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border bg-white/95 px-4 pt-4 pb-2.5 backdrop-blur md:-mx-6 md:px-6">
           <div className="min-w-0">
             <h1 className="font-heading text-[20px] font-black text-brand-plum">

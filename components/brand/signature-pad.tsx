@@ -5,23 +5,12 @@ import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 interface SignaturePadProps {
-  /**
-   * Receives the signature as a PNG data URL after each stroke, or `null` when
-   * the pad is empty. The image itself is what gets stored with the lead, so
-   * the pad hands back the picture rather than just "signed / not signed".
-   */
   onChange?: (dataUrl: string | null) => void
-  /** Hint shown behind an empty pad. */
   hint?: string
   clearLabel?: string
   className?: string
 }
 
-/**
- * Dependency-free digital signature pad. Draws on a `<canvas>` via pointer
- * events (mouse + touch) and offers a clear button. Sized for its container;
- * redraws crisply on high-DPR screens.
- */
 function SignaturePad({
   onChange,
   hint,

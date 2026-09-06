@@ -9,22 +9,12 @@ import { cn } from "@/lib/utils"
 interface PunchCardDisplayProps {
   total: number
   used: number
-  /** Greeting name, shown on the customer's own view. */
   customerName?: string
-  /** Branch the card was issued at, if known. */
   branchName?: string | null
-  /** Free note (e.g. a physical-card migration marker). */
   note?: string | null
   className?: string
 }
 
-/**
- * The customer's own card, at `/card/<token>`. It shows the very same illustrated
- * Baloona card sold on the home page ({@link PunchCardArt}) — now with the slots
- * they have redeemed stamped in — framed like a shop card, with their greeting and
- * live balance below. Dumb component: the page resolves the values and the labels
- * come from `messages`.
- */
 function PunchCardDisplay({
   total,
   used,

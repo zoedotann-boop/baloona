@@ -9,7 +9,6 @@ export default async function AdminShopPage({
   const { location: slug } = await params
   await requireLocationAccess(slug, "content")
 
-  // The catalog is brand-global; the branch in the URL is only the auth context.
   const products = await listProducts()
 
   return (

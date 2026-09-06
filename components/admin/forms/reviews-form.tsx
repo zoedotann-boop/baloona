@@ -28,7 +28,6 @@ interface ReviewsDraft {
   photos: { id?: string; url: string; alt: Localized }[]
 }
 
-/** ניהול ביקורות — hand-written reviews plus a Google Places import. */
 function ReviewsForm({
   slug,
   initial,
@@ -48,8 +47,6 @@ function ReviewsForm({
     startSync(async () => {
       const result = await syncGoogleReviews({ slug })
       if (result.ok) {
-        // The sync already wrote to the database, so adopt what it returned
-        // rather than leaving the table showing the pre-sync list.
         setDraft((current) => ({ ...current, reviews: result.reviews }))
         toast(
           t("syncResult", {
@@ -84,8 +81,6 @@ function ReviewsForm({
           reviews: value.reviews.map(
             ({ source: _source, ...review }) => review
           ),
-          // Rows the editor added but never gave an image are dropped rather
-          // than saved as broken tiles.
           photos: value.photos.filter((photo) => photo.url.trim()),
         })
       }

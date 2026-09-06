@@ -8,9 +8,6 @@ import {
   type PunchCardConfirmationEmailProps,
 } from "./punch-card-confirmation-email"
 
-// Emails render to a full HTML document, so preview them inside an iframe rather
-// than mounting <Html>/<Body> into the Storybook DOM (which would nest a second
-// document and confuse the a11y checks).
 function EmailPreview(props: PunchCardConfirmationEmailProps) {
   const html = renderToStaticMarkup(<PunchCardConfirmationEmail {...props} />)
   return (

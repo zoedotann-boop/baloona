@@ -21,19 +21,11 @@ interface CheckoutFormProps {
   productName: string
   entriesLabel: string
   productPrice: string
-  /** Which card design to preview, matching the product's shop artwork. */
   theme: "age12" | "age2"
-  /** Branch the visitor came from, recorded as the card's issuing branch. */
   from: string
-  /** Link to the terms page, opened from the consent label. */
   termsHref: string
 }
 
-/**
- * Checkout details + mandatory terms consent. Until PayMe is connected,
- * submitting issues the punch card immediately (see `purchasePunchCard`) so it
- * lands in the front-desk console, then offers the customer their card link.
- */
 function CheckoutForm({
   productId,
   productName,
@@ -82,7 +74,6 @@ function CheckoutForm({
       if (!result.ok) {
         setStatus("error")
       } else if ("redirect" in result) {
-        // Payments on: hand off to PayMe's hosted page (full-page navigation).
         window.location.href = result.redirect
       } else {
         setToken(result.token)

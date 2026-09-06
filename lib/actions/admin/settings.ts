@@ -20,8 +20,6 @@ import {
   type ActionResult,
 } from "./shared"
 
-/** הגדרות כלליות — contact details, opening hours, the pop-up, SEO and tracking. */
-
 const contactSchema = z.object({
   slug: z.string().min(1),
   city: localizedSchema,
@@ -111,7 +109,6 @@ const announcementSchema = z.object({
   lines: localizedListSchema,
   ctaLabel: localizedSchema,
   ctaHref: z.string().trim().max(500),
-  /** Set by the editor's "show again to everyone" control. */
   bumpVersion: z.boolean().default(false),
 })
 

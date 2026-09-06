@@ -25,7 +25,6 @@ export async function generateMetadata() {
   return { title: t("title") }
 }
 
-/** Checkout for one product; submitting hands off to PayMe (see checkout-form). */
 export default async function CheckoutPage({
   searchParams,
 }: PageProps<"/checkout">) {
@@ -37,9 +36,6 @@ export default async function CheckoutPage({
     listActiveProducts(),
   ])
 
-  // `from` is the branch the visitor came from, so "back" returns to its shop
-  // and — when it is a real published branch — the page wears that branch's
-  // full chrome. Otherwise it falls back to the brand-global shell.
   const from =
     typeof fromParam === "string" && SLUG_RE.test(fromParam) ? fromParam : ""
   const hasBranch = from !== "" && published.some((l) => l.slug === from)
@@ -48,17 +44,11 @@ export default async function CheckoutPage({
   const id = typeof productParam === "string" ? productParam : ""
   const product = UUID_RE.test(id) ? await getProductById(id) : undefined
 
-  // The two card designs alternate down the shop catalog (see ShopSection), so a
-  // product's artwork follows its position there — this keeps the checkout card
-  // matching the one the visitor tapped. Unknown/inactive products fall back to
-  // the first design.
   const catalogIndex = product
     ? activeProducts.findIndex((p) => p.id === product.id)
     : -1
   const cardTheme = catalogIndex % 2 === 1 ? "age2" : "age12"
 
-  // Wear the site's soft sky behind the checkout so the buying process sits in
-  // the same branded world as the shop and the card page, not a bare page.
   const content = (
     <Section spacing="md" className="relative isolate overflow-hidden">
       <SkyBackdrop />

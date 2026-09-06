@@ -32,48 +32,21 @@ import { AdminModal } from "./admin-modal"
 import { adminCell, AdminTable, AdminTableEmpty } from "./admin-table"
 import { ConfirmModal } from "./confirm-modal"
 
-/**
- * An editable, ordered list of rows, shown as a compact table.
- *
- * The table is the summary — a handful of columns an editor scans — and the
- * full form for a row lives behind its edit button. That keeps a section with
- * twenty rows readable on one screen instead of twenty stacked cards, without
- * hiding any of the fields.
- *
- * Where that form opens depends on where the table is. At the top of a section
- * it is a dialog. Inside one — a price tier's rows, a menu category's items, a
- * form field's options — it expands in place instead, because a dialog on top
- * of a dialog is disorienting and hides the parent it belongs to. The table
- * asks {@link useInDialog} rather than taking a prop, so a call site cannot
- * forget, and the same `columns` and `renderRow` serve both.
- *
- * Order is the array's own order, turned into `sortOrder` on save. Rows are
- * dragged by their handle (dnd-kit), which also reorders from the keyboard —
- * space to lift, arrows to move, space to drop — so replacing the old up/down
- * buttons did not cost keyboard users the ability to reorder.
- */
-
 interface RowColumn<T> {
   header: string
   cell: (item: T, index: number) => React.ReactNode
-  /** Width and alignment utilities, applied to the header and its cells. */
   className?: string
-  /** Explains the column on an info icon beside its header. */
   tooltip?: string
 }
 
 interface RowTableProps<T> {
   items: T[]
   onChange: (items: T[]) => void
-  /** Creates the blank row appended by the add button. */
   createItem: () => T
   addLabel: string
   emptyLabel?: string
-  /** What the table shows for a row without opening it. */
   columns: RowColumn<T>[]
-  /** Heading of the row's editor — usually the row's own name. */
   editTitle: (item: T, index: number) => string
-  /** The row's full editor, in a dialog or expanded in place. */
   renderRow: (
     item: T,
     index: number,
@@ -96,26 +69,15 @@ function RowTable<T>({
 }: RowTableProps<T>) {
   const t = useTranslations("admin.common")
   const inDialog = useInDialog()
-  // dnd-kit derives ids for its aria wiring from an internal counter, which
-  // differs between the server and client renders and trips hydration. Handing
-  // it a React id keeps both sides identical.
   const dndId = useId()
   const [editing, setEditing] = useState<number | null>(null)
   const [removing, setRemoving] = useState<number | null>(null)
 
-  // dnd-kit needs an id that follows the row, not its position: with
-  // positional ids every id still points at the same slot after a reorder, so
-  // the dragged row has nothing to travel to and snaps back. Draft rows have no
-  // database id yet (and keep none until publish), so identity is minted here
-  // and moved in step with the data.
   const [rows, setRows] = useState(() => ({
     ids: items.map((_, index) => `row-${index}`),
     next: items.length,
   }))
 
-  // Re-sync when the list is replaced from outside — adding a row, or the
-  // Google sync swapping the whole array. Existing rows keep their id so a
-  // drag in flight still resolves.
   if (rows.ids.length !== items.length) {
     setRows((current) => {
       let next = current.next
@@ -127,8 +89,6 @@ function RowTable<T>({
   }
   const ids = rows.ids
 
-  // A pointer drag only starts past a few pixels, so clicking the handle (or
-  // any button beside it) still registers as a click.
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, {
@@ -160,8 +120,6 @@ function RowTable<T>({
       ...current,
       ids: arrayMove(current.ids, from, to),
     }))
-    // The open editor follows its row rather than staying on whatever now sits
-    // at that position.
     setEditing((current) =>
       current === null
         ? null
@@ -173,8 +131,6 @@ function RowTable<T>({
     )
   }
 
-  // A new row is blank, so there is nothing to scan in the table — open it for
-  // editing straight away rather than making the editor hunt for the new line.
   function add() {
     onChange([...items, createItem()])
     setRows((current) => ({
@@ -186,7 +142,6 @@ function RowTable<T>({
 
   const editingItem = editing === null ? undefined : items[editing]
   const removingItem = removing === null ? undefined : items[removing]
-  // Columns plus the drag handle and the actions cell.
   const span = columns.length + 2
 
   return (
@@ -279,8 +234,6 @@ function RowTable<T>({
                   </td>
                 </SortableRow>
 
-                {/* In-place editor, used instead of a dialog when this table is
-                    itself inside one. */}
                 {inDialog && editing === index && (
                   <tr className="border-b border-border bg-muted/30 last:border-0">
                     <td colSpan={span} className="px-3 py-3">
@@ -291,8 +244,6 @@ function RowTable<T>({
                   </tr>
                 )}
 
-                {/* Likewise the delete confirmation: a second dialog over the
-                    first would hide the list the row belongs to. */}
                 {inDialog && removing === index && (
                   <tr className="border-b border-border bg-destructive/5 last:border-0">
                     <td colSpan={span} className="px-3 py-2">
@@ -361,8 +312,6 @@ function RowTable<T>({
                   ? editTitle(removingItem, removing)
                   : ""
               }
-              // A row leaves the list now but the deletion only reaches the
-              // database on publish, so this must not claim to be final.
               message={t("removeRowMessage")}
             />
           </>
@@ -372,10 +321,6 @@ function RowTable<T>({
   )
 }
 
-/**
- * One draggable row. The handle carries the drag listeners rather than the
- * whole row, so the cells stay selectable and the buttons stay clickable.
- */
 function SortableRow({
   id,
   children,

@@ -9,30 +9,16 @@ import { EmailLayout } from "./email-layout"
 const { color, font } = emailTheme
 
 export interface BirthdayInvitationEmailProps {
-  /** Locale the invitation is written in. */
   locale: Locale
-  /** Absolute origin the logo + background are loaded from. */
   baseUrl?: string
-  /** Inbox preview line. */
   preview: string
-  /** Pill above the heading — the site's eyebrow badge. */
   eyebrow: string
-  /** Warm greeting headline (may include the celebrant's name). */
   heading: string
-  /** Body paragraphs shown under the heading, in order. */
   paragraphs: string[]
-  /** Closing line, e.g. "See you soon, the Baloona team". */
   signoff: string
-  /** Shared footer copy. */
   footer: string
 }
 
-/**
- * Courtesy email sent to a visitor after they book a birthday: the ready-made
- * Baloona invitation rides along as a PDF attachment, and this is the branded
- * cover note. Built on the shared {@link EmailLayout} so it matches every other
- * Baloona email.
- */
 export function BirthdayInvitationEmail({
   locale,
   baseUrl,

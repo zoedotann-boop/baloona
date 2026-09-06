@@ -92,7 +92,6 @@ interface BirthdaysDraft {
   }[]
 }
 
-/** ימי הולדת — page copy, package pricing and the booking form's fields. */
 function BirthdaysForm({
   slug,
   initial,
