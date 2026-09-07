@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 import { ArrowRight } from "lucide-react"
 
@@ -14,6 +15,7 @@ import {
   listActiveProducts,
   listPublishedLocations,
 } from "@/lib/db/queries/site"
+import { PUNCH_CARD_SHOP_ENABLED } from "@/lib/features"
 import { formatPrice, pickLocale } from "@/lib/localized"
 
 const UUID_RE =
@@ -28,6 +30,8 @@ export async function generateMetadata() {
 export default async function CheckoutPage({
   searchParams,
 }: PageProps<"/checkout">) {
+  if (!PUNCH_CARD_SHOP_ENABLED) notFound()
+
   const { product: productParam, from: fromParam } = await searchParams
   const [locale, t, published, activeProducts] = await Promise.all([
     getLocale() as Promise<Locale>,

@@ -122,6 +122,12 @@ input classes per form**:
 
 These pages must feel like one branded flow, not a bare form:
 
+- **The public shop is currently off.** `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts`
+  (`false`) hides the home `ShopSection` and the footer link, makes `/checkout` return
+  `notFound()`, and makes `startPunchCardCheckout` refuse — customers can no longer buy
+  cards online, but the admin still manages products (`/admin/<branch>/shop`) and issues
+  cards (`/admin/<branch>/punch-cards`). Flip the flag to `true` to bring the storefront
+  back. The flow below describes it when enabled.
 - Each wears the site's soft sky: a `relative isolate overflow-hidden` wrapper
   with `<SkyBackdrop />`, laid out with `Section`.
 - The shop uses `ShopSection` (`components/home/shop-section.tsx`); the checkout

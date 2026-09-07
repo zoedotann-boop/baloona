@@ -97,7 +97,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
   is **confirmed** (`fulfilOrder`, reached from the PayMe callback and `/checkout/success`);
   without a key it falls back to issuing immediately (see the PayMe integration below).
   `/[location]/terms` renders a per-branch Terms & Cancellation policy (editable body, falling
-  back to a `sections` block in `messages/*.json`).
+  back to a `sections` block in `messages/*.json`). **Buying is gated by
+  `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts` and is currently `false`:** the home
+  `ShopSection`, the footer link, the `/checkout` route and `startPunchCardCheckout` are all
+  off, so customers cannot buy cards online while the admin keeps managing products and
+  issuing cards. Flip the flag to re-open the storefront.
 - **One public shell for every page.** All public pages wear the same frame from
   `components/layout/`: `PublicShell` (header + `<main>` + footer) filled by either
   `SiteChrome` — the full per-branch chrome (header nav, contact block, footer, announcement,
