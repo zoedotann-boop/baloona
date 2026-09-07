@@ -8,6 +8,7 @@ import { defaultLocale } from "@/i18n/routing"
 import { db } from "@/lib/db"
 import { locations, products, punchCardOrders } from "@/lib/db/schema"
 import { paymeConfig } from "@/lib/env"
+import { PUNCH_CARD_SHOP_ENABLED } from "@/lib/features"
 import { isHoneypotFilled } from "@/lib/forms/honeypot"
 import { checkoutSchema } from "@/lib/forms/schemas"
 import { pickLocale } from "@/lib/localized"
@@ -24,6 +25,7 @@ type CheckoutResult =
 export async function startPunchCardCheckout(
   input: z.input<typeof checkoutSchema>
 ): Promise<CheckoutResult> {
+  if (!PUNCH_CARD_SHOP_ENABLED) return { ok: false, error: "invalid" }
   const parsed = checkoutSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   if (isHoneypotFilled(parsed.data.honeypot))

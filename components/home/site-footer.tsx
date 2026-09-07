@@ -5,6 +5,7 @@ import { Icon } from "@/components/brand/icon"
 import { LanguageSwitcher } from "@/components/brand/language-switcher"
 import { Logo } from "@/components/brand/logo"
 import { Container } from "@/components/layout/container"
+import { PUNCH_CARD_SHOP_ENABLED } from "@/lib/features"
 import type { LocationPaths } from "@/lib/site-links"
 import type { ContactDetails, HoursRow } from "@/lib/view-models"
 
@@ -57,7 +58,9 @@ function SiteFooter({
     { label: nav("home"), href: paths.home },
     { label: nav("menu"), href: paths.menu },
     { label: nav("birthdays"), href: paths.birthdays },
-    { label: t("shop"), href: paths.shop },
+    ...(PUNCH_CARD_SHOP_ENABLED
+      ? [{ label: t("shop"), href: paths.shop }]
+      : []),
     { label: t("pricingLink"), href: paths.pricing },
     { label: t("contactLink"), href: paths.contact },
     ...(showBranchSwitch ? [{ label: nav("allBranches"), href: "/" }] : []),
