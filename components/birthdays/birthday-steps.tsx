@@ -49,7 +49,7 @@ function BirthdaySteps({ title, note, steps }: BirthdayStepsProps) {
               delay={index * 80}
               className="relative text-center"
             >
-              <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-accent font-heading text-[22px] font-black text-accent-foreground">
+              <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-brand-pink font-heading text-[22px] font-black text-brand-plum">
                 {index + 1}
               </div>
               <h3 className="mt-4 font-heading text-[20px] font-black text-brand-plum">
