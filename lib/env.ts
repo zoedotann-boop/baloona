@@ -25,7 +25,7 @@ export const resendConfig = () => {
 }
 
 export function emailAssetsBaseUrl(): string {
-  const base = optional("EMAIL_ASSETS_BASE_URL") || "https://baloona.co.il"
+  const base = optional("EMAIL_ASSETS_BASE_URL") || "https://www.baloona.co.il"
   return base.replace(/\/+$/, "")
 }
 
