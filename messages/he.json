@@ -150,6 +150,8 @@
     "completed": "הכרטיסייה מלאה! 🎉",
     "slotFilled": "ניקוב מנוצל",
     "slotEmpty": "ניקוב פנוי",
+    "historyTitle": "היסטוריית ניקובים",
+    "punchNumber": "ניקוב {number}",
     "issuedBy": "הונפק בסניף {branch}",
     "footerNote": "שמרו את הקישור הזה — זו הכרטיסייה הדיגיטלית שלכם."
   },
