@@ -6,9 +6,15 @@ import { PunchCardArt } from "@/components/shop/punch-card-art"
 import { remainingPunches } from "@/lib/punch-cards"
 import { cn } from "@/lib/utils"
 
+interface PunchEntry {
+  id: string
+  at: string
+}
+
 interface PunchCardDisplayProps {
   total: number
   used: number
+  punches?: PunchEntry[]
   customerName?: string
   branchName?: string | null
   note?: string | null
@@ -18,6 +24,7 @@ interface PunchCardDisplayProps {
 function PunchCardDisplay({
   total,
   used,
+  punches = [],
   customerName,
   branchName,
   note,
@@ -68,6 +75,27 @@ function PunchCardDisplay({
             </p>
           )}
         </div>
+
+        {punches.length > 0 && (
+          <div className="mt-4 rounded-[20px] bg-brand-pink-soft/60 px-5 py-4 text-right">
+            <h2 className="font-heading text-[15px] font-black text-brand-plum">
+              {t("historyTitle")}
+            </h2>
+            <ol className="mt-2 space-y-1">
+              {punches.map((punch, index) => (
+                <li
+                  key={punch.id}
+                  className="flex items-center justify-between gap-3 text-[13px] text-brand-rose-ink/80"
+                >
+                  <span className="font-bold text-brand-plum">
+                    {t("punchNumber", { number: index + 1 })}
+                  </span>
+                  <time className="tabular-nums">{punch.at}</time>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
 
         {(branchName || note) && (
           <div className="mt-4 space-y-1 text-[13px] text-brand-rose-ink/70">

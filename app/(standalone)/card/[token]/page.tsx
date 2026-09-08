@@ -20,6 +20,15 @@ export default async function PunchCardPage({
 
   if (!card) notFound()
 
+  const dateFormat = new Intl.DateTimeFormat(
+    locale === "he" ? "he-IL" : "en-US",
+    { dateStyle: "short", timeStyle: "short" }
+  )
+  const punches = card.events.map((event) => ({
+    id: event.id,
+    at: dateFormat.format(event.createdAt),
+  }))
+
   return (
     <BrandShell>
       <div className="relative isolate overflow-hidden">
@@ -29,6 +38,7 @@ export default async function PunchCardPage({
             className="w-full"
             total={card.totalPunches}
             used={card.usedPunches}
+            punches={punches}
             customerName={card.customer.fullName || undefined}
             branchName={
               card.issuedByLocation

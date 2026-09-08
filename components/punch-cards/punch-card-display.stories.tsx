@@ -22,7 +22,17 @@ type Story = StoryObj<typeof meta>
 export const Fresh: Story = { args: { used: 0 } }
 
 export const Partial: Story = {
-  args: { used: 4, customerName: "מיכל", branchName: "באלונה תל אביב" },
+  args: {
+    used: 4,
+    customerName: "מיכל",
+    branchName: "באלונה תל אביב",
+    punches: [
+      { id: "1", at: "1.9.2026, 10:24" },
+      { id: "2", at: "8.9.2026, 16:05" },
+      { id: "3", at: "15.9.2026, 11:47" },
+      { id: "4", at: "22.9.2026, 17:32" },
+    ],
+  },
 }
 
 export const AlmostFull: Story = { args: { used: 9 } }
