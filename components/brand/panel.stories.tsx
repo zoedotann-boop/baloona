@@ -9,10 +9,10 @@ const meta = {
   argTypes: {
     tone: {
       control: "inline-radio",
-      options: ["lavender", "mint", "banana", "pink", "white"],
+      options: ["pink", "mint", "banana", "white"],
     },
   },
-  args: { tone: "lavender" },
+  args: { tone: "pink" },
   render: (args) => (
     <div className="w-[420px]">
       <Panel {...args}>
@@ -28,8 +28,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Lavender: Story = {}
+export const Pink: Story = {}
 export const Mint: Story = { args: { tone: "mint" } }
 export const Banana: Story = { args: { tone: "banana" } }
-export const Pink: Story = { args: { tone: "pink" } }
 export const White: Story = { args: { tone: "white" } }

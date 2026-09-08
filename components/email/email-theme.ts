@@ -3,7 +3,7 @@ export const emailTheme = {
     background: "#fdf6f8",
     card: "#ffffff",
     plum: "#6e5a8f",
-    accent: "#7b6ba8",
+    accent: "#2277b6",
     rose: "#dda99e",
     roseInk: "#422d7d",
     lavender: "#b39ddb",

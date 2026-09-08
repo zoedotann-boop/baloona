@@ -14,7 +14,7 @@ function VisionPanel({ title, body, imageUrl }: VisionPanelProps) {
   return (
     <Section>
       <Panel
-        tone="lavender"
+        tone="pink"
         className="mx-auto grid max-w-6xl items-center gap-10 overflow-visible md:grid-cols-2"
       >
         <AccentSquare
@@ -32,7 +32,7 @@ function VisionPanel({ title, body, imageUrl }: VisionPanelProps) {
           <h2 className="font-heading text-[clamp(30px,4vw,46px)] leading-[1.1] font-black">
             {title}
           </h2>
-          <p className="mt-6 text-[19px] leading-[1.9] text-white/90 md:text-[20px]">
+          <p className="mt-6 text-[19px] leading-[1.9] text-secondary-foreground/90 md:text-[20px]">
             {body}
           </p>
         </Reveal>

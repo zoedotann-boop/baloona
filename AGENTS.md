@@ -23,10 +23,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Fonts: **Fredoka** (rounded display) for headings + the wordmark (`--font-heading`),
   **Assistant** for body (`--font-sans`); both wired via `next/font` in `app/layout.tsx`.
   Fredoka's axis maxes at 700, so `font-black`/`font-extrabold` headings clamp to 700.
-- The brand palette is **"Wonderland" (lavender-forward)**: warm near-white background,
-  **lavender** lead accent (deep `--accent` `#7b6ba8` for white-text panels; decorative
-  `--brand-lavender` `#b39ddb` for large/non-text only — white body text fails contrast on
-  it), **plum** headings (`text-brand-plum`), **soft-coral** CTAs (`--primary` + coral-ink
+- The brand palette is **"Wonderland"**: warm near-white background,
+  **pink** feature panels (`--brand-pink` `#fbd3e0` paired with dark `--secondary-foreground`
+  `#4a3b66` text — 7.35:1; `Panel tone="pink"`, the default), a small **sky-blue** UI accent
+  (`--accent` `#2277b6` for focus rings/icons), a decorative **lavender** `--brand-lavender`
+  `#b39ddb` for large/non-text only (white body text fails contrast on it), **plum** headings
+  (`text-brand-plum`), **soft-coral** CTAs (`--primary` + coral-ink
   `--primary-foreground`), plus banana/mint/pink accents. All colors are CSS tokens in
   `app/globals.css` (`--brand-*` + shadcn semantic tokens). Use token utilities
   (`bg-primary`, `text-brand-plum`, `bg-brand-banana`, …) — never ad-hoc hex in components.
