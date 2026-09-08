@@ -309,7 +309,16 @@
       "body": "Print it or take a screenshot and send it to your guests as the birthday invitation!",
       "signoff": "See you soon, the Baloona team 💛",
       "subject": "Your birthday invitation 🎉",
-      "subjectNamed": "Invitation to {name}'s birthday 🎉"
+      "subjectNamed": "Invitation to {name}'s birthday 🎉",
+      "weekdays": [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ]
     }
   },
   "admin": {

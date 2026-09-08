@@ -195,6 +195,7 @@ export async function submitBirthdayLead(
       to: answers.email,
       pdfUrl: `${await siteOrigin()}/birthday-invitation.pdf`,
       celebrantName: answers.celebrantNames || undefined,
+      eventDate: answers.eventDate || undefined,
     })
     if (!result.sent) console.error("birthday invitation email:", result.error)
   }

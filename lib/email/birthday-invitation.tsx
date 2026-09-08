@@ -6,15 +6,18 @@ import { Resend } from "resend"
 
 import { BirthdayInvitationEmail } from "@/components/email/birthday-invitation-email"
 import { defaultLocale } from "@/i18n/routing"
+import { fillBirthdayInvitation } from "@/lib/email/fill-birthday-invitation"
 import { emailAssetsBaseUrl, resendConfig } from "@/lib/env"
 
 export interface BirthdayInvitation {
   to: string
   pdfUrl: string
   celebrantName?: string
+  eventDate?: string
 }
 
 const ATTACHMENT_FILENAME = "baloona-birthday-invitation.pdf"
+const FONT_PATH = "/fonts/Assistant-SemiBold.ttf"
 
 export async function sendBirthdayInvitation(
   invitation: BirthdayInvitation
@@ -44,6 +47,9 @@ export async function sendBirthdayInvitation(
   const subject = name
     ? t("birthdayInvitation.subjectNamed", { name })
     : t("birthdayInvitation.subject")
+
+  const weekdays = t.raw("birthdayInvitation.weekdays") as string[]
+  content = await personalize(content, invitation, name, weekdays)
 
   const email = (
     <BirthdayInvitationEmail
@@ -76,4 +82,39 @@ export async function sendBirthdayInvitation(
   } catch (error) {
     return { sent: false, error: (error as Error).message }
   }
+}
+
+async function personalize(
+  original: Buffer,
+  invitation: BirthdayInvitation,
+  name: string | undefined,
+  weekdays: string[]
+): Promise<Buffer> {
+  const eventDate = parseEventDate(invitation.eventDate)
+  if (!name && !eventDate) return original
+  try {
+    const response = await fetch(new URL(FONT_PATH, invitation.pdfUrl))
+    if (!response.ok) return original
+    const fontBytes = new Uint8Array(await response.arrayBuffer())
+    const filled = await fillBirthdayInvitation(original, fontBytes, {
+      name,
+      day: eventDate ? weekdays[eventDate.getDay()] : undefined,
+      date: eventDate ? formatEventDate(eventDate) : undefined,
+    })
+    return Buffer.from(filled)
+  } catch {
+    return original
+  }
+}
+
+function parseEventDate(value: string | undefined): Date | null {
+  if (!value) return null
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value)
+  if (!match) return null
+  const [, year, month, day] = match
+  return new Date(Number(year), Number(month) - 1, Number(day))
+}
+
+function formatEventDate(date: Date): string {
+  return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
 }
