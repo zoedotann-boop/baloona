@@ -201,12 +201,17 @@ See `.env.example`.
 
 - **Resend** — emails each new lead to the branch's `leadRecipientEmail`. Failures are
   recorded on the lead, never surfaced to the visitor. A birthday submission also sends the
-  visitor a courtesy email (`lib/email/birthday-invitation.ts`) with the ready-made Baloona
-  invitation attached as a PDF (`public/birthday-invitation.pdf`). The sender fetches the
-  asset's bytes from its public URL (built via `siteOrigin()`) and attaches them inline —
-  Resend refuses to download an attachment from `localhost`, so handing it the URL would only
-  work once deployed. It is best-effort: a missing key, empty recipient or send error is
-  logged, never allowed to fail the stored booking. Emails are built with React Email
+  visitor a courtesy email (`lib/email/birthday-invitation.ts`) with the Baloona invitation
+  attached as a PDF (`public/birthday-invitation.pdf`). The sender fetches the asset's bytes
+  from its public URL (built via `siteOrigin()`) and attaches them inline — Resend refuses to
+  download an attachment from `localhost`, so handing it the URL would only work once deployed.
+  Before attaching, `lib/email/fill-birthday-invitation.ts` overlays the submitted celebrant
+  name, the Hebrew day-of-week (derived from `eventDate` via the `emails.birthdayInvitation.weekdays`
+  array) and the date onto the PDF's blank lines with `pdf-lib` (embedding
+  `public/fonts/Assistant-SemiBold.ttf`, since the PDF's own fonts are subset; Hebrew runs are
+  reversed for RTL, the "בשעה"/time line is left blank). Personalizing is best-effort — any
+  failure falls back to the unfilled PDF. The whole email is best-effort too: a missing key,
+  empty recipient or send error is logged, never allowed to fail the stored booking. Emails are built with React Email
   (`@react-email/components`): every message shares the branded shell in `components/email/`
   (`EmailLayout`), copy lives in the `emails` namespace of the message files, and admin lead
   notifications always render in Hebrew (RTL).
