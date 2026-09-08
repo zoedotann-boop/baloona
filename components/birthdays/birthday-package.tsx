@@ -54,21 +54,23 @@ function BirthdayPackage({
       />
       <Container size="sm">
         <Reveal>
-          <Panel tone="lavender" className="text-center">
-            <div className="font-heading text-[18px] font-bold text-white/85">
+          <Panel tone="pink" className="text-center">
+            <div className="font-heading text-[18px] font-bold text-secondary-foreground/85">
               {packageTitle}
             </div>
             <div className="mt-2 font-heading text-[64px] leading-none font-black">
               {price}
             </div>
-            <div className="mt-3 text-[19px] text-white/85">{subtitle}</div>
+            <div className="mt-3 text-[19px] text-secondary-foreground/85">
+              {subtitle}
+            </div>
 
             {includedLines.length > 0 && (
-              <div className="mt-8 border-t border-white/20 pt-7">
-                <div className="font-heading text-[18px] font-bold text-white/85">
+              <div className="mt-8 border-t border-secondary-foreground/15 pt-7">
+                <div className="font-heading text-[18px] font-bold text-secondary-foreground/85">
                   {includedTitle}
                 </div>
-                <ul className="mx-auto mt-4 max-w-md space-y-2.5 text-[19px] text-white/90">
+                <ul className="mx-auto mt-4 max-w-md space-y-2.5 text-[19px] text-secondary-foreground/90">
                   {includedLines.map((line) => (
                     <li key={line}>{line}</li>
                   ))}
@@ -77,7 +79,7 @@ function BirthdayPackage({
             )}
 
             {depositNote && (
-              <div className="mt-8 border-t border-white/20 pt-7 text-[17px] text-white/80">
+              <div className="mt-8 border-t border-secondary-foreground/15 pt-7 text-[17px] text-secondary-foreground/80">
                 {depositNote}
               </div>
             )}

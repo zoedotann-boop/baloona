@@ -22,7 +22,7 @@ function BirthdayCta({
   return (
     <Section>
       <Panel
-        tone="lavender"
+        tone="pink"
         className="mx-auto grid max-w-6xl items-center gap-10 overflow-hidden md:grid-cols-2"
       >
         <div className="relative block h-[280px]">
@@ -38,7 +38,7 @@ function BirthdayCta({
           <h2 className="mb-4 font-heading text-[clamp(28px,4.5vw,46px)] leading-[1.12] font-black">
             {title}
           </h2>
-          <p className="mb-7 text-[19px] leading-[1.9] text-white/90">
+          <p className="mb-7 text-[19px] leading-[1.9] text-secondary-foreground/90">
             {description}
           </p>
           <PillButton href={ctaHref} variant="soft">

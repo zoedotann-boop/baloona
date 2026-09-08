@@ -32,7 +32,7 @@ function Reviews({ title, items, photos }: ReviewsProps) {
       <WallScene variant="mountains" />
       <Reveal className="mx-auto max-w-6xl columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4 [&>*]:break-inside-avoid">
         <Panel
-          tone="lavender"
+          tone="pink"
           className="flex min-h-[180px] items-center justify-center text-center"
         >
           <h2 className="font-heading text-[clamp(28px,3vw,38px)] font-black">

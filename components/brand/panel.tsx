@@ -6,14 +6,13 @@ import { cn } from "@/lib/utils"
 const panelVariants = cva("relative rounded-[36px] p-8 md:p-12", {
   variants: {
     tone: {
-      lavender: "bg-accent text-accent-foreground",
+      pink: "bg-brand-pink text-secondary-foreground",
       mint: "bg-brand-mint text-foreground",
       banana: "bg-brand-banana text-foreground",
-      pink: "bg-brand-pink text-secondary-foreground",
       white: "border border-border bg-white text-foreground",
     },
   },
-  defaultVariants: { tone: "lavender" },
+  defaultVariants: { tone: "pink" },
 })
 
 interface PanelProps

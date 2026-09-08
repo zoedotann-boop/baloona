@@ -12,7 +12,7 @@ value here ever disagrees with `globals.css`, `globals.css` wins.
 
 ## Brand personality
 
-**"Wonderland" — lavender-forward, warm and playful.** Rounded display type, a
+**"Wonderland" — warm and playful.** Rounded display type, a
 warm near-white canvas, plum headings, soft-coral call-to-actions, and pastel
 banana/mint/pink accents, over decorative skies of clouds, balloons and hearts.
 Definition comes from colour, shape and a gentle hover-lift — **not** from
@@ -44,16 +44,17 @@ Use the utility, never the raw hex.
 | `bg-primary` / `text-primary-foreground` | `#dda99e` / `#422d7d` | **CTAs** (soft coral + coral-ink) |
 | `bg-secondary` | `#fbd3e0` | secondary fills |
 | `bg-muted` / `text-muted-foreground` | `#f1e9f5` / `#6b6076` | quiet fills + muted text |
-| `bg-accent` / `text-accent-foreground` | `#7b6ba8` / `#fff` | deep lavender panels that carry **white** text |
+| `bg-brand-pink` / `text-secondary-foreground` | `#fbd3e0` / `#4a3b66` | pink feature panels with dark text (`Panel tone="pink"`) |
+| `bg-accent` / `text-accent-foreground` | `#2277b6` / `#fff` | small sky-blue UI accent (icons, focus ring, badges) |
 | `text-destructive` | `#c24b4b` | errors |
 | `border-border` | `#ebd9e8` | hairlines/cards |
-| `ring-ring` | `#7b6ba8` | focus ring |
+| `ring-ring` | `#2277b6` | focus ring |
 
 ### Brand palette (`--brand-*`)
 
 `brand-rose #dda99e` (interactive; = primary), `brand-rose-ink #422d7d` (text on
 rose), `brand-lavender #b39ddb` (**decorative, large/non-text only** — white body
-text fails contrast on it; use `accent` for white-on-lavender), `brand-plum
+text fails contrast on it; use `accent` for white-on-color panels), `brand-plum
 #6e5a8f` (headings), `brand-mint #a7e8d0`, `brand-banana #fde293`, `brand-cloud
 #fffbfc`, `brand-ink #333`, `brand-ink-soft #666`, `brand-pink #fbd3e0`,
 `brand-pink-soft #fbeaf1`, plus `brand-green/yellow/gold/flower-pink`.
@@ -81,8 +82,8 @@ the painted Baloona murals, **decorative and non-text only**. They drive
   `<button>`). Variants `primary` (default, `bg-brand-pink text-brand-plum`),
   `outline`, `soft`; sizes `sm`/`md`/`lg`. Definition is the hover-lift, not a
   shadow.
-- **`Panel`** — big rounded editorial surface, `tone` = `lavender`/`mint`/
-  `banana`/`pink`/`white`.
+- **`Panel`** — big rounded editorial surface, `tone` = `pink`/`mint`/
+  `banana`/`white`.
 - **`ConsentCheckbox`** — accessible agreement checkbox; the canonical consent
   control (used by checkout).
 - **`SkyBackdrop`** — decorative clouds/balloons/hearts layer. Drop as the first

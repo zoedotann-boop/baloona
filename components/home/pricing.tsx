@@ -31,7 +31,7 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
     >
       <WallScene variant="town" />
       <Reveal className="mx-auto max-w-3xl">
-        <Panel tone="lavender" className="text-center">
+        <Panel tone="pink" className="text-center">
           <h2 className="font-heading text-[clamp(32px,4.5vw,46px)] font-black">
             {title}
           </h2>
@@ -39,17 +39,17 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
           <div className="mt-8 space-y-7">
             {tiers.map((tier) => (
               <div key={tier.id}>
-                <div className="font-heading text-[17px] font-bold text-white/85">
+                <div className="font-heading text-[17px] font-bold text-secondary-foreground/85">
                   {tier.subtitle} · {tier.title}
                 </div>
                 <div className="mx-auto mt-2 max-w-xs space-y-1.5">
                   {tier.rows.map((row) => (
                     <div
                       key={row.id}
-                      className="flex items-baseline justify-between gap-4 text-[17px] text-white/90"
+                      className="flex items-baseline justify-between gap-4 text-[17px] text-secondary-foreground/90"
                     >
                       <span>{row.label}</span>
-                      <span className="font-heading font-black text-white">
+                      <span className="font-heading font-black text-secondary-foreground">
                         {row.price}
                       </span>
                     </div>
@@ -59,11 +59,11 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
             ))}
           </div>
 
-          <div className="mt-9 border-t border-white/20 pt-7">
-            <div className="font-heading text-[17px] font-bold text-white/85">
+          <div className="mt-9 border-t border-secondary-foreground/15 pt-7">
+            <div className="font-heading text-[17px] font-bold text-secondary-foreground/85">
               {t("hoursTitle")}
             </div>
-            <div className="mx-auto mt-2 max-w-xs space-y-1 text-[17px] text-white/90">
+            <div className="mx-auto mt-2 max-w-xs space-y-1 text-[17px] text-secondary-foreground/90">
               {hours.map((row) => (
                 <div key={row.days}>
                   {row.days} · {row.time}
@@ -72,16 +72,18 @@ function Pricing({ title, tiers, hours, rules, note }: PricingProps) {
             </div>
           </div>
 
-          <div className="mt-9 border-t border-white/20 pt-7">
-            <div className="font-heading text-[17px] font-bold text-white/85">
+          <div className="mt-9 border-t border-secondary-foreground/15 pt-7">
+            <div className="font-heading text-[17px] font-bold text-secondary-foreground/85">
               {t("rulesTitle")}
             </div>
-            <ul className="mx-auto mt-3 max-w-md space-y-1.5 text-[15px] leading-relaxed text-white/80">
+            <ul className="mx-auto mt-3 max-w-md space-y-1.5 text-[15px] leading-relaxed text-secondary-foreground/80">
               {rules.map((rule) => (
                 <li key={rule}>{rule}</li>
               ))}
             </ul>
-            <p className="mt-4 text-[14px] text-white/70">{note}</p>
+            <p className="mt-4 text-[14px] text-secondary-foreground/80">
+              {note}
+            </p>
           </div>
         </Panel>
       </Reveal>
