@@ -16,8 +16,10 @@ import {
   punchCards,
   punchEvents,
 } from "@/lib/db/schema"
+import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
 import { formatPrice, pickLocale } from "@/lib/localized"
 import { type CustomerCardsView } from "@/lib/punch-cards"
+import { siteOrigin } from "@/lib/site-url"
 
 import { OK, type ActionResult } from "./shared"
 
@@ -104,15 +106,18 @@ export async function issuePunchCard(
   })
 
   let customerId: string
+  let recipientEmail: string | null
   if (existing) {
     customerId = existing.id
+    recipientEmail = email || existing.email || null
     const patch: Partial<typeof customers.$inferInsert> = {}
-    if (fullName && !existing.fullName) patch.fullName = fullName
-    if (email && !existing.email) patch.email = email
+    if (fullName) patch.fullName = fullName
+    if (email) patch.email = email
     if (Object.keys(patch).length > 0) {
       await db.update(customers).set(patch).where(eq(customers.id, customerId))
     }
   } else {
+    recipientEmail = email || null
     const [created] = await db
       .insert(customers)
       .values({ phone, fullName, email: email || null })
@@ -120,9 +125,10 @@ export async function issuePunchCard(
     customerId = created.id
   }
 
+  const token = randomUUID()
   const usedPunches = totalPunches - remainingPunches
   await db.insert(punchCards).values({
-    token: randomUUID(),
+    token,
     customerId,
     totalPunches,
     usedPunches,
@@ -130,6 +136,16 @@ export async function issuePunchCard(
     issuedByLocationId: location.id,
     note: note || null,
   })
+
+  if (recipientEmail) {
+    const result = await sendPunchCardConfirmation({
+      to: recipientEmail,
+      cardUrl: `${await siteOrigin()}/card/${token}`,
+      entries: totalPunches,
+    })
+    if (!result.sent)
+      console.error("punch card confirmation email:", result.error)
+  }
 
   return OK
 }
