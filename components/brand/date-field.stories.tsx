@@ -26,7 +26,6 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-/** Saturdays are greyed out and cannot be selected. */
 export const SaturdaysDisabled: Story = {}
 
 export const AllDaysSelectable: Story = {

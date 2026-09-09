@@ -11,12 +11,10 @@ import { cn } from "@/lib/utils"
 
 interface DateFieldProps {
   id?: string
-  /** ISO calendar date, `YYYY-MM-DD`. */
   value?: string
   onChange?: (value: string | undefined) => void
   placeholder?: string
   disabled?: boolean
-  /** Weekday indexes to disable in the calendar (0 = Sunday … 6 = Saturday). */
   disabledDaysOfWeek?: number[]
   invalid?: boolean
   "aria-describedby"?: string

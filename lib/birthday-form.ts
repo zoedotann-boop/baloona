@@ -64,8 +64,6 @@ function propertyFor(field: BirthdayFormFieldView): RJSFSchema {
   }
 }
 
-// The venue is closed on Saturdays, so event dates cannot fall on one.
-// Day-of-week indexes follow JS conventions (0 = Sunday … 6 = Saturday).
 const CLOSED_DAYS_OF_WEEK = [6]
 
 export function isClosedEventDate(value: string): boolean {

@@ -5,8 +5,6 @@ import { ariaDescribedByIds } from "@rjsf/utils"
 
 import { DateField } from "@/components/brand/date-field"
 
-/** RJSF widget that renders string `format: "date"` fields as the brand
- * calendar picker. `disabledDaysOfWeek` is read from the field's `ui:options`. */
 function DateWidget({
   id,
   value,
