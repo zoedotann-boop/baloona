@@ -215,7 +215,12 @@ See `.env.example`.
   `public/fonts/Assistant-SemiBold.ttf`, since the PDF's own fonts are subset; Hebrew runs are
   reversed for RTL, the "בשעה"/time line is left blank). Personalizing is best-effort — any
   failure falls back to the unfilled PDF. The whole email is best-effort too: a missing key,
-  empty recipient or send error is logged, never allowed to fail the stored booking. Emails are built with React Email
+  empty recipient or send error is logged, never allowed to fail the stored booking. Punch
+  cards email the customer too (only when the customer has an email on file, best-effort):
+  `lib/email/punch-card-confirmation.tsx` when a card is issued, and
+  `lib/email/punch-notification.tsx` on every punch — the latter states the acting branch, the
+  punch time (Asia/Jerusalem) and how many punches remain, and links back to the `/card/<token>`
+  view. Emails are built with React Email
   (`@react-email/components`): every message shares the branded shell in `components/email/`
   (`EmailLayout`), copy lives in the `emails` namespace of the message files, and admin lead
   notifications always render in Hebrew (RTL).
