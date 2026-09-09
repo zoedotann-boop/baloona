@@ -152,6 +152,7 @@
     "slotEmpty": "ניקוב פנוי",
     "historyTitle": "היסטוריית ניקובים",
     "punchNumber": "ניקוב {number}",
+    "punchBranch": "בסניף {branch}",
     "issuedBy": "הונפק בסניף {branch}",
     "footerNote": "שמרו את הקישור הזה — זו הכרטיסייה הדיגיטלית שלכם."
   },
@@ -786,6 +787,10 @@
       "deleteSelectedConfirm": "למחוק את הכרטיסיות שנבחרו לצמיתות?",
       "cardSummary": "נותרו {remaining} מתוך {total}",
       "completedBadge": "מלאה",
+      "historyTitle": "היסטוריית ניקובים",
+      "punchNumber": "ניקוב {number}",
+      "punchBranch": "בסניף {branch}",
+      "punchBranchUnknown": "סניף לא ידוע",
       "purchasedOn": "נרכשה: {date}",
       "issuedOn": "הונפקה: {date}",
       "paidBadge": "שולם",
