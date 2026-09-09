@@ -444,6 +444,11 @@ export const birthdayFormFieldRows = [
     type: "select" as const,
     options: [
       {
+        value: "16:30-18:30",
+        label: l("16:30–18:30", "16:30–18:30"),
+        days: [0, 1, 2, 3, 4],
+      },
+      {
         value: "17:00-19:00",
         label: l("17:00–19:00", "17:00–19:00"),
         days: [0, 1, 2, 3, 4],
@@ -451,6 +456,16 @@ export const birthdayFormFieldRows = [
       {
         value: "13:00-15:00",
         label: l("13:00–15:00", "13:00–15:00"),
+        days: [5],
+      },
+      {
+        value: "13:30-15:30",
+        label: l("13:30–15:30", "13:30–15:30"),
+        days: [5],
+      },
+      {
+        value: "15:30-17:30",
+        label: l("15:30–17:30", "15:30–17:30"),
         days: [5],
       },
       {

@@ -42,6 +42,17 @@ export const ISRAELI_ID_FORMAT = "israeli-id"
 const MAX_TEXT_LENGTH = 120
 const MAX_TEXTAREA_LENGTH = 1000
 
+// Wrap a select option label in a Unicode "first strong isolate" run so the RTL
+// form does not reorder it. Otherwise an LTR time range like "17:00–19:00" is
+// laid out right-to-left and shows as "19:00–17:00". FSI…PDI auto-detects the
+// label's direction from its first strong character (like dir="auto"), so pure
+// Hebrew labels are unaffected while numeric ranges stay in logical order.
+const FIRST_STRONG_ISOLATE = String.fromCodePoint(0x2068)
+const POP_DIRECTIONAL_ISOLATE = String.fromCodePoint(0x2069)
+function isolateBidi(label: string): string {
+  return `${FIRST_STRONG_ISOLATE}${label}${POP_DIRECTIONAL_ISOLATE}`
+}
+
 function propertyFor(field: BirthdayFormFieldView): RJSFSchema {
   const title = field.label
 
@@ -73,7 +84,7 @@ function propertyFor(field: BirthdayFormFieldView): RJSFSchema {
         title,
         oneOf: field.options.map((option) => ({
           const: option.value,
-          title: option.label,
+          title: isolateBidi(option.label),
         })),
       }
     default:
