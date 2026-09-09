@@ -5,6 +5,7 @@ import {
   BadgeCheck,
   CalendarClock,
   Check,
+  ChevronDown,
   Copy,
   ExternalLink,
   Minus,
@@ -400,6 +401,11 @@ function CardRowView({
                 </span>
               ))}
           </div>
+          {card.note && (
+            <p className="mt-1.5 text-[13px] text-muted-foreground">
+              {card.note}
+            </p>
+          )}
         </div>
       </div>
 
@@ -476,10 +482,14 @@ function CardRowView({
       </div>
 
       {card.punches.length > 0 && (
-        <div className="mt-4 border-t border-border pt-3">
-          <h3 className="text-[13px] font-bold text-brand-plum">
+        <details className="group mt-4 border-t border-border pt-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-[13px] font-bold text-brand-plum [&::-webkit-details-marker]:hidden">
             {t("historyTitle")}
-          </h3>
+            <ChevronDown
+              className="size-4 shrink-0 transition-transform group-open:rotate-180"
+              aria-hidden
+            />
+          </summary>
           <ol className="mt-1.5 space-y-1">
             {card.punches.map((punch, index) => (
               <li
@@ -499,7 +509,7 @@ function CardRowView({
               </li>
             ))}
           </ol>
-        </div>
+        </details>
       )}
 
       {editing && (
