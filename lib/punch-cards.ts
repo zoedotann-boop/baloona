@@ -1,9 +1,12 @@
+import { type PunchCardTheme } from "@/lib/db/schema/punch-cards"
+
 interface CardView {
   id: string
   token: string
   totalPunches: number
   usedPunches: number
   status: "active" | "completed"
+  theme: PunchCardTheme
   issuedByLocationName: string | null
   note: string | null
   createdAt: string

@@ -35,6 +35,15 @@ export const Partial: Story = {
   },
 }
 
+export const UnderTwo: Story = {
+  args: {
+    theme: "age2",
+    used: 4,
+    customerName: "נועה",
+    branchName: "באלונה תל אביב",
+  },
+}
+
 export const AlmostFull: Story = { args: { used: 9 } }
 
 export const Completed: Story = { args: { used: 10 } }

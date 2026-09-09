@@ -2,7 +2,10 @@
 
 import { useTranslations } from "next-intl"
 
-import { PunchCardArt } from "@/components/shop/punch-card-art"
+import {
+  PunchCardArt,
+  type PunchCardTheme,
+} from "@/components/shop/punch-card-art"
 import { remainingPunches } from "@/lib/punch-cards"
 import { cn } from "@/lib/utils"
 
@@ -14,6 +17,7 @@ interface PunchEntry {
 interface PunchCardDisplayProps {
   total: number
   used: number
+  theme?: PunchCardTheme
   punches?: PunchEntry[]
   customerName?: string
   branchName?: string | null
@@ -24,6 +28,7 @@ interface PunchCardDisplayProps {
 function PunchCardDisplay({
   total,
   used,
+  theme = "age12",
   punches = [],
   customerName,
   branchName,
@@ -42,8 +47,9 @@ function PunchCardDisplay({
       )}
     >
       <PunchCardArt
-        theme="age12"
+        theme={theme}
         caption={t("cardCaption")}
+        subcaption={theme === "age2" ? t("cardTypeAge2") : t("cardTypeAge12")}
         used={Math.min(used, 10)}
       />
 
