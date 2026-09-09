@@ -10,5 +10,5 @@ export default async function AdminPunchCardsPage({
 
   const initial = await searchPunchCards({ slug })
 
-  return <PunchCardsManager slug={slug} initial={initial} />
+  return <PunchCardsManager slug={slug} initialPage={initial} />
 }
