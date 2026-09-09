@@ -103,7 +103,6 @@ export type FormFieldType = (typeof formFieldType.enumValues)[number]
 export interface FormFieldOption {
   value: string
   label: Localized
-  // Weekdays (0=Sun … 6=Sat) this option is offered on. Empty/omitted = always.
   days?: number[]
 }
 

@@ -78,8 +78,6 @@ function BirthdayLeadForm({
   const [pending, startTransition] = useTransition()
   const honeypotRef = useRef<HTMLInputElement>(null)
 
-  // Options tagged with weekdays (e.g. event-hour slots) are narrowed to the
-  // weekday of the chosen date field, so only the slots offered that day show.
   const weekday = useMemo(() => {
     const dateField = fields.find((field) => field.type === "date")
     return dateField ? weekdayFromDateInput(answers[dateField.key]) : null
@@ -101,8 +99,6 @@ function BirthdayLeadForm({
     [resolvedFields]
   )
 
-  // Drop a previously picked option once it is no longer offered (e.g. the date
-  // moved from a weekday to Friday), so a hidden value can't be submitted.
   const pruneHiddenSelections = useCallback(
     (data: Answers): Answers => {
       const dateField = fields.find((field) => field.type === "date")

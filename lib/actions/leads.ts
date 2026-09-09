@@ -131,8 +131,6 @@ export async function submitBirthdayLead(
     if (value) answers[field.key] = value
   }
 
-  // A chosen select value must be a real option, and — for weekday-tagged
-  // options like the event-hour slots — must be offered on the chosen date.
   const dateField = visible.find((field) => field.type === "date")
   const weekday = dateField
     ? weekdayFromDateInput(answers[dateField.key])

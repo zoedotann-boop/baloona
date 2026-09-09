@@ -14,7 +14,6 @@ export interface BirthdayFormFieldView {
   isRequired: boolean
 }
 
-/** Weekday (0=Sun … 6=Sat) of a `YYYY-MM-DD` date input, or null if unset. */
 export function weekdayFromDateInput(value: unknown): number | null {
   if (typeof value !== "string") return null
   const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value)
@@ -23,10 +22,6 @@ export function weekdayFromDateInput(value: unknown): number | null {
   return new Date(Number(year), Number(month) - 1, Number(day)).getDay()
 }
 
-/**
- * Whether a select option is offered for a given weekday. Options with no
- * `days` are always available; a null weekday (no date chosen yet) shows all.
- */
 export function optionAvailableForWeekday(
   option: { days?: number[] },
   weekday: number | null
