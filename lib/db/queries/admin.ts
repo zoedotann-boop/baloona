@@ -126,7 +126,11 @@ export async function getTermsEditor(locationId: string) {
   })
 }
 
-export async function searchCustomerCards(query?: string, limit = 20) {
+export async function searchCustomerCards(
+  query?: string,
+  limit = 20,
+  offset = 0
+) {
   const q = query?.trim()
   return db.query.customers.findMany({
     where: q
@@ -139,6 +143,7 @@ export async function searchCustomerCards(query?: string, limit = 20) {
       : undefined,
     orderBy: (c) => [desc(c.createdAt)],
     limit,
+    offset,
     with: {
       cards: {
         orderBy: (card) => [desc(card.createdAt)],

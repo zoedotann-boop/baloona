@@ -20,7 +20,12 @@ import {
 import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
 import { sendPunchNotification } from "@/lib/email/punch-notification"
 import { formatDateTime, formatPrice, pickLocale } from "@/lib/localized"
-import { remainingPunches, type CustomerCardsView } from "@/lib/punch-cards"
+import {
+  PUNCH_CARDS_PAGE_SIZE,
+  remainingPunches,
+  type CustomerCardsView,
+  type PunchCardsPage,
+} from "@/lib/punch-cards"
 import { siteOrigin } from "@/lib/site-url"
 
 import { OK, type ActionResult } from "./shared"
@@ -66,21 +71,26 @@ function toView(
 const searchSchema = z.object({
   slug: z.string().min(1),
   query: z.string().optional(),
+  offset: z.coerce.number().int().min(0).default(0),
+  limit: z.coerce.number().int().min(1).default(PUNCH_CARDS_PAGE_SIZE),
 })
 
 export async function searchPunchCards(
   input: z.input<typeof searchSchema>
-): Promise<CustomerCardsView[]> {
+): Promise<PunchCardsPage> {
   await requireLocationAccess(input.slug, "operations")
 
   const parsed = searchSchema.safeParse(input)
-  if (!parsed.success) return []
+  if (!parsed.success) return { customers: [], hasMore: false }
 
+  const { query, offset, limit } = parsed.data
   const [rows, locale] = await Promise.all([
-    searchCustomerCards(parsed.data.query),
+    // Fetch one extra row to detect whether more pages remain.
+    searchCustomerCards(query, limit + 1, offset),
     getLocale() as Promise<Locale>,
   ])
-  return toView(rows, locale)
+  const hasMore = rows.length > limit
+  return { customers: toView(rows.slice(0, limit), locale), hasMore }
 }
 
 const issueSchema = z

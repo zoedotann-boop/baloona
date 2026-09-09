@@ -14,7 +14,7 @@ import {
   Trash2,
   Wallet,
 } from "lucide-react"
-import { useRef, useState, useTransition } from "react"
+import { useCallback, useEffect, useRef, useState, useTransition } from "react"
 
 import { ConfirmModal } from "@/components/admin/confirm-modal"
 import { useToast } from "@/components/admin/toast"
@@ -36,7 +36,12 @@ import {
   updateCardDetails,
   updateCustomerDetails,
 } from "@/lib/actions/admin/punch-cards"
-import { remainingPunches, type CustomerCardsView } from "@/lib/punch-cards"
+import {
+  PUNCH_CARDS_PAGE_SIZE,
+  remainingPunches,
+  type CustomerCardsView,
+  type PunchCardsPage,
+} from "@/lib/punch-cards"
 import { cn } from "@/lib/utils"
 
 interface CardRow {
@@ -46,28 +51,33 @@ interface CardRow {
 
 function PunchCardsManager({
   slug,
-  initial,
+  initialPage,
 }: {
   slug: string
-  initial: CustomerCardsView[]
+  initialPage: PunchCardsPage
 }) {
   const t = useTranslations("admin.punchCards")
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState(initial)
+  const [customers, setCustomers] = useState(initialPage.customers)
+  const [hasMore, setHasMore] = useState(initialPage.hasMore)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [, startSearch] = useTransition()
   const [pending, start] = useTransition()
   const [showIssue, setShowIssue] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [removingSelected, setRemovingSelected] = useState(false)
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sentinel = useRef<HTMLDivElement>(null)
 
-  const rows: CardRow[] = results.flatMap((customer) =>
+  const rows: CardRow[] = customers.flatMap((customer) =>
     customer.cards.map((card) => ({ customer, card }))
   )
 
   const runSearch = (value: string) =>
     startSearch(async () => {
-      setResults(await searchPunchCards({ slug, query: value }))
+      const page = await searchPunchCards({ slug, query: value })
+      setCustomers(page.customers)
+      setHasMore(page.hasMore)
       setSelected(new Set())
     })
 
@@ -77,7 +87,41 @@ function PunchCardsManager({
     debounce.current = setTimeout(() => runSearch(value), 300)
   }
 
-  const refresh = () => runSearch(query)
+  // Re-fetch the pages already loaded so mutations stay visible without
+  // collapsing the list back to the first page.
+  const refresh = () =>
+    startSearch(async () => {
+      const page = await searchPunchCards({
+        slug,
+        query,
+        limit: Math.max(PUNCH_CARDS_PAGE_SIZE, customers.length),
+      })
+      setCustomers(page.customers)
+      setHasMore(page.hasMore)
+    })
+
+  const loadMore = useCallback(() => {
+    setLoadingMore(true)
+    searchPunchCards({ slug, query, offset: customers.length })
+      .then((page) => {
+        setCustomers((prev) => [...prev, ...page.customers])
+        setHasMore(page.hasMore)
+      })
+      .finally(() => setLoadingMore(false))
+  }, [slug, query, customers.length])
+
+  useEffect(() => {
+    const node = sentinel.current
+    if (!node || !hasMore || loadingMore) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) loadMore()
+      },
+      { rootMargin: "400px" }
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [hasMore, loadingMore, loadMore])
 
   const toggleRow = (id: string) =>
     setSelected((prev) => {
@@ -193,6 +237,16 @@ function PunchCardsManager({
               />
             ))}
           </div>
+
+          {hasMore && (
+            <div
+              ref={sentinel}
+              className="py-4 text-center text-[14px] text-muted-foreground"
+              aria-hidden={!loadingMore}
+            >
+              {loadingMore ? t("loadingMore") : null}
+            </div>
+          )}
 
           <ConfirmModal
             open={removingSelected}

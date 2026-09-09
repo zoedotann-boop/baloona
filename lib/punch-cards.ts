@@ -28,6 +28,13 @@ export interface CustomerCardsView {
   cards: CardView[]
 }
 
+export const PUNCH_CARDS_PAGE_SIZE = 20
+
+export interface PunchCardsPage {
+  customers: CustomerCardsView[]
+  hasMore: boolean
+}
+
 export function remainingPunches(total: number, used: number): number {
   return Math.max(0, total - used)
 }

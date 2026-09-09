@@ -801,6 +801,7 @@
       "remainingPlaceholder": "כמו סך הכל",
       "searchPlaceholder": "חיפוש לפי טלפון, אימייל או שם…",
       "noResults": "לא נמצאו לקוחות.",
+      "loadingMore": "טוען עוד כרטיסיות…",
       "selectAll": "בחירת הכל",
       "selectRow": "בחירת כרטיסייה",
       "selectedCount": "{count} נבחרו",
