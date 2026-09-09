@@ -85,7 +85,6 @@ export async function searchPunchCards(
 
   const { query, offset, limit } = parsed.data
   const [rows, locale] = await Promise.all([
-    // Fetch one extra row to detect whether more pages remain.
     searchCustomerCards(query, limit + 1, offset),
     getLocale() as Promise<Locale>,
   ])

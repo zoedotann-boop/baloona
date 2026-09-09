@@ -87,8 +87,6 @@ function PunchCardsManager({
     debounce.current = setTimeout(() => runSearch(value), 300)
   }
 
-  // Re-fetch the pages already loaded so mutations stay visible without
-  // collapsing the list back to the first page.
   const refresh = () =>
     startSearch(async () => {
       const page = await searchPunchCards({
