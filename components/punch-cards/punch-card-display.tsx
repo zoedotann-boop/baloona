@@ -1,5 +1,6 @@
 "use client"
 
+import { ChevronDown } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { PunchCardArt } from "@/components/shop/punch-card-art"
@@ -78,10 +79,14 @@ function PunchCardDisplay({
         </div>
 
         {punches.length > 0 && (
-          <div className="mt-4 rounded-[20px] bg-brand-pink-soft/60 px-5 py-4 text-right">
-            <h2 className="font-heading text-[15px] font-black text-brand-plum">
+          <details className="group mt-4 rounded-[20px] bg-brand-pink-soft/60 px-5 py-4 text-right">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-heading text-[15px] font-black text-brand-plum [&::-webkit-details-marker]:hidden">
               {t("historyTitle")}
-            </h2>
+              <ChevronDown
+                className="size-5 shrink-0 transition-transform group-open:rotate-180"
+                aria-hidden
+              />
+            </summary>
             <ol className="mt-2 space-y-1">
               {punches.map((punch, index) => (
                 <li
@@ -102,7 +107,7 @@ function PunchCardDisplay({
                 </li>
               ))}
             </ol>
-          </div>
+          </details>
         )}
 
         {(branchName || note) && (
