@@ -25,8 +25,11 @@ const meta = {
         label: "שעת האירוע",
         type: "select",
         options: [
+          { value: "16:30-18:30", label: "16:30–18:30", days: [0, 1, 2, 3, 4] },
           { value: "17:00-19:00", label: "17:00–19:00", days: [0, 1, 2, 3, 4] },
           { value: "13:00-15:00", label: "13:00–15:00", days: [5] },
+          { value: "13:30-15:30", label: "13:30–15:30", days: [5] },
+          { value: "15:30-17:30", label: "15:30–17:30", days: [5] },
           { value: "16:00-18:00", label: "16:00–18:00", days: [5] },
         ],
         isRequired: true,
