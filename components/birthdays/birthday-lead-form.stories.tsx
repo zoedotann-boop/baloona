@@ -21,6 +21,17 @@ const meta = {
         isRequired: true,
       },
       {
+        key: "eventHour",
+        label: "שעת האירוע",
+        type: "select",
+        options: [
+          { value: "17:00-19:00", label: "17:00–19:00", days: [0, 1, 2, 3, 4] },
+          { value: "13:00-15:00", label: "13:00–15:00", days: [5] },
+          { value: "16:00-18:00", label: "16:00–18:00", days: [5] },
+        ],
+        isRequired: true,
+      },
+      {
         key: "fullName",
         label: "שם המזמין",
         placeholder: "ישראל ישראלי",

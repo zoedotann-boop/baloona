@@ -7,13 +7,15 @@ export interface InvitationValues {
   name?: string
   day?: string
   date?: string
+  time?: string
 }
 
 const NAME = { y: 329, centerX: 209.75, size: 12 }
 const DAY = { y: 282, rightX: 357, size: 10 }
 const DATE = { y: 258, rightX: 339, size: 10 }
+const TIME = { y: 234, rightX: 340, size: 10 }
 
-const INK = rgb(0.29, 0.13, 0.36)
+const INK = rgb(0, 0, 0)
 
 function draw(
   page: PDFPage,
@@ -42,6 +44,7 @@ export async function fillBirthdayInvitation(
   if (values.name) draw(page, values.name, NAME, font)
   if (values.day) draw(page, values.day, DAY, font)
   if (values.date) draw(page, values.date, DATE, font)
+  if (values.time) draw(page, values.time, TIME, font)
 
   return doc.save()
 }

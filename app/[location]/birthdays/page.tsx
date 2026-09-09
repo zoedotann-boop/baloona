@@ -87,6 +87,7 @@ export default async function BirthdaysPage({
           options: field.options.map((option) => ({
             value: option.value,
             label: pickLocale(option.label, locale),
+            days: option.days,
           })),
           min: field.minValue,
           max: field.maxValue,

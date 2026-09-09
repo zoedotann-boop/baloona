@@ -8,10 +8,27 @@ export interface BirthdayFormFieldView {
   label: string
   placeholder?: string
   type: FormFieldType
-  options: { value: string; label: string }[]
+  options: { value: string; label: string; days?: number[] }[]
   min?: number | null
   max?: number | null
   isRequired: boolean
+}
+
+export function weekdayFromDateInput(value: unknown): number | null {
+  if (typeof value !== "string") return null
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value)
+  if (!match) return null
+  const [, year, month, day] = match
+  return new Date(Number(year), Number(month) - 1, Number(day)).getDay()
+}
+
+export function optionAvailableForWeekday(
+  option: { days?: number[] },
+  weekday: number | null
+): boolean {
+  if (!option.days || option.days.length === 0) return true
+  if (weekday === null) return true
+  return option.days.includes(weekday)
 }
 
 const INPUT_TYPES: Partial<Record<FormFieldType, string>> = {

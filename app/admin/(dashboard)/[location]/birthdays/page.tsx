@@ -70,6 +70,7 @@ export default async function AdminBirthdaysPage({
           options: field.options.map((option) => ({
             value: option.value,
             label: toLocalized(option.label),
+            days: option.days,
           })),
           minValue: field.minValue,
           maxValue: field.maxValue,

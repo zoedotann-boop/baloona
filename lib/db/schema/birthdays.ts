@@ -103,6 +103,7 @@ export type FormFieldType = (typeof formFieldType.enumValues)[number]
 export interface FormFieldOption {
   value: string
   label: Localized
+  days?: number[]
 }
 
 export const birthdayFormFields = pgTable(

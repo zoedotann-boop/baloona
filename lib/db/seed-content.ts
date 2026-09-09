@@ -439,6 +439,29 @@ export const birthdayFormFieldRows = [
     isRequired: true,
   },
   {
+    key: "eventHour",
+    label: l("שעת האירוע", "Event time"),
+    type: "select" as const,
+    options: [
+      {
+        value: "17:00-19:00",
+        label: l("17:00–19:00", "17:00–19:00"),
+        days: [0, 1, 2, 3, 4],
+      },
+      {
+        value: "13:00-15:00",
+        label: l("13:00–15:00", "13:00–15:00"),
+        days: [5],
+      },
+      {
+        value: "16:00-18:00",
+        label: l("16:00–18:00", "16:00–18:00"),
+        days: [5],
+      },
+    ],
+    isRequired: true,
+  },
+  {
     key: "celebrantNames",
     label: l("שמות החוגגים", "Names of the celebrants"),
     placeholder: l("שם הילד/ה החוגג/ת", "The birthday child's name"),

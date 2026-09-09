@@ -12,7 +12,11 @@ import {
   leads,
   locations,
 } from "@/lib/db/schema"
-import { isAnswerValid } from "@/lib/birthday-form"
+import {
+  isAnswerValid,
+  optionAvailableForWeekday,
+  weekdayFromDateInput,
+} from "@/lib/birthday-form"
 import { sendBirthdayInvitation } from "@/lib/email/birthday-invitation"
 import { sendLeadNotification } from "@/lib/email/lead-notification"
 import { contactLeadSchema } from "@/lib/forms/schemas"
@@ -127,6 +131,19 @@ export async function submitBirthdayLead(
     if (value) answers[field.key] = value
   }
 
+  const dateField = visible.find((field) => field.type === "date")
+  const weekday = dateField
+    ? weekdayFromDateInput(answers[dateField.key])
+    : null
+  for (const field of visible) {
+    if (field.type !== "select") continue
+    const value = answers[field.key]
+    if (!value) continue
+    const option = field.options.find((opt) => opt.value === value)
+    if (!option || !optionAvailableForWeekday(option, weekday))
+      return { ok: false, error: "invalid" }
+  }
+
   const chosen = data.upgradeIds.length
     ? await db.query.birthdayUpgrades.findMany({
         where: inArray(birthdayUpgrades.id, data.upgradeIds),
@@ -196,6 +213,7 @@ export async function submitBirthdayLead(
       pdfUrl: `${await siteOrigin()}/birthday-invitation.pdf`,
       celebrantName: answers.celebrantNames || undefined,
       eventDate: answers.eventDate || undefined,
+      eventTime: answers.eventHour || undefined,
     })
     if (!result.sent) console.error("birthday invitation email:", result.error)
   }
