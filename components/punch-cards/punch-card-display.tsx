@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 interface PunchEntry {
   id: string
   at: string
+  branch?: string | null
 }
 
 interface PunchCardDisplayProps {
@@ -85,12 +86,19 @@ function PunchCardDisplay({
               {punches.map((punch, index) => (
                 <li
                   key={punch.id}
-                  className="flex items-center justify-between gap-3 text-[13px] text-brand-rose-ink/80"
+                  className="flex items-start justify-between gap-3 text-[13px] text-brand-rose-ink/80"
                 >
                   <span className="font-bold text-brand-plum">
                     {t("punchNumber", { number: index + 1 })}
                   </span>
-                  <time className="tabular-nums">{punch.at}</time>
+                  <span className="flex flex-col items-end gap-0.5">
+                    <time className="tabular-nums">{punch.at}</time>
+                    {punch.branch && (
+                      <span className="text-[11px] text-brand-rose-ink/60">
+                        {t("punchBranch", { branch: punch.branch })}
+                      </span>
+                    )}
+                  </span>
                 </li>
               ))}
             </ol>

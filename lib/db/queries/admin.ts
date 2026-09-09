@@ -145,6 +145,11 @@ export async function searchCustomerCards(query?: string, limit = 20) {
         with: {
           issuedByLocation: { columns: { name: true } },
           order: { columns: { status: true, amount: true, paidAt: true } },
+          events: {
+            columns: { id: true, createdAt: true },
+            orderBy: (event) => [asc(event.createdAt)],
+            with: { location: { columns: { name: true } } },
+          },
         },
       },
     },

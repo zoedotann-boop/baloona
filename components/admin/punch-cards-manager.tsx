@@ -408,6 +408,33 @@ function CardRowView({
         />
       </div>
 
+      {card.punches.length > 0 && (
+        <div className="mt-4 border-t border-border pt-3">
+          <h3 className="text-[13px] font-bold text-brand-plum">
+            {t("historyTitle")}
+          </h3>
+          <ol className="mt-1.5 space-y-1">
+            {card.punches.map((punch, index) => (
+              <li
+                key={punch.id}
+                className="flex flex-wrap items-center gap-x-2 text-[13px] text-muted-foreground"
+              >
+                <span className="font-bold text-brand-plum">
+                  {t("punchNumber", { number: index + 1 })}
+                </span>
+                <time className="tabular-nums">{punch.at}</time>
+                <span>
+                  ·{" "}
+                  {punch.branchName
+                    ? t("punchBranch", { branch: punch.branchName })
+                    : t("punchBranchUnknown")}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
       {editing && (
         <div className="mt-4 border-t border-border pt-4">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

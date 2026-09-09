@@ -43,6 +43,13 @@ function toView(
         : null,
       note: card.note,
       createdAt: formatDateTime(card.createdAt, locale),
+      punches: card.events.map((event) => ({
+        id: event.id,
+        at: formatDateTime(event.createdAt, locale),
+        branchName: event.location
+          ? pickLocale(event.location.name, locale)
+          : null,
+      })),
       payment: card.order
         ? {
             paid: card.order.status === "paid",

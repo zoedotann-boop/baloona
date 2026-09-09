@@ -23,6 +23,7 @@ export default async function PunchCardPage({
   const punches = card.events.map((event) => ({
     id: event.id,
     at: formatDateTime(event.createdAt, locale),
+    branch: event.location ? pickLocale(event.location.name, locale) : null,
   }))
 
   return (
