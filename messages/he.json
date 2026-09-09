@@ -154,6 +154,7 @@
     "slotEmpty": "ניקוב פנוי",
     "historyTitle": "היסטוריית ניקובים",
     "punchNumber": "ניקוב {number}",
+    "punchBranch": "בסניף {branch}",
     "issuedBy": "הונפק בסניף {branch}",
     "footerNote": "שמרו את הקישור הזה — זו הכרטיסייה הדיגיטלית שלכם."
   },
@@ -307,6 +308,21 @@
       "viewCard": "לצפייה בכרטיסייה",
       "signoff": "נתראה בקרוב, צוות Baloona 💛",
       "subject": "הכרטיסייה הדיגיטלית שלכם מבלונה 🎈"
+    },
+    "punchNotification": {
+      "preview": "נרשם ניקוב חדש בכרטיסייה שלכם מבלונה",
+      "eyebrow": "עדכון כרטיסייה 🎈",
+      "heading": "נרשם ניקוב חדש בכרטיסייה שלך ✨",
+      "headingCompleted": "הכרטיסייה שלך מלאה! 🎉",
+      "intro": "נוקב ניקוב בכרטיסייה הדיגיטלית שלכם. הנה פרטי הביקור והיתרה שנותרה — שמרו את הקישור וצפו בכרטיסייה בכל עת.",
+      "introCompleted": "זה היה הניקוב האחרון — הכרטיסייה מלאה ותודה שביקרתם בבלונה! הנה פרטי הביקור האחרון.",
+      "locationLabel": "סניף הביקור",
+      "whenLabel": "מתי",
+      "remainingLabel": "ניקובים שנותרו",
+      "remainingValue": "{count} מתוך {total}",
+      "viewCard": "לצפייה בכרטיסייה",
+      "signoff": "נתראה בקרוב, צוות Baloona 💛",
+      "subject": "נרשם ניקוב חדש בכרטיסייה שלכם מבלונה 🎈"
     },
     "birthdayInvitation": {
       "preview": "ההזמנה ליום ההולדת שלכם",
@@ -792,6 +808,10 @@
       "deleteSelectedConfirm": "למחוק את הכרטיסיות שנבחרו לצמיתות?",
       "cardSummary": "נותרו {remaining} מתוך {total}",
       "completedBadge": "מלאה",
+      "historyTitle": "היסטוריית ניקובים",
+      "punchNumber": "ניקוב {number}",
+      "punchBranch": "בסניף {branch}",
+      "punchBranchUnknown": "סניף לא ידוע",
       "purchasedOn": "נרכשה: {date}",
       "issuedOn": "הונפקה: {date}",
       "paidBadge": "שולם",

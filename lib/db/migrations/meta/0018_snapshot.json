@@ -1,6 +1,6 @@
 {
-  "id": "3ce4fd7c-9521-4f13-ad12-a19f345cc345",
-  "prevId": "e0ca891d-58fa-4867-921b-8df5004c35b7",
+  "id": "9f2c255a-3c41-477e-a1fd-2062b1186efc",
+  "prevId": "3ce4fd7c-9521-4f13-ad12-a19f345cc345",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -94,15 +94,15 @@
         "account_user_id_user_id_fk": {
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -140,28 +140,28 @@
         "location_member_user_id_user_id_fk": {
           "name": "location_member_user_id_user_id_fk",
           "tableFrom": "location_member",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "location_member_location_id_location_id_fk": {
           "name": "location_member_location_id_location_id_fk",
           "tableFrom": "location_member",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
@@ -238,25 +238,25 @@
         "session_user_id_user_id_fk": {
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "session_token_unique": {
           "name": "session_token_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "token"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -327,10 +327,10 @@
       "uniqueConstraints": {
         "user_email_unique": {
           "name": "user_email_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -567,15 +567,15 @@
         "birthday_content_location_id_location_id_fk": {
           "name": "birthday_content_location_id_location_id_fk",
           "tableFrom": "birthday_content",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -700,24 +700,24 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "birthday_form_field_location_id_location_id_fk": {
           "name": "birthday_form_field_location_id_location_id_fk",
           "tableFrom": "birthday_form_field",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -776,15 +776,15 @@
         "birthday_package_line_location_id_location_id_fk": {
           "name": "birthday_package_line_location_id_location_id_fk",
           "tableFrom": "birthday_package_line",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -855,15 +855,15 @@
         "birthday_step_location_id_location_id_fk": {
           "name": "birthday_step_location_id_location_id_fk",
           "tableFrom": "birthday_step",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -936,15 +936,15 @@
         "birthday_upgrade_location_id_location_id_fk": {
           "name": "birthday_upgrade_location_id_location_id_fk",
           "tableFrom": "birthday_upgrade",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1003,15 +1003,15 @@
         "contact_subject_location_id_location_id_fk": {
           "name": "contact_subject_location_id_location_id_fk",
           "tableFrom": "contact_subject",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1076,15 +1076,15 @@
         "gallery_image_location_id_location_id_fk": {
           "name": "gallery_image_location_id_location_id_fk",
           "tableFrom": "gallery_image",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1238,15 +1238,15 @@
         "home_content_location_id_location_id_fk": {
           "name": "home_content_location_id_location_id_fk",
           "tableFrom": "home_content",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1311,15 +1311,15 @@
         "home_feature_location_id_location_id_fk": {
           "name": "home_feature_location_id_location_id_fk",
           "tableFrom": "home_feature",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1378,15 +1378,15 @@
         "menu_teaser_tile_location_id_location_id_fk": {
           "name": "menu_teaser_tile_location_id_location_id_fk",
           "tableFrom": "menu_teaser_tile",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1452,15 +1452,15 @@
         "price_row_tier_id_price_tier_id_fk": {
           "name": "price_row_tier_id_price_tier_id_fk",
           "tableFrom": "price_row",
+          "tableTo": "price_tier",
           "columnsFrom": [
             "tier_id"
           ],
-          "tableTo": "price_tier",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1532,15 +1532,15 @@
         "price_tier_location_id_location_id_fk": {
           "name": "price_tier_location_id_location_id_fk",
           "tableFrom": "price_tier",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1597,15 +1597,15 @@
         "pricing_content_location_id_location_id_fk": {
           "name": "pricing_content_location_id_location_id_fk",
           "tableFrom": "pricing_content",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1670,15 +1670,15 @@
         "review_photo_location_id_location_id_fk": {
           "name": "review_photo_location_id_location_id_fk",
           "tableFrom": "review_photo",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1778,15 +1778,15 @@
         "review_location_id_location_id_fk": {
           "name": "review_location_id_location_id_fk",
           "tableFrom": "review",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1849,15 +1849,15 @@
         "site_content_location_id_location_id_fk": {
           "name": "site_content_location_id_location_id_fk",
           "tableFrom": "site_content",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2008,24 +2008,24 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "lead_location_id_location_id_fk": {
           "name": "lead_location_id_location_id_fk",
           "tableFrom": "lead",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2108,15 +2108,15 @@
         "announcement_location_id_location_id_fk": {
           "name": "announcement_location_id_location_id_fk",
           "tableFrom": "announcement",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2213,15 +2213,15 @@
         "location_contact_location_id_location_id_fk": {
           "name": "location_contact_location_id_location_id_fk",
           "tableFrom": "location_contact",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2288,10 +2288,10 @@
       "uniqueConstraints": {
         "location_slug_unique": {
           "name": "location_slug_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "slug"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -2375,24 +2375,24 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "opening_hour_location_id_location_id_fk": {
           "name": "opening_hour_location_id_location_id_fk",
           "tableFrom": "opening_hour",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2476,24 +2476,24 @@
             }
           ],
           "isUnique": true,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "seo_entry_location_id_location_id_fk": {
           "name": "seo_entry_location_id_location_id_fk",
           "tableFrom": "seo_entry",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2575,15 +2575,15 @@
         "site_setting_location_id_location_id_fk": {
           "name": "site_setting_location_id_location_id_fk",
           "tableFrom": "site_setting",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2649,15 +2649,15 @@
         "menu_category_location_id_location_id_fk": {
           "name": "menu_category_location_id_location_id_fk",
           "tableFrom": "menu_category",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2714,15 +2714,15 @@
         "menu_content_location_id_location_id_fk": {
           "name": "menu_content_location_id_location_id_fk",
           "tableFrom": "menu_content",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2801,15 +2801,15 @@
         "menu_item_category_id_menu_category_id_fk": {
           "name": "menu_item_category_id_menu_category_id_fk",
           "tableFrom": "menu_item",
+          "tableTo": "menu_category",
           "columnsFrom": [
             "category_id"
           ],
-          "tableTo": "menu_category",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -2875,9 +2875,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {},
@@ -2885,10 +2885,10 @@
       "uniqueConstraints": {
         "customer_phone_unique": {
           "name": "customer_phone_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "phone"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -2939,6 +2939,14 @@
           "notNull": true,
           "default": "'active'"
         },
+        "theme": {
+          "name": "theme",
+          "type": "punch_card_theme",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'age12'"
+        },
         "issued_by_location_id": {
           "name": "issued_by_location_id",
           "type": "uuid",
@@ -2978,47 +2986,47 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "punch_card_customer_id_customer_id_fk": {
           "name": "punch_card_customer_id_customer_id_fk",
           "tableFrom": "punch_card",
+          "tableTo": "customer",
           "columnsFrom": [
             "customer_id"
           ],
-          "tableTo": "customer",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "punch_card_issued_by_location_id_location_id_fk": {
           "name": "punch_card_issued_by_location_id_location_id_fk",
           "tableFrom": "punch_card",
+          "tableTo": "location",
           "columnsFrom": [
             "issued_by_location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "punch_card_token_unique": {
           "name": "punch_card_token_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "token"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -3080,50 +3088,50 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "punch_event_card_id_punch_card_id_fk": {
           "name": "punch_event_card_id_punch_card_id_fk",
           "tableFrom": "punch_event",
+          "tableTo": "punch_card",
           "columnsFrom": [
             "card_id"
           ],
-          "tableTo": "punch_card",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "no action"
         },
         "punch_event_location_id_location_id_fk": {
           "name": "punch_event_location_id_location_id_fk",
           "tableFrom": "punch_event",
+          "tableTo": "location",
           "columnsFrom": [
             "location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "punch_event_admin_user_id_user_id_fk": {
           "name": "punch_event_admin_user_id_user_id_fk",
           "tableFrom": "punch_event",
+          "tableTo": "user",
           "columnsFrom": [
             "admin_user_id"
           ],
-          "tableTo": "user",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -3306,41 +3314,41 @@
         "punch_card_order_product_id_product_id_fk": {
           "name": "punch_card_order_product_id_product_id_fk",
           "tableFrom": "punch_card_order",
+          "tableTo": "product",
           "columnsFrom": [
             "product_id"
           ],
-          "tableTo": "product",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "punch_card_order_from_location_id_location_id_fk": {
           "name": "punch_card_order_from_location_id_location_id_fk",
           "tableFrom": "punch_card_order",
+          "tableTo": "location",
           "columnsFrom": [
             "from_location_id"
           ],
-          "tableTo": "location",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         },
         "punch_card_order_card_id_punch_card_id_fk": {
           "name": "punch_card_order_card_id_punch_card_id_fk",
           "tableFrom": "punch_card_order",
+          "tableTo": "punch_card",
           "columnsFrom": [
             "card_id"
           ],
-          "tableTo": "punch_card",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -3418,6 +3426,14 @@
         "completed"
       ]
     },
+    "public.punch_card_theme": {
+      "name": "punch_card_theme",
+      "schema": "public",
+      "values": [
+        "age12",
+        "age2"
+      ]
+    },
     "public.shop_order_status": {
       "name": "shop_order_status",
       "schema": "public",
@@ -3429,10 +3445,10 @@
     }
   },
   "schemas": {},
-  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
+  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},

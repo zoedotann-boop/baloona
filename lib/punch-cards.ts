@@ -1,5 +1,11 @@
 import { type PunchCardTheme } from "@/lib/db/schema/punch-cards"
 
+interface PunchView {
+  id: string
+  at: string
+  branchName: string | null
+}
+
 interface CardView {
   id: string
   token: string
@@ -10,6 +16,7 @@ interface CardView {
   issuedByLocationName: string | null
   note: string | null
   createdAt: string
+  punches: PunchView[]
   payment: { paid: boolean; price: string } | null
 }
 

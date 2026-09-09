@@ -106,6 +106,7 @@ export async function getPunchCardByToken(token: string) {
       events: {
         columns: { id: true, createdAt: true },
         orderBy: (event) => [asc(event.createdAt)],
+        with: { location: { columns: { name: true } } },
       },
     },
   })

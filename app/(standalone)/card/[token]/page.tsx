@@ -6,7 +6,7 @@ import { BrandShell } from "@/components/layout/brand-shell"
 import { PunchCardDisplay } from "@/components/punch-cards/punch-card-display"
 import { type Locale } from "@/i18n/routing"
 import { getPunchCardByToken } from "@/lib/db/queries/site"
-import { pickLocale } from "@/lib/localized"
+import { formatDateTime, pickLocale } from "@/lib/localized"
 
 export default async function PunchCardPage({
   params,
@@ -20,13 +20,10 @@ export default async function PunchCardPage({
 
   if (!card) notFound()
 
-  const dateFormat = new Intl.DateTimeFormat(
-    locale === "he" ? "he-IL" : "en-US",
-    { dateStyle: "short", timeStyle: "short" }
-  )
   const punches = card.events.map((event) => ({
     id: event.id,
-    at: dateFormat.format(event.createdAt),
+    at: formatDateTime(event.createdAt, locale),
+    branch: event.location ? pickLocale(event.location.name, locale) : null,
   }))
 
   return (

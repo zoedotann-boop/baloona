@@ -167,6 +167,7 @@
     "completed": "Card complete! 🎉",
     "slotFilled": "Punch used",
     "slotEmpty": "Punch available",
+    "punchBranch": "at {branch}",
     "issuedBy": "Issued at {branch}",
     "footerNote": "Keep this link — it's your digital punch card."
   },
@@ -782,6 +783,10 @@
       "deleteSelectedConfirm": "Permanently delete the selected cards?",
       "cardSummary": "{remaining} of {total} left",
       "completedBadge": "Full",
+      "historyTitle": "Punch history",
+      "punchNumber": "Punch {number}",
+      "punchBranch": "at {branch}",
+      "punchBranchUnknown": "Unknown branch",
       "punch": "Punch",
       "cardFull": "Card is full",
       "undo": "Undo punch",

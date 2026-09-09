@@ -138,8 +138,6 @@ const BLUE: ThemeArt = {
 
 const THEMES: Record<PunchCardTheme, ThemeArt> = { age12: PINK, age2: BLUE }
 
-// The card's page-fill colour per theme, reused wherever UI needs to echo the
-// punch-card background (e.g. the admin card-type badge).
 const punchCardThemeBackground: Record<PunchCardTheme, string> = {
   age12: PINK.background,
   age2: BLUE.background,

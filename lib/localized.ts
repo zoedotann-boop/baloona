@@ -29,6 +29,14 @@ export function formatPrice(amount: number, locale: Locale): string {
   return `${amount.toLocaleString(locale === "he" ? "he-IL" : "en-US")} ₪`
 }
 
+export function formatDateTime(date: Date, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale === "he" ? "he-IL" : "en-US", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "Asia/Jerusalem",
+  }).format(date)
+}
+
 export function formatPerEntry(
   amount: number,
   entries: number,

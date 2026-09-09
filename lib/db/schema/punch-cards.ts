@@ -19,9 +19,6 @@ export const punchCardStatus = pgEnum("punch_card_status", [
 
 export type PunchCardStatus = (typeof punchCardStatus.enumValues)[number]
 
-// Which brand art a card wears. `age12` is the red graphic (children above age
-// two); `age2` is the blue one (children under two). Mirrors the presentational
-// `PunchCardTheme` union in `components/shop/punch-card-art.tsx`.
 export const punchCardTheme = pgEnum("punch_card_theme", ["age12", "age2"])
 
 export type PunchCardTheme = (typeof punchCardTheme.enumValues)[number]
