@@ -35,6 +35,7 @@ export default async function PunchCardPage({
             className="w-full"
             total={card.totalPunches}
             used={card.usedPunches}
+            theme={card.theme}
             punches={punches}
             customerName={card.customer.fullName || undefined}
             branchName={

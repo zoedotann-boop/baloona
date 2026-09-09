@@ -14,6 +14,7 @@ import {
   customers,
   punchCardOrders,
   punchCards,
+  punchCardTheme,
   punchEvents,
 } from "@/lib/db/schema"
 import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
@@ -39,6 +40,7 @@ function toView(
       totalPunches: card.totalPunches,
       usedPunches: card.usedPunches,
       status: card.status,
+      theme: card.theme,
       issuedByLocationName: card.issuedByLocation
         ? pickLocale(card.issuedByLocation.name, locale)
         : null,
@@ -90,6 +92,7 @@ const issueSchema = z
     note: z.string().trim().default(""),
     totalPunches: z.coerce.number().int().min(1).max(100),
     remainingPunches: z.coerce.number().int().min(0),
+    theme: z.enum(punchCardTheme.enumValues).default("age12"),
   })
   .refine((data) => data.remainingPunches <= data.totalPunches, {
     path: ["remainingPunches"],
@@ -102,8 +105,15 @@ export async function issuePunchCard(
 
   const parsed = issueSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
-  const { phone, fullName, email, note, totalPunches, remainingPunches } =
-    parsed.data
+  const {
+    phone,
+    fullName,
+    email,
+    note,
+    totalPunches,
+    remainingPunches,
+    theme,
+  } = parsed.data
 
   const existing = await db.query.customers.findFirst({
     where: eq(customers.phone, phone),
@@ -137,6 +147,7 @@ export async function issuePunchCard(
     totalPunches,
     usedPunches,
     status: usedPunches >= totalPunches ? "completed" : "active",
+    theme,
     issuedByLocationId: location.id,
     note: note || null,
   })
@@ -283,6 +294,7 @@ const updateCardSchema = z.object({
   cardId: z.uuid(),
   totalPunches: z.coerce.number().int().min(1).max(100),
   note: z.string().trim().default(""),
+  theme: z.enum(punchCardTheme.enumValues).default("age12"),
 })
 
 export async function updateCardDetails(
@@ -306,6 +318,7 @@ export async function updateCardDetails(
       totalPunches,
       usedPunches,
       status: usedPunches >= totalPunches ? "completed" : "active",
+      theme: parsed.data.theme,
       note: parsed.data.note || null,
     })
     .where(eq(punchCards.id, card.id))

@@ -17,6 +17,7 @@ type PunchCardTheme = "age12" | "age2"
 interface PunchCardArtProps {
   theme: PunchCardTheme
   caption: string
+  subcaption?: string
   used?: number
   className?: string
 }
@@ -137,6 +138,11 @@ const BLUE: ThemeArt = {
 
 const THEMES: Record<PunchCardTheme, ThemeArt> = { age12: PINK, age2: BLUE }
 
+const punchCardThemeBackground: Record<PunchCardTheme, string> = {
+  age12: PINK.background,
+  age2: BLUE.background,
+}
+
 interface SlotProps {
   y: number
   side: "left" | "right"
@@ -188,7 +194,13 @@ function Slot({ y, side, fill, punchedFill, number, punched }: SlotProps) {
   )
 }
 
-function PunchCardArt({ theme, caption, used, className }: PunchCardArtProps) {
+function PunchCardArt({
+  theme,
+  caption,
+  subcaption,
+  used,
+  className,
+}: PunchCardArtProps) {
   const art = THEMES[theme]
   return (
     <svg
@@ -219,6 +231,20 @@ function PunchCardArt({ theme, caption, used, className }: PunchCardArtProps) {
       >
         {caption}
       </text>
+      {subcaption && (
+        <text
+          x={300}
+          y={300}
+          textAnchor="middle"
+          direction="rtl"
+          fontFamily="var(--font-sans)"
+          fontWeight={700}
+          fontSize={22}
+          fill="var(--brand-ink)"
+        >
+          {subcaption}
+        </text>
+      )}
       {ROW_Y.map((y, index) => (
         <Slot
           key={`r${y}`}
@@ -245,5 +271,5 @@ function PunchCardArt({ theme, caption, used, className }: PunchCardArtProps) {
   )
 }
 
-export { PunchCardArt }
+export { PunchCardArt, punchCardThemeBackground }
 export type { PunchCardTheme }

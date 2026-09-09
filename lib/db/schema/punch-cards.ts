@@ -19,6 +19,10 @@ export const punchCardStatus = pgEnum("punch_card_status", [
 
 export type PunchCardStatus = (typeof punchCardStatus.enumValues)[number]
 
+export const punchCardTheme = pgEnum("punch_card_theme", ["age12", "age2"])
+
+export type PunchCardTheme = (typeof punchCardTheme.enumValues)[number]
+
 export const customers = pgTable(
   "customer",
   {
@@ -42,6 +46,7 @@ export const punchCards = pgTable(
     totalPunches: integer().notNull(),
     usedPunches: integer().notNull().default(0),
     status: punchCardStatus().notNull().default("active"),
+    theme: punchCardTheme().notNull().default("age12"),
     issuedByLocationId: uuid().references(() => locations.id, {
       onDelete: "set null",
     }),

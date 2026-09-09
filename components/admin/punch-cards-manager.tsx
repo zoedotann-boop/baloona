@@ -18,8 +18,14 @@ import { useRef, useState, useTransition } from "react"
 
 import { ConfirmModal } from "@/components/admin/confirm-modal"
 import { useToast } from "@/components/admin/toast"
-import { AdminCard, AdminField, AdminInput } from "@/components/admin/admin-ui"
+import {
+  AdminCard,
+  AdminField,
+  AdminInput,
+  AdminSelect,
+} from "@/components/admin/admin-ui"
 import { PillButton } from "@/components/brand/pill-button"
+import { punchCardThemeBackground } from "@/components/shop/punch-card-art"
 import {
   deleteCard,
   issuePunchCard,
@@ -227,6 +233,7 @@ function CardRowView({
     email: "",
     total: "",
     note: "",
+    theme: "age12" as CustomerCardsView["cards"][number]["theme"],
   })
 
   const remaining = remainingPunches(card.totalPunches, card.usedPunches)
@@ -246,6 +253,7 @@ function CardRowView({
       email: customer.email ?? "",
       total: String(card.totalPunches),
       note: card.note ?? "",
+      theme: card.theme,
     })
     setEditing(true)
   }
@@ -263,6 +271,7 @@ function CardRowView({
         cardId: card.id,
         totalPunches: Number(form.total),
         note: form.note,
+        theme: form.theme,
       })
       onChanged()
       setEditing(false)
@@ -297,6 +306,12 @@ function CardRowView({
                 {customer.email}
               </span>
             )}
+            <span
+              className="rounded-full px-2 py-0.5 text-[12px] font-bold text-brand-plum"
+              style={{ backgroundColor: punchCardThemeBackground[card.theme] }}
+            >
+              {card.theme === "age2" ? t("cardTypeAge2") : t("cardTypeAge12")}
+            </span>
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-[14px]">
             <span className="font-bold text-brand-plum">
@@ -437,7 +452,7 @@ function CardRowView({
 
       {editing && (
         <div className="mt-4 border-t border-border pt-4">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <AdminField label={t("fullName")}>
               <AdminInput
                 value={form.fullName}
@@ -466,6 +481,21 @@ function CardRowView({
                   setForm((f) => ({ ...f, total: event.target.value }))
                 }
               />
+            </AdminField>
+            <AdminField label={t("cardType")} tooltip={t("cardTypeTip")}>
+              <AdminSelect
+                value={form.theme}
+                onChange={(event) =>
+                  setForm((f) => ({
+                    ...f,
+                    theme: event.target
+                      .value as CustomerCardsView["cards"][number]["theme"],
+                  }))
+                }
+              >
+                <option value="age12">{t("cardTypeAge12")}</option>
+                <option value="age2">{t("cardTypeAge2")}</option>
+              </AdminSelect>
             </AdminField>
             <AdminField label={t("note")} tooltip={t("noteTip")}>
               <AdminInput
@@ -597,6 +627,7 @@ function IssueForm({
               note: String(data.get("note") ?? "").trim(),
               totalPunches: total,
               remainingPunches: remaining,
+              theme: data.get("theme") === "age2" ? "age2" : "age12",
             })
             if (result.ok) {
               form.reset()
@@ -619,6 +650,12 @@ function IssueForm({
         </AdminField>
         <AdminField label={t("note")} tooltip={t("noteTip")}>
           <AdminInput name="note" />
+        </AdminField>
+        <AdminField label={t("cardType")} tooltip={t("cardTypeTip")}>
+          <AdminSelect name="theme" defaultValue="age12">
+            <option value="age12">{t("cardTypeAge12")}</option>
+            <option value="age2">{t("cardTypeAge2")}</option>
+          </AdminSelect>
         </AdminField>
         <AdminField label={t("total")} tooltip={t("totalTip")}>
           <AdminInput
