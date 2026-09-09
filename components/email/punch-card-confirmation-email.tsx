@@ -9,6 +9,8 @@ import { EmailLayout } from "./email-layout"
 
 const { color, font } = emailTheme
 
+type PunchCardButtonVariant = "accent" | "pink"
+
 export interface PunchCardConfirmationEmailProps {
   locale: Locale
   baseUrl?: string
@@ -18,6 +20,7 @@ export interface PunchCardConfirmationEmailProps {
   intro: string
   rows: DetailRow[]
   buttonLabel: string
+  buttonVariant?: PunchCardButtonVariant
   cardUrl: string
   signoff: string
   footer: string
@@ -32,6 +35,7 @@ export function PunchCardConfirmationEmail({
   intro,
   rows,
   buttonLabel,
+  buttonVariant = "accent",
   cardUrl,
   signoff,
   footer,
@@ -48,7 +52,7 @@ export function PunchCardConfirmationEmail({
       <Text style={paragraphStyle}>{intro}</Text>
       <DetailTable rows={rows} />
       <Section style={buttonWrapStyle}>
-        <Button href={cardUrl} style={buttonStyle}>
+        <Button href={cardUrl} style={buttonStyles[buttonVariant]}>
           {buttonLabel}
         </Button>
       </Section>
@@ -72,16 +76,27 @@ const buttonWrapStyle: CSSProperties = {
   textAlign: "center",
 }
 
-const buttonStyle: CSSProperties = {
+const buttonBaseStyle: CSSProperties = {
   display: "inline-block",
-  backgroundColor: color.accent,
-  color: "#ffffff",
   fontFamily: font.heading,
   fontSize: "16px",
   fontWeight: 700,
   textDecoration: "none",
   padding: "14px 30px",
   borderRadius: "999px",
+}
+
+const buttonStyles: Record<PunchCardButtonVariant, CSSProperties> = {
+  accent: {
+    ...buttonBaseStyle,
+    backgroundColor: color.accent,
+    color: "#ffffff",
+  },
+  pink: {
+    ...buttonBaseStyle,
+    backgroundColor: color.pink,
+    color: color.plum,
+  },
 }
 
 const signoffStyle: CSSProperties = {

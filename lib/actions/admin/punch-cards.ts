@@ -6,7 +6,7 @@ import { desc, eq } from "drizzle-orm"
 import { getLocale } from "next-intl/server"
 import { z } from "zod"
 
-import { type Locale } from "@/i18n/routing"
+import { defaultLocale, type Locale } from "@/i18n/routing"
 import { requireLocationAccess } from "@/lib/admin/access"
 import { db } from "@/lib/db"
 import { searchCustomerCards } from "@/lib/db/queries/admin"
@@ -17,8 +17,9 @@ import {
   punchEvents,
 } from "@/lib/db/schema"
 import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
+import { sendPunchNotification } from "@/lib/email/punch-notification"
 import { formatDateTime, formatPrice, pickLocale } from "@/lib/localized"
-import { type CustomerCardsView } from "@/lib/punch-cards"
+import { remainingPunches, type CustomerCardsView } from "@/lib/punch-cards"
 import { siteOrigin } from "@/lib/site-url"
 
 import { OK, type ActionResult } from "./shared"
@@ -164,27 +165,45 @@ export async function punchCard(
 
   const card = await db.query.punchCards.findFirst({
     where: eq(punchCards.id, parsed.data.cardId),
+    with: { customer: true },
   })
   if (!card) return { ok: false, error: "notFound" }
   if (card.usedPunches >= card.totalPunches) {
     return { ok: false, error: "full" }
   }
 
+  const punchedAt = new Date()
   const usedPunches = card.usedPunches + 1
+  const completed = usedPunches >= card.totalPunches
   await db.batch([
     db
       .update(punchCards)
       .set({
         usedPunches,
-        status: usedPunches >= card.totalPunches ? "completed" : "active",
+        status: completed ? "completed" : "active",
       })
       .where(eq(punchCards.id, card.id)),
     db.insert(punchEvents).values({
       cardId: card.id,
       locationId: location.id,
       adminUserId: user.id,
+      createdAt: punchedAt,
     }),
   ])
+
+  const recipientEmail = card.customer.email
+  if (recipientEmail) {
+    const result = await sendPunchNotification({
+      to: recipientEmail,
+      cardUrl: `${await siteOrigin()}/card/${card.token}`,
+      remaining: remainingPunches(card.totalPunches, usedPunches),
+      total: card.totalPunches,
+      locationName: pickLocale(location.name, defaultLocale),
+      punchedAt: formatDateTime(punchedAt, defaultLocale),
+      completed,
+    })
+    if (!result.sent) console.error("punch notification email:", result.error)
+  }
 
   return OK
 }
