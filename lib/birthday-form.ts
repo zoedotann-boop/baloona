@@ -64,12 +64,26 @@ function propertyFor(field: BirthdayFormFieldView): RJSFSchema {
   }
 }
 
+// The venue is closed on Saturdays, so event dates cannot fall on one.
+// Day-of-week indexes follow JS conventions (0 = Sunday … 6 = Saturday).
+const CLOSED_DAYS_OF_WEEK = [6]
+
+export function isClosedEventDate(value: string): boolean {
+  const date = new Date(`${value}T00:00:00Z`)
+  return (
+    !Number.isNaN(date.getTime()) &&
+    CLOSED_DAYS_OF_WEEK.includes(date.getUTCDay())
+  )
+}
+
 export function isAnswerValid(
   field: Pick<BirthdayFormFieldView, "type" | "min" | "max">,
   value: string
 ): boolean {
   if (!value) return true
   switch (field.type) {
+    case "date":
+      return !isClosedEventDate(value)
     case "id":
       return isValidIsraeliId(value)
     case "email":
@@ -107,6 +121,10 @@ export function buildBirthdayForm(fields: BirthdayFormFieldView[]): {
 
     const ui: UiSchema[string] = {}
     if (field.type === "textarea") ui["ui:widget"] = "textarea"
+    if (field.type === "date") {
+      ui["ui:widget"] = "date"
+      ui["ui:options"] = { disabledDaysOfWeek: CLOSED_DAYS_OF_WEEK }
+    }
     const inputType = INPUT_TYPES[field.type]
     if (inputType) ui["ui:options"] = { inputType }
     if (field.placeholder) ui["ui:placeholder"] = field.placeholder

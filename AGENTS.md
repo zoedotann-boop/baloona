@@ -188,6 +188,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - The birthday booking form is editor-defined: `birthday_form_field` rows compile to a
   JSON Schema (`lib/birthday-form.ts`) rendered by `@rjsf/shadcn`. Answers land in
   `lead.formData` keyed by field key and render as a label/value list in the inbox.
+  `date` fields render through the brand calendar (`DateWidget` → `<DateField>`, a
+  react-day-picker popover) instead of a native input. The venue is closed Saturdays,
+  so those are greyed out in the picker and rejected in `isClosedEventDate`
+  (client `customValidate` + server `isAnswerValid`).
 - Public forms (contact, checkout, birthday) share the zod schemas in `lib/forms/schemas.ts`
   so the client and the server enforce the same rules; the hand-built forms validate on submit
   and show per-field messages from the `forms` namespace. Every public form renders a hidden
