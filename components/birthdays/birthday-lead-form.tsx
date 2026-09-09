@@ -13,6 +13,8 @@ import { HoneypotField } from "@/components/forms/honeypot-field"
 import { submitBirthdayLead } from "@/lib/actions/leads"
 import {
   buildBirthdayForm,
+  optionAvailableForWeekday,
+  weekdayFromDateInput,
   type BirthdayFormFieldView,
 } from "@/lib/birthday-form"
 import { birthdayValidator } from "@/lib/birthday-validator"
@@ -74,8 +76,53 @@ function BirthdayLeadForm({
   const [pending, startTransition] = useTransition()
   const honeypotRef = useRef<HTMLInputElement>(null)
 
+  // Options tagged with weekdays (e.g. event-hour slots) are narrowed to the
+  // weekday of the chosen date field, so only the slots offered that day show.
+  const weekday = useMemo(() => {
+    const dateField = fields.find((field) => field.type === "date")
+    return dateField ? weekdayFromDateInput(answers[dateField.key]) : null
+  }, [fields, answers])
+
+  const resolvedFields = useMemo(
+    () =>
+      fields.map((field) => ({
+        ...field,
+        options: field.options.filter((option) =>
+          optionAvailableForWeekday(option, weekday)
+        ),
+      })),
+    [fields, weekday]
+  )
+
   const { schema, uiSchema } = useMemo(
-    () => buildBirthdayForm(fields),
+    () => buildBirthdayForm(resolvedFields),
+    [resolvedFields]
+  )
+
+  // Drop a previously picked option once it is no longer offered (e.g. the date
+  // moved from a weekday to Friday), so a hidden value can't be submitted.
+  const pruneHiddenSelections = useCallback(
+    (data: Answers): Answers => {
+      const dateField = fields.find((field) => field.type === "date")
+      const day = dateField ? weekdayFromDateInput(data[dateField.key]) : null
+      let next = data
+      for (const field of fields) {
+        if (field.type !== "select") continue
+        const value = next[field.key]
+        if (
+          typeof value === "string" &&
+          value &&
+          !field.options.some(
+            (option) =>
+              option.value === value && optionAvailableForWeekday(option, day)
+          )
+        ) {
+          if (next === data) next = { ...data }
+          delete next[field.key]
+        }
+      }
+      return next
+    },
     [fields]
   )
 
@@ -171,7 +218,9 @@ function BirthdayLeadForm({
               uiSchema={uiSchema}
               validator={birthdayValidator}
               formData={answers}
-              onChange={(event) => setAnswers(event.formData ?? {})}
+              onChange={(event) =>
+                setAnswers(pruneHiddenSelections(event.formData ?? {}))
+              }
               onSubmit={(event) => handleSubmit(event.formData)}
               transformErrors={localizeErrors}
               showErrorList={false}

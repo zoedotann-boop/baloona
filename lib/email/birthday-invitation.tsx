@@ -14,10 +14,11 @@ export interface BirthdayInvitation {
   pdfUrl: string
   celebrantName?: string
   eventDate?: string
+  eventTime?: string
 }
 
 const ATTACHMENT_FILENAME = "baloona-birthday-invitation.pdf"
-const FONT_PATH = "/fonts/Assistant-SemiBold.ttf"
+const FONT_PATH = "/fonts/Fredoka-Medium.ttf"
 
 export async function sendBirthdayInvitation(
   invitation: BirthdayInvitation
@@ -91,7 +92,7 @@ async function personalize(
   weekdays: string[]
 ): Promise<Buffer> {
   const eventDate = parseEventDate(invitation.eventDate)
-  if (!name && !eventDate) return original
+  if (!name && !eventDate && !invitation.eventTime) return original
   try {
     const response = await fetch(new URL(FONT_PATH, invitation.pdfUrl))
     if (!response.ok) return original
@@ -100,6 +101,7 @@ async function personalize(
       name,
       day: eventDate ? weekdays[eventDate.getDay()] : undefined,
       date: eventDate ? formatEventDate(eventDate) : undefined,
+      time: invitation.eventTime || undefined,
     })
     return Buffer.from(filled)
   } catch {

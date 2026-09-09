@@ -84,7 +84,7 @@ interface BirthdaysDraft {
     label: Localized
     placeholder: Localized
     type: FormFieldType
-    options: { value: string; label: Localized }[]
+    options: { value: string; label: Localized; days?: number[] }[]
     minValue: number | null
     maxValue: number | null
     isRequired: boolean

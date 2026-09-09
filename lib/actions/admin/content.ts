@@ -425,7 +425,11 @@ const birthdaySchema = z.object({
       placeholder: localizedSchema,
       type: z.enum(formFieldType.enumValues),
       options: z.array(
-        z.object({ value: z.string().min(1), label: localizedSchema })
+        z.object({
+          value: z.string().min(1),
+          label: localizedSchema,
+          days: z.array(z.number().int().min(0).max(6)).optional(),
+        })
       ),
       minValue: z.number().int().nullable(),
       maxValue: z.number().int().nullable(),
