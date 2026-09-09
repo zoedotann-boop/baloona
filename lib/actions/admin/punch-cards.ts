@@ -17,7 +17,7 @@ import {
   punchEvents,
 } from "@/lib/db/schema"
 import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
-import { formatPrice, pickLocale } from "@/lib/localized"
+import { formatDateTime, formatPrice, pickLocale } from "@/lib/localized"
 import { type CustomerCardsView } from "@/lib/punch-cards"
 import { siteOrigin } from "@/lib/site-url"
 
@@ -27,10 +27,6 @@ function toView(
   rows: Awaited<ReturnType<typeof searchCustomerCards>>,
   locale: Locale
 ): CustomerCardsView[] {
-  const dateFormat = new Intl.DateTimeFormat(
-    locale === "he" ? "he-IL" : "en-US",
-    { dateStyle: "short", timeStyle: "short" }
-  )
   return rows.map((customer) => ({
     id: customer.id,
     fullName: customer.fullName,
@@ -46,7 +42,7 @@ function toView(
         ? pickLocale(card.issuedByLocation.name, locale)
         : null,
       note: card.note,
-      createdAt: dateFormat.format(card.createdAt),
+      createdAt: formatDateTime(card.createdAt, locale),
       payment: card.order
         ? {
             paid: card.order.status === "paid",
