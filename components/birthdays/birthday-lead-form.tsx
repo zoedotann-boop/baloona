@@ -1,7 +1,7 @@
 "use client"
 
 import Form from "@rjsf/shadcn"
-import type { RJSFValidationError } from "@rjsf/utils"
+import type { FormValidation, RJSFValidationError } from "@rjsf/utils"
 import { useTranslations } from "next-intl"
 import { Check, PartyPopper } from "lucide-react"
 import { useCallback, useMemo, useRef, useState, useTransition } from "react"
@@ -9,10 +9,12 @@ import { useCallback, useMemo, useRef, useState, useTransition } from "react"
 import { PillButton } from "@/components/brand/pill-button"
 import { SignaturePad } from "@/components/brand/signature-pad"
 import { WallScene } from "@/components/brand/wall-scene"
+import { DateWidget } from "@/components/forms/date-widget"
 import { HoneypotField } from "@/components/forms/honeypot-field"
 import { submitBirthdayLead } from "@/lib/actions/leads"
 import {
   buildBirthdayForm,
+  isClosedEventDate,
   optionAvailableForWeekday,
   weekdayFromDateInput,
   type BirthdayFormFieldView,
@@ -159,6 +161,19 @@ function BirthdayLeadForm({
     [forms]
   )
 
+  const customValidate = useCallback(
+    (formData: Answers | undefined, errors: FormValidation<Answers>) => {
+      for (const field of fields) {
+        if (field.type !== "date") continue
+        const value = formData?.[field.key]
+        if (typeof value === "string" && isClosedEventDate(value))
+          errors[field.key]?.addError(forms("noSaturday"))
+      }
+      return errors
+    },
+    [fields, forms]
+  )
+
   const toggle = (id: string) =>
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((value) => value !== id) : [...prev, id]
@@ -217,6 +232,8 @@ function BirthdayLeadForm({
               schema={schema}
               uiSchema={uiSchema}
               validator={birthdayValidator}
+              widgets={{ date: DateWidget }}
+              customValidate={customValidate}
               formData={answers}
               onChange={(event) =>
                 setAnswers(pruneHiddenSelections(event.formData ?? {}))
