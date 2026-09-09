@@ -201,6 +201,27 @@
   }
 }
 
+/* Brand skin for the react-day-picker calendar used by <DateField>. The extra
+   `.brand-day-picker` class outranks the vendor stylesheet regardless of import
+   order, so these win without !important. */
+.brand-day-picker {
+  --rdp-accent-color: var(--brand-plum);
+  --rdp-today-color: var(--brand-plum);
+  --rdp-day_button-width: 40px;
+  --rdp-day_button-height: 40px;
+}
+.brand-day-picker .rdp-chevron {
+  fill: var(--brand-plum);
+}
+.brand-day-picker .rdp-day_button:hover:not(:disabled) {
+  background-color: var(--brand-pink-soft);
+}
+.brand-day-picker .rdp-selected .rdp-day_button {
+  background-color: var(--brand-plum);
+  border-color: var(--brand-plum);
+  color: white;
+}
+
 @keyframes baloonaPulse {
   0%,
   100% {
