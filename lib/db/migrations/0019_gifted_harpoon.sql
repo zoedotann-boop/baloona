@@ -1,0 +1,1 @@
+ALTER TABLE "punch_card" ADD COLUMN "invoice_number" text;

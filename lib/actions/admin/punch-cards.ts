@@ -49,6 +49,7 @@ function toView(
       issuedByLocationName: card.issuedByLocation
         ? pickLocale(card.issuedByLocation.name, locale)
         : null,
+      invoiceNumber: card.invoiceNumber,
       note: card.note,
       createdAt: formatDateTime(card.createdAt, locale),
       punches: card.events.map((event) => ({
@@ -98,6 +99,7 @@ const issueSchema = z
     phone: z.string().trim().min(1),
     fullName: z.string().trim().default(""),
     email: z.string().trim().default(""),
+    invoiceNumber: z.string().trim().default(""),
     note: z.string().trim().default(""),
     totalPunches: z.coerce.number().int().min(1).max(100),
     remainingPunches: z.coerce.number().int().min(0),
@@ -118,6 +120,7 @@ export async function issuePunchCard(
     phone,
     fullName,
     email,
+    invoiceNumber,
     note,
     totalPunches,
     remainingPunches,
@@ -158,6 +161,7 @@ export async function issuePunchCard(
     status: usedPunches >= totalPunches ? "completed" : "active",
     theme,
     issuedByLocationId: location.id,
+    invoiceNumber: invoiceNumber || null,
     note: note || null,
   })
 
@@ -302,6 +306,7 @@ const updateCardSchema = z.object({
   slug: z.string().min(1),
   cardId: z.uuid(),
   totalPunches: z.coerce.number().int().min(1).max(100),
+  invoiceNumber: z.string().trim().default(""),
   note: z.string().trim().default(""),
   theme: z.enum(punchCardTheme.enumValues).default("age12"),
 })
@@ -328,6 +333,7 @@ export async function updateCardDetails(
       usedPunches,
       status: usedPunches >= totalPunches ? "completed" : "active",
       theme: parsed.data.theme,
+      invoiceNumber: parsed.data.invoiceNumber || null,
       note: parsed.data.note || null,
     })
     .where(eq(punchCards.id, card.id))

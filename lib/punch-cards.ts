@@ -14,6 +14,7 @@ interface CardView {
   status: "active" | "completed"
   theme: PunchCardTheme
   issuedByLocationName: string | null
+  invoiceNumber: string | null
   note: string | null
   createdAt: string
   punches: PunchView[]
