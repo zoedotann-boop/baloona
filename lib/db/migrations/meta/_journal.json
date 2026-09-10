@@ -134,6 +134,13 @@
       "when": 1788961233924,
       "tag": "0018_clammy_spacker_dave",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1789034846244,
+      "tag": "0019_gifted_harpoon",
+      "breakpoints": true
     }
   ]
 }

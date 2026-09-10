@@ -285,6 +285,7 @@ function CardRowView({
     fullName: "",
     email: "",
     total: "",
+    invoiceNumber: "",
     note: "",
     theme: "age12" as CustomerCardsView["cards"][number]["theme"],
   })
@@ -305,6 +306,7 @@ function CardRowView({
       fullName: customer.fullName,
       email: customer.email ?? "",
       total: String(card.totalPunches),
+      invoiceNumber: card.invoiceNumber ?? "",
       note: card.note ?? "",
       theme: card.theme,
     })
@@ -323,6 +325,7 @@ function CardRowView({
         slug,
         cardId: card.id,
         totalPunches: Number(form.total),
+        invoiceNumber: form.invoiceNumber,
         note: form.note,
         theme: form.theme,
       })
@@ -401,6 +404,12 @@ function CardRowView({
                 </span>
               ))}
           </div>
+          {card.invoiceNumber && (
+            <p className="mt-1.5 text-[13px] text-muted-foreground">
+              {t("invoiceNumberSummary")}{" "}
+              <span dir="ltr">{card.invoiceNumber}</span>
+            </p>
+          )}
           {card.note && (
             <p className="mt-1.5 text-[13px] text-muted-foreground">
               {card.note}
@@ -559,6 +568,18 @@ function CardRowView({
                 <option value="age2">{t("cardTypeAge2")}</option>
               </AdminSelect>
             </AdminField>
+            <AdminField
+              label={t("invoiceNumber")}
+              tooltip={t("invoiceNumberTip")}
+            >
+              <AdminInput
+                dir="ltr"
+                value={form.invoiceNumber}
+                onChange={(event) =>
+                  setForm((f) => ({ ...f, invoiceNumber: event.target.value }))
+                }
+              />
+            </AdminField>
             <AdminField label={t("note")} tooltip={t("noteTip")}>
               <AdminInput
                 value={form.note}
@@ -686,6 +707,7 @@ function IssueForm({
               phone,
               fullName: String(data.get("fullName") ?? "").trim(),
               email: String(data.get("email") ?? "").trim(),
+              invoiceNumber: String(data.get("invoiceNumber") ?? "").trim(),
               note: String(data.get("note") ?? "").trim(),
               totalPunches: total,
               remainingPunches: remaining,
@@ -709,6 +731,9 @@ function IssueForm({
         </AdminField>
         <AdminField label={t("email")}>
           <AdminInput name="email" type="email" dir="ltr" />
+        </AdminField>
+        <AdminField label={t("invoiceNumber")} tooltip={t("invoiceNumberTip")}>
+          <AdminInput name="invoiceNumber" dir="ltr" />
         </AdminField>
         <AdminField label={t("note")} tooltip={t("noteTip")}>
           <AdminInput name="note" />

@@ -50,6 +50,7 @@ export const punchCards = pgTable(
     issuedByLocationId: uuid().references(() => locations.id, {
       onDelete: "set null",
     }),
+    invoiceNumber: text(),
     note: text(),
     ...timestamps,
   },
