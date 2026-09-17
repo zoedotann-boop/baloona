@@ -7,6 +7,7 @@ import {
   Check,
   ChevronDown,
   Copy,
+  CopyPlus,
   ExternalLink,
   Minus,
   Pencil,
@@ -29,6 +30,7 @@ import { PillButton } from "@/components/brand/pill-button"
 import { punchCardThemeBackground } from "@/components/shop/punch-card-art"
 import {
   deleteCard,
+  duplicateCard,
   issuePunchCard,
   markCardPaid,
   punchCard,
@@ -281,6 +283,7 @@ function CardRowView({
   const [copied, setCopied] = useState(false)
   const [editing, setEditing] = useState(false)
   const [removing, setRemoving] = useState(false)
+  const [duplicating, setDuplicating] = useState(false)
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -336,6 +339,12 @@ function CardRowView({
   const remove = () =>
     start(async () => {
       await deleteCard({ slug, cardId: card.id })
+      onChanged()
+    })
+
+  const duplicate = () =>
+    start(async () => {
+      await duplicateCard({ slug, cardId: card.id })
       onChanged()
     })
 
@@ -482,6 +491,13 @@ function CardRowView({
           active={editing}
         />
         <ActionChip
+          icon={<CopyPlus className="size-4" />}
+          label={t("duplicate")}
+          tooltip={t("duplicateTip")}
+          onClick={() => setDuplicating(true)}
+          disabled={pending}
+        />
+        <ActionChip
           icon={<Trash2 className="size-4" />}
           label={t("deleteCard")}
           tooltip={t("deleteCardTip")}
@@ -617,6 +633,16 @@ function CardRowView({
         title={customer.fullName || customer.phone}
         message={t("deleteConfirm")}
         confirmLabel={t("deleteCard")}
+      />
+
+      <ConfirmModal
+        open={duplicating}
+        onClose={() => setDuplicating(false)}
+        onConfirm={duplicate}
+        title={customer.fullName || customer.phone}
+        message={t("duplicateConfirm")}
+        confirmLabel={t("duplicate")}
+        tone="primary"
       />
     </AdminCard>
   )

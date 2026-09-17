@@ -41,14 +41,28 @@ export const Immediate: Story = {
   args: noop,
 }
 
+export const PrimaryTone: Story = {
+  render: () => (
+    <Example
+      title="תאיר מור"
+      message="ליצור כרטיסייה חדשה מאותו סוג עבור לקוח זה?"
+      confirmLabel="שכפול כרטיסייה"
+      tone="primary"
+    />
+  ),
+  args: noop,
+}
+
 function Example({
   title,
   message,
   confirmLabel,
+  tone,
 }: {
   title: string
   message: string
   confirmLabel?: string
+  tone?: "danger" | "primary"
 }) {
   const [open, setOpen] = useState(true)
   const [done, setDone] = useState(false)
@@ -79,6 +93,7 @@ function Example({
         title={title}
         message={message}
         confirmLabel={confirmLabel}
+        tone={tone}
       />
     </div>
   )
