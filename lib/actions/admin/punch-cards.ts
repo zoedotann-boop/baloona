@@ -354,6 +354,32 @@ export async function deleteCard(
   return OK
 }
 
+export async function duplicateCard(
+  input: z.input<typeof cardActionSchema>
+): Promise<ActionResult> {
+  const { location } = await requireLocationAccess(input.slug, "operations")
+
+  const parsed = cardActionSchema.safeParse(input)
+  if (!parsed.success) return { ok: false, error: "invalid" }
+
+  const card = await db.query.punchCards.findFirst({
+    where: eq(punchCards.id, parsed.data.cardId),
+  })
+  if (!card) return { ok: false, error: "notFound" }
+
+  await db.insert(punchCards).values({
+    token: randomUUID(),
+    customerId: card.customerId,
+    totalPunches: card.totalPunches,
+    usedPunches: 0,
+    status: "active",
+    theme: card.theme,
+    issuedByLocationId: location.id,
+  })
+
+  return OK
+}
+
 export async function markCardPaid(
   input: z.input<typeof cardActionSchema>
 ): Promise<ActionResult> {

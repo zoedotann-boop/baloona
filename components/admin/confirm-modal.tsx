@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl"
 import { useEffect, useRef } from "react"
 
+import { cn } from "@/lib/utils"
+
 import { AdminDialog } from "./admin-dialog"
 
 function ConfirmModal({
@@ -12,6 +14,7 @@ function ConfirmModal({
   title,
   message,
   confirmLabel,
+  tone = "danger",
 }: {
   open: boolean
   onClose: () => void
@@ -19,6 +22,7 @@ function ConfirmModal({
   title: string
   message: string
   confirmLabel?: string
+  tone?: "danger" | "primary"
 }) {
   const t = useTranslations("admin.common")
   const cancelRef = useRef<HTMLButtonElement>(null)
@@ -57,7 +61,12 @@ function ConfirmModal({
             onConfirm()
             onClose()
           }}
-          className="inline-flex h-9 items-center rounded-full bg-destructive px-4 text-[14px] font-extrabold text-white transition hover:brightness-110"
+          className={cn(
+            "inline-flex h-9 items-center rounded-full px-4 text-[14px] font-extrabold transition hover:brightness-110",
+            tone === "primary"
+              ? "bg-brand-pink text-brand-plum"
+              : "bg-destructive text-white"
+          )}
         >
           {confirmLabel ?? t("remove")}
         </button>
