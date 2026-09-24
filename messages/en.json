@@ -286,6 +286,14 @@
     "shell": {
       "footer": "This message was sent automatically by the Baloona website."
     },
+    "loginOtp": {
+      "subject": "Your Baloona admin sign-in code 🔐",
+      "preview": "One-time code to sign in to the admin area",
+      "eyebrow": "Admin sign-in 🔐",
+      "heading": "Your sign-in code",
+      "intro": "Enter the following code to sign in to the Baloona admin area:",
+      "expiry": "The code is valid for 5 minutes. If you didn't request it, you can ignore this message."
+    },
     "lead": {
       "contact": {
         "heading": "New enquiry from the website",
@@ -328,12 +336,17 @@
     "brand": "Baloona admin",
     "signIn": {
       "title": "Sign in",
-      "subtitle": "This area is for the Baloona team only.",
+      "subtitle": "This area is for the Baloona team only. We'll email you a one-time code.",
       "email": "Email",
-      "password": "Password",
+      "sendCode": "Send code",
+      "sending": "Sending code…",
+      "codeSent": "We sent a 6-digit code to {email}. Enter it here.",
+      "code": "Verification code",
+      "changeEmail": "Change email",
       "submit": "Sign in",
       "pending": "Signing in…",
-      "error": "That email or password is wrong."
+      "sendError": "We couldn't send the code. Check the address and try again.",
+      "error": "That code is wrong or has expired."
     },
     "nav": {
       "general": "General settings",
@@ -857,7 +870,6 @@
       "description": "Owners see every branch; managers only see the ones assigned to them.",
       "name": "Name",
       "email": "Email",
-      "password": "Initial password",
       "role": "Role",
       "owner": "Owner",
       "manager": "Branch manager",
@@ -874,8 +886,7 @@
       "cannotDeleteSelf": "You cannot delete yourself.",
       "empty": "No other users yet.",
       "nameTip": "The team member's full name.",
-      "emailTip": "The email used to sign in to the system.",
-      "passwordTip": "At least 8 characters. Share it with the user to change on sign-in.",
+      "emailTip": "The email the one-time sign-in code is sent to.",
       "roleTip": "Owners see all branches; a manager sees only the branches assigned to them."
     }
   }

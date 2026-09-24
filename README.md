@@ -33,8 +33,10 @@ bun run dev
 Generate the secret with `openssl rand -base64 32`. `.env` is gitignored — no
 credentials are ever committed.
 
-Sign in at `/admin/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`. Public sign-up
-is disabled; further accounts are created by an owner in **ניהול צוות**.
+Sign in at `/admin/login`: enter your email and Better Auth emails you a one-time
+code (via Resend — so `RESEND_API_KEY` / `RESEND_FROM_EMAIL` are required to log in).
+The seeded owner is `ADMIN_EMAIL`; there are no passwords. Public sign-up is
+disabled; further accounts are created by an owner in **ניהול צוות**.
 
 ### Conductor workspaces
 

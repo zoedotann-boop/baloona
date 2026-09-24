@@ -92,7 +92,6 @@ export async function deleteLocation(slug: string): Promise<ActionResult> {
 const memberSchema = z.object({
   name: z.string().trim().min(1).max(120),
   email: z.email(),
-  password: z.string().min(8).max(200),
   role: z.enum(["owner", "manager", "staff"]),
   locationIds: z.array(z.uuid()),
 })
@@ -118,12 +117,6 @@ export async function createTeamMember(
     name: data.name,
     emailVerified: true,
     role: data.role,
-  })
-  await ctx.internalAdapter.linkAccount({
-    userId: user.id,
-    accountId: user.id,
-    providerId: "credential",
-    password: await ctx.password.hash(data.password),
   })
 
   if (data.role !== "owner" && data.locationIds.length > 0) {
