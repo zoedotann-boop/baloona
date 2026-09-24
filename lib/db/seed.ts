@@ -8,13 +8,10 @@ import { locations, users } from "@/lib/db/schema"
 
 async function seedOwner() {
   const email = process.env.ADMIN_EMAIL
-  const password = process.env.ADMIN_PASSWORD
   const name = process.env.ADMIN_NAME || "Baloona Admin"
 
-  if (!email || !password) {
-    console.warn(
-      "→ skipping owner: set ADMIN_EMAIL and ADMIN_PASSWORD (see .env.example)"
-    )
+  if (!email) {
+    console.warn("→ skipping owner: set ADMIN_EMAIL (see .env.example)")
     return
   }
 
@@ -27,17 +24,11 @@ async function seedOwner() {
   }
 
   const ctx = await auth.$context
-  const user = await ctx.internalAdapter.createUser({
+  await ctx.internalAdapter.createUser({
     email,
     name,
     emailVerified: true,
     role: "owner",
-  })
-  await ctx.internalAdapter.linkAccount({
-    userId: user.id,
-    accountId: user.id,
-    providerId: "credential",
-    password: await ctx.password.hash(password),
   })
 
   console.log(`✓ created owner ${email}`)

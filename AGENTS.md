@@ -117,7 +117,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 - Routes live under `app/admin/(dashboard)/…`; `app/admin/login` sits outside the
   group so it stays reachable while signed out.
-- Auth is Better Auth (email + password, sign-up disabled). Roles form a strict
+- Auth is Better Auth, passwordless: sign-in is a one-time code emailed via the
+  `emailOTP` plugin (`lib/auth.ts` → `lib/email/login-otp.tsx`, reusing Resend), with
+  public sign-up disabled (`disableSignUp: true`, so a code is only sent to a
+  provisioned team member). There are no passwords — the login form
+  (`admin-login-form.tsx`) requests a code then verifies it, `createTeamMember` just
+  creates the user, and `db:seed` needs only `ADMIN_EMAIL`. Roles form a strict
   hierarchy: `owner` (everything, can add/delete branches and manage the team),
   `manager` (branch settings, enquiries and punch cards) and `staff` (punch cards
   only). Managers and staff are scoped to the branches listed in `location_member`.
@@ -200,8 +205,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Integrations
 
-All optional — a missing key disables one feature instead of breaking the build.
-See `.env.example`.
+All optional — a missing key disables one feature instead of breaking the build —
+except Resend, which also delivers the admin sign-in codes, so without it nobody can
+log in to the admin panel. See `.env.example`.
 
 - **Resend** — emails each new lead to the branch's `leadRecipientEmail`. Failures are
   recorded on the lead, never surfaced to the visitor. A birthday submission also sends the
@@ -220,10 +226,12 @@ See `.env.example`.
   `lib/email/punch-card-confirmation.tsx` when a card is issued, and
   `lib/email/punch-notification.tsx` on every punch — the latter states the acting branch, the
   punch time (Asia/Jerusalem) and how many punches remain, and links back to the `/card/<token>`
-  view. Emails are built with React Email
-  (`@react-email/components`): every message shares the branded shell in `components/email/`
-  (`EmailLayout`), copy lives in the `emails` namespace of the message files, and admin lead
-  notifications always render in Hebrew (RTL).
+  view. Resend also delivers the admin sign-in one-time codes
+  (`lib/email/login-otp.tsx`, wired into Better Auth's `emailOTP` plugin), so it is
+  required for admin login and not just an optional integration. Emails are built with
+  React Email (`@react-email/components`): every message shares the branded shell in
+  `components/email/` (`EmailLayout`), copy lives in the `emails` namespace of the message
+  files, and admin lead notifications always render in Hebrew (RTL).
 - **Vercel Blob** — image uploads client-side straight from the browser: the image
   field calls `@vercel/blob/client` `upload()`, and `app/api/admin/media/upload`
   signs the token after re-checking branch access. Without `BLOB_READ_WRITE_TOKEN`,
