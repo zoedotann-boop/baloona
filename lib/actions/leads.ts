@@ -160,9 +160,15 @@ export async function submitBirthdayLead(
     location.birthday.packageAmount +
     selectedUpgrades.reduce((sum, upgrade) => sum + upgrade.amount, 0)
 
-  const signatureUrl = data.signature
-    ? await storeSignature(location.slug, data.signature)
-    : null
+  const signature = data.signature ? decodeSignature(data.signature) : null
+  const signatureUrl =
+    signature && isStorageConfigured()
+      ? await uploadObject(
+          buildObjectKey(location.slug, "signatures", "signature.png"),
+          signature.contentType,
+          Uint8Array.from(signature.bytes)
+        )
+      : null
 
   const [lead] = await db
     .insert(leads)
@@ -205,6 +211,9 @@ export async function submitBirthdayLead(
       },
       { label: t("lead.labels.estimatedTotal"), value: `${totalAmount} ₪` },
     ],
+    attachments: signature
+      ? [{ filename: "signature.png", content: signature.bytes }]
+      : undefined,
   })
 
   if (answers.email) {
@@ -221,19 +230,13 @@ export async function submitBirthdayLead(
   return { ok: true }
 }
 
-async function storeSignature(
-  locationSlug: string,
+function decodeSignature(
   dataUrl: string
-): Promise<string | null> {
-  if (!isStorageConfigured()) return null
+): { contentType: string; bytes: Buffer } | null {
   const [header, base64] = dataUrl.split(",")
   if (!base64) return null
   const contentType = header.slice(5, header.indexOf(";")) || "image/png"
-  return uploadObject(
-    buildObjectKey(locationSlug, "signatures", "signature.png"),
-    contentType,
-    Uint8Array.from(Buffer.from(base64, "base64"))
-  )
+  return { contentType, bytes: Buffer.from(base64, "base64") }
 }
 
 async function notify(

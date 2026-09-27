@@ -2,6 +2,7 @@ import "server-only"
 
 import { render } from "@react-email/render"
 import { Resend } from "resend"
+import type { Attachment } from "resend"
 
 import {
   LeadNotificationEmail,
@@ -12,6 +13,7 @@ import { emailAssetsBaseUrl, resendConfig } from "@/lib/env"
 export interface LeadNotification extends LeadNotificationEmailProps {
   to: string
   subject: string
+  attachments?: Attachment[]
 }
 
 export async function sendLeadNotification(
@@ -21,7 +23,7 @@ export async function sendLeadNotification(
   if (!config) return { sent: false, error: "RESEND_API_KEY is not configured" }
   if (!notification.to) return { sent: false, error: "No recipient configured" }
 
-  const { to, subject, ...emailProps } = notification
+  const { to, subject, attachments, ...emailProps } = notification
   const email = (
     <LeadNotificationEmail {...emailProps} baseUrl={emailAssetsBaseUrl()} />
   )
@@ -37,6 +39,7 @@ export async function sendLeadNotification(
       subject,
       html,
       text,
+      attachments,
     })
     if (error) return { sent: false, error: error.message }
     return { sent: true }
