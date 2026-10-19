@@ -24,12 +24,15 @@ async function seedOwner() {
   }
 
   const ctx = await auth.$context
-  await ctx.internalAdapter.createUser({
-    email,
-    name,
-    emailVerified: true,
-    role: "owner",
-  })
+  await ctx.internalAdapter.createUser(
+    {
+      email,
+      name,
+      emailVerified: true,
+      role: "owner",
+    },
+    { method: "admin" }
+  )
 
   console.log(`✓ created owner ${email}`)
 }
