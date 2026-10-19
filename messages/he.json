@@ -143,7 +143,7 @@
   },
   "punchCard": {
     "cardTitle": "הכרטיסייה שלך",
-    "cardCaption": "כרטיסיית כניסה לבלונה",
+    "cardCaption": "{total, plural, =1 {כרטיס כניסה לבלונה} other {כרטיסיית כניסה לבלונה}}",
     "cardTypeAge12": "מעל גיל שנתיים",
     "cardTypeAge2": "עד גיל שנתיים",
     "greeting": "הכרטיסייה של {name}",

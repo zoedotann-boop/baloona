@@ -19,7 +19,7 @@ function PunchCardFace({ theme, total, used, className }: PunchCardFaceProps) {
   return (
     <PunchCardArt
       theme={theme}
-      caption={t("cardCaption")}
+      caption={t("cardCaption", { total })}
       subcaption={theme === "age2" ? t("cardTypeAge2") : t("cardTypeAge12")}
       total={total}
       used={used}
