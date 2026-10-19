@@ -25,22 +25,23 @@ export async function sendPunchCardConfirmation(
     locale: defaultLocale,
     namespace: "emails",
   })
+  const size = { total: confirmation.entries }
 
   const email = (
     <PunchCardConfirmationEmail
       locale={defaultLocale}
       baseUrl={emailAssetsBaseUrl()}
-      preview={t("punchCard.preview")}
-      eyebrow={t("punchCard.eyebrow")}
-      heading={t("punchCard.heading")}
-      intro={t("punchCard.intro")}
+      preview={t("punchCard.preview", size)}
+      eyebrow={t("punchCard.eyebrow", size)}
+      heading={t("punchCard.heading", size)}
+      intro={t("punchCard.intro", size)}
       rows={[
         {
           label: t("punchCard.entriesLabel"),
           value: t("punchCard.entriesValue", { count: confirmation.entries }),
         },
       ]}
-      buttonLabel={t("punchCard.viewCard")}
+      buttonLabel={t("punchCard.viewCard", size)}
       cardUrl={confirmation.cardUrl}
       signoff={t("punchCard.signoff")}
       footer={t("shell.footer")}
@@ -55,7 +56,7 @@ export async function sendPunchCardConfirmation(
     const { error } = await new Resend(config.apiKey).emails.send({
       from: config.from,
       to: confirmation.to,
-      subject: t("punchCard.subject"),
+      subject: t("punchCard.subject", size),
       html,
       text,
     })

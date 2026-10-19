@@ -29,22 +29,23 @@ export async function sendPunchNotification(
     locale: defaultLocale,
     namespace: "emails",
   })
+  const size = { total: notification.total }
 
   const email = (
     <PunchCardConfirmationEmail
       locale={defaultLocale}
       baseUrl={emailAssetsBaseUrl()}
-      preview={t("punchNotification.preview")}
-      eyebrow={t("punchNotification.eyebrow")}
+      preview={t("punchNotification.preview", size)}
+      eyebrow={t("punchNotification.eyebrow", size)}
       heading={
         notification.completed
-          ? t("punchNotification.headingCompleted")
-          : t("punchNotification.heading")
+          ? t("punchNotification.headingCompleted", size)
+          : t("punchNotification.heading", size)
       }
       intro={
         notification.completed
-          ? t("punchNotification.introCompleted")
-          : t("punchNotification.intro")
+          ? t("punchNotification.introCompleted", size)
+          : t("punchNotification.intro", size)
       }
       rows={[
         {
@@ -63,7 +64,7 @@ export async function sendPunchNotification(
           }),
         },
       ]}
-      buttonLabel={t("punchNotification.viewCard")}
+      buttonLabel={t("punchNotification.viewCard", size)}
       buttonVariant="pink"
       cardUrl={notification.cardUrl}
       signoff={t("punchNotification.signoff")}
@@ -79,7 +80,7 @@ export async function sendPunchNotification(
     const { error } = await new Resend(config.apiKey).emails.send({
       from: config.from,
       to: notification.to,
-      subject: t("punchNotification.subject"),
+      subject: t("punchNotification.subject", size),
       html,
       text,
     })
