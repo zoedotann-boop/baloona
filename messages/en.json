@@ -786,6 +786,7 @@
       "remaining": "Punches left",
       "remainingTip": "Leave blank for a brand-new full card. To migrate a physical card, enter how many punches it still has left.",
       "remainingPlaceholder": "Same as total",
+      "preview": "Preview",
       "searchPlaceholder": "Search by phone, email or name…",
       "noResults": "No customers found.",
       "colCustomer": "Customer",

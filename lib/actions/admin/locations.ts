@@ -112,12 +112,15 @@ export async function createTeamMember(
   if (clash) return { ok: false, error: "email-taken" }
 
   const ctx = await auth.$context
-  const user = await ctx.internalAdapter.createUser({
-    email: data.email,
-    name: data.name,
-    emailVerified: true,
-    role: data.role,
-  })
+  const user = await ctx.internalAdapter.createUser(
+    {
+      email: data.email,
+      name: data.name,
+      emailVerified: true,
+      role: data.role,
+    },
+    { method: "admin" }
+  )
 
   if (data.role !== "owner" && data.locationIds.length > 0) {
     await db

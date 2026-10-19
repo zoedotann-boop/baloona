@@ -14,6 +14,7 @@ const meta = {
     buyLabel: "לרכישה",
     theme: "age12",
     cardCaption: "כרטיסיית כניסה לילדים עד גיל 12",
+    entries: 10,
     href: "#",
   },
   parameters: { backgrounds: { value: "nearwhite" } },
@@ -35,6 +36,7 @@ export const Age2: Story = {
   args: {
     name: "כרטיסייה 5 כניסות",
     price: "200 ₪",
+    entries: 5,
     theme: "age2",
     cardCaption: "כרטיסיית כניסה לילדים עד גיל שנתיים",
   },

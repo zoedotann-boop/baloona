@@ -18,16 +18,55 @@ interface PunchCardArtProps {
   theme: PunchCardTheme
   caption: string
   subcaption?: string
+  total: number
   used?: number
   className?: string
 }
 
-const CARD_H = 980
+const CARD_W = 600
+const ART_H = 1036
 const SLOT_W = 219
 const SLOT_H = 70
 const X_LEFT = 76
 const X_RIGHT = 320
-const ROW_Y = [346, 434, 522, 610, 698]
+const FIRST_ROW_Y = 346
+const ROW_STEP = 88
+const BOTTOM_PAD = 282
+const ROWS_PER_COLUMN = 5
+const MAX_SLOTS = ROWS_PER_COLUMN * 2
+const MIN_HEIGHT_ROWS = 2
+
+type SlotSide = "left" | "right"
+
+interface SlotPosition {
+  number: number
+  x: number
+  y: number
+  side: SlotSide
+}
+
+function layoutSlots(total: number) {
+  const count = Math.min(Math.max(Math.floor(total), 1), MAX_SLOTS)
+  const columns: { x: number; side: SlotSide }[] =
+    count > ROWS_PER_COLUMN
+      ? [
+          { x: X_RIGHT, side: "right" },
+          { x: X_LEFT, side: "left" },
+        ]
+      : [{ x: (CARD_W - SLOT_W) / 2, side: "right" }]
+  const rows = Math.ceil(count / columns.length)
+  const slots: SlotPosition[] = []
+  columns.forEach(({ x, side }) => {
+    const size = Math.min(rows, count - slots.length)
+    const top = FIRST_ROW_Y + ((rows - size) * ROW_STEP) / 2
+    for (let row = 0; row < size; row++) {
+      slots.push({ number: slots.length + 1, x, y: top + row * ROW_STEP, side })
+    }
+  })
+  const height =
+    FIRST_ROW_Y + (Math.max(rows, MIN_HEIGHT_ROWS) - 1) * ROW_STEP + BOTTOM_PAD
+  return { slots, height }
+}
 
 interface ThemeArt {
   background: string
@@ -143,17 +182,13 @@ const punchCardThemeBackground: Record<PunchCardTheme, string> = {
   age2: BLUE.background,
 }
 
-interface SlotProps {
-  y: number
-  side: "left" | "right"
+interface SlotProps extends SlotPosition {
   fill: string
   punchedFill: string
-  number: number
   punched: boolean
 }
 
-function Slot({ y, side, fill, punchedFill, number, punched }: SlotProps) {
-  const x = side === "left" ? X_LEFT : X_RIGHT
+function Slot({ x, y, side, fill, punchedFill, number, punched }: SlotProps) {
   const inset = SLOT_H * 0.62
   const tokenCx = side === "left" ? x + inset : x + SLOT_W - inset
   const checkCx = side === "left" ? x + SLOT_W - inset : x + inset
@@ -198,20 +233,22 @@ function PunchCardArt({
   theme,
   caption,
   subcaption,
-  used,
+  total,
+  used = 0,
   className,
 }: PunchCardArtProps) {
   const art = THEMES[theme]
+  const { slots, height } = layoutSlots(total)
   return (
     <svg
-      viewBox={`0 0 600 ${CARD_H}`}
+      viewBox={`0 0 ${CARD_W} ${height}`}
       className={cn("block w-full", className)}
       role="presentation"
       aria-hidden
     >
-      <rect width={600} height={CARD_H} fill={art.background} />
+      <rect width={CARD_W} height={height} fill={art.background} />
       {art.top}
-      <g transform={`translate(0 ${CARD_H - 1036})`}>{art.bottom}</g>
+      <g transform={`translate(0 ${height - ART_H})`}>{art.bottom}</g>
       <CartisiaLogo
         x={150}
         y={120}
@@ -245,26 +282,13 @@ function PunchCardArt({
           {subcaption}
         </text>
       )}
-      {ROW_Y.map((y, index) => (
+      {slots.map((slot) => (
         <Slot
-          key={`r${y}`}
-          y={y}
-          side="right"
+          key={slot.number}
+          {...slot}
           fill={art.slot}
           punchedFill={art.punchedSlot}
-          number={index + 1}
-          punched={used !== undefined && index + 1 <= used}
-        />
-      ))}
-      {ROW_Y.map((y, index) => (
-        <Slot
-          key={`l${y}`}
-          y={y}
-          side="left"
-          fill={art.slot}
-          punchedFill={art.punchedSlot}
-          number={index + 6}
-          punched={used !== undefined && index + 6 <= used}
+          punched={slot.number <= used}
         />
       ))}
     </svg>

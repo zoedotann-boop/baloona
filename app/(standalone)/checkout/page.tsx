@@ -86,6 +86,7 @@ export default async function CheckoutPage({
             productId={product.id}
             productName={pickLocale(product.name, locale)}
             entriesLabel={t("entries", { count: product.entries })}
+            entries={product.entries}
             productPrice={formatPrice(product.price, locale)}
             theme={cardTheme}
             from={from}
