@@ -10,6 +10,7 @@ interface ShopProduct {
   id: string
   name: string
   perEntryLabel: string
+  entries: number
   price: string
   featured: boolean
   href: string
@@ -84,6 +85,7 @@ function ShopSection({
                   buyLabel={buyLabel}
                   theme={theme}
                   cardCaption={cardCaptions[theme]}
+                  entries={product.entries}
                   href={product.href}
                 />
               </Reveal>

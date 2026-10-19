@@ -3,10 +3,8 @@
 import { ChevronDown } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import {
-  PunchCardArt,
-  type PunchCardTheme,
-} from "@/components/shop/punch-card-art"
+import { PunchCardFace } from "@/components/punch-cards/punch-card-face"
+import { type PunchCardTheme } from "@/components/shop/punch-card-art"
 import { remainingPunches } from "@/lib/punch-cards"
 import { cn } from "@/lib/utils"
 
@@ -48,12 +46,7 @@ function PunchCardDisplay({
         className
       )}
     >
-      <PunchCardArt
-        theme={theme}
-        caption={t("cardCaption")}
-        subcaption={theme === "age2" ? t("cardTypeAge2") : t("cardTypeAge12")}
-        used={Math.min(used, 10)}
-      />
+      <PunchCardFace theme={theme} total={total} used={used} />
 
       <div className="px-6 py-6 text-center">
         <h1 className="font-heading text-[22px] font-black text-brand-plum">

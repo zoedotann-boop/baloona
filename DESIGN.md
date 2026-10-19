@@ -139,6 +139,14 @@ These pages must feel like one branded flow, not a bare form:
   success state and the PayMe return page.
 - The customer card page (`/card/[token]`) reuses `PunchCardArt` +
   `PunchCardDisplay` on the same sky.
+- `PunchCardArt` draws its slots from `total` (`layoutSlots`), never a fixed grid:
+  1–5 punches are one centered column, 6–10 two columns with the first holding the
+  extra slot and the shorter one centered beside it (7 = 4+3), and the card's height
+  follows the row count (never shorter than two rows, so the art clears the caption).
+  The 10-punch card is the original artwork; over 10 it stays at 10 slots. Everything
+  that shows a card passes its count — the customer card, the storefront and checkout
+  (`entries`), and the admin's live `PunchCardPreview` in the issue and edit forms.
+  `PunchCardFace` pairs the art with the customer captions for both.
 
 ## Emails
 

@@ -20,6 +20,7 @@ interface CheckoutFormProps {
   productId: string
   productName: string
   entriesLabel: string
+  entries: number
   productPrice: string
   theme: "age12" | "age2"
   from: string
@@ -30,6 +31,7 @@ function CheckoutForm({
   productId,
   productName,
   entriesLabel,
+  entries,
   productPrice,
   theme,
   from,
@@ -109,6 +111,7 @@ function CheckoutForm({
                 ? tShop("cardCaptions.age2")
                 : tShop("cardCaptions.age12")
             }
+            total={entries}
           />
         </div>
         <div className="mt-4 text-center">

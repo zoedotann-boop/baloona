@@ -11,6 +11,7 @@ interface ProductCardProps {
   buyLabel: string
   theme?: PunchCardTheme
   cardCaption: string
+  entries: number
   href: string
 }
 
@@ -23,6 +24,7 @@ function ProductCard({
   buyLabel,
   theme = "age12",
   cardCaption,
+  entries,
   href,
 }: ProductCardProps) {
   return (
@@ -34,7 +36,7 @@ function ProductCard({
       )}
 
       <div className="flex h-full flex-col overflow-hidden rounded-[28px] bg-white shadow-sm ring-1 ring-border">
-        <PunchCardArt theme={theme} caption={cardCaption} />
+        <PunchCardArt theme={theme} caption={cardCaption} total={entries} />
         <div className="mt-auto px-6 py-5 text-center">
           <h3 className="font-heading text-[20px] font-black text-brand-plum">
             {name}

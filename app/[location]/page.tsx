@@ -123,6 +123,7 @@ export default async function Page({ params }: PageProps<"/[location]">) {
             perEntryLabel: shopT("perEntry", {
               amount: formatPerEntry(product.price, product.entries, locale),
             }),
+            entries: product.entries,
             price: formatPrice(product.price, locale),
             featured: product.isFeatured,
             href: `/checkout?product=${product.id}&from=${slug}`,

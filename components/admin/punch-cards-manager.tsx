@@ -27,7 +27,11 @@ import {
   AdminSelect,
 } from "@/components/admin/admin-ui"
 import { PillButton } from "@/components/brand/pill-button"
-import { punchCardThemeBackground } from "@/components/shop/punch-card-art"
+import { PunchCardPreview } from "@/components/admin/punch-card-preview"
+import {
+  punchCardThemeBackground,
+  type PunchCardTheme,
+} from "@/components/shop/punch-card-art"
 import {
   deleteCard,
   duplicateCard,
@@ -539,71 +543,81 @@ function CardRowView({
 
       {editing && (
         <div className="mt-4 border-t border-border pt-4">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            <AdminField label={t("fullName")}>
-              <AdminInput
-                value={form.fullName}
-                onChange={(event) =>
-                  setForm((f) => ({ ...f, fullName: event.target.value }))
-                }
-              />
-            </AdminField>
-            <AdminField label={t("email")}>
-              <AdminInput
-                type="email"
-                dir="ltr"
-                value={form.email}
-                onChange={(event) =>
-                  setForm((f) => ({ ...f, email: event.target.value }))
-                }
-              />
-            </AdminField>
-            <AdminField label={t("total")} tooltip={t("editTotalTip")}>
-              <AdminInput
-                type="number"
-                min={1}
-                max={100}
-                value={form.total}
-                onChange={(event) =>
-                  setForm((f) => ({ ...f, total: event.target.value }))
-                }
-              />
-            </AdminField>
-            <AdminField label={t("cardType")} tooltip={t("cardTypeTip")}>
-              <AdminSelect
-                value={form.theme}
-                onChange={(event) =>
-                  setForm((f) => ({
-                    ...f,
-                    theme: event.target
-                      .value as CustomerCardsView["cards"][number]["theme"],
-                  }))
-                }
+          <div className="flex flex-col gap-4 md:flex-row md:items-start">
+            <div className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <AdminField label={t("fullName")}>
+                <AdminInput
+                  value={form.fullName}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, fullName: event.target.value }))
+                  }
+                />
+              </AdminField>
+              <AdminField label={t("email")}>
+                <AdminInput
+                  type="email"
+                  dir="ltr"
+                  value={form.email}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, email: event.target.value }))
+                  }
+                />
+              </AdminField>
+              <AdminField label={t("total")} tooltip={t("editTotalTip")}>
+                <AdminInput
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={form.total}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, total: event.target.value }))
+                  }
+                />
+              </AdminField>
+              <AdminField label={t("cardType")} tooltip={t("cardTypeTip")}>
+                <AdminSelect
+                  value={form.theme}
+                  onChange={(event) =>
+                    setForm((f) => ({
+                      ...f,
+                      theme: event.target
+                        .value as CustomerCardsView["cards"][number]["theme"],
+                    }))
+                  }
+                >
+                  <option value="age12">{t("cardTypeAge12")}</option>
+                  <option value="age2">{t("cardTypeAge2")}</option>
+                </AdminSelect>
+              </AdminField>
+              <AdminField
+                label={t("invoiceNumber")}
+                tooltip={t("invoiceNumberTip")}
               >
-                <option value="age12">{t("cardTypeAge12")}</option>
-                <option value="age2">{t("cardTypeAge2")}</option>
-              </AdminSelect>
-            </AdminField>
-            <AdminField
-              label={t("invoiceNumber")}
-              tooltip={t("invoiceNumberTip")}
-            >
-              <AdminInput
-                dir="ltr"
-                value={form.invoiceNumber}
-                onChange={(event) =>
-                  setForm((f) => ({ ...f, invoiceNumber: event.target.value }))
-                }
-              />
-            </AdminField>
-            <AdminField label={t("note")} tooltip={t("noteTip")}>
-              <AdminInput
-                value={form.note}
-                onChange={(event) =>
-                  setForm((f) => ({ ...f, note: event.target.value }))
-                }
-              />
-            </AdminField>
+                <AdminInput
+                  dir="ltr"
+                  value={form.invoiceNumber}
+                  onChange={(event) =>
+                    setForm((f) => ({
+                      ...f,
+                      invoiceNumber: event.target.value,
+                    }))
+                  }
+                />
+              </AdminField>
+              <AdminField label={t("note")} tooltip={t("noteTip")}>
+                <AdminInput
+                  value={form.note}
+                  onChange={(event) =>
+                    setForm((f) => ({ ...f, note: event.target.value }))
+                  }
+                />
+              </AdminField>
+            </div>
+            <PunchCardPreview
+              theme={form.theme}
+              total={Number(form.total) || card.totalPunches}
+              used={card.usedPunches}
+            />
           </div>
           <div className="mt-3 flex items-center gap-2">
             <PillButton
@@ -714,87 +728,115 @@ function IssueForm({
   const t = useTranslations("admin.punchCards")
   const [pending, start] = useTransition()
   const toast = useToast()
+  const [theme, setTheme] = useState<PunchCardTheme>("age12")
+  const [total, setTotal] = useState("10")
+  const [remaining, setRemaining] = useState("")
+  const previewTotal = Number(total) || 1
+  const previewUsed =
+    remaining === "" ? 0 : Math.max(0, previewTotal - Number(remaining))
 
   return (
     <AdminCard title={t("issueTitle")} description={t("issueDescription")}>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault()
-          const form = event.currentTarget
-          const data = new FormData(form)
-          const phone = String(data.get("phone") ?? "").trim()
-          const total = Number(data.get("total"))
-          const remainingRaw = String(data.get("remaining") ?? "").trim()
-          const remaining = remainingRaw === "" ? total : Number(remainingRaw)
+      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+        <form
+          onSubmit={(event) => {
+            event.preventDefault()
+            const form = event.currentTarget
+            const data = new FormData(form)
+            const phone = String(data.get("phone") ?? "").trim()
+            const total = Number(data.get("total"))
+            const remainingRaw = String(data.get("remaining") ?? "").trim()
+            const remaining = remainingRaw === "" ? total : Number(remainingRaw)
 
-          start(async () => {
-            const result = await issuePunchCard({
-              slug,
-              phone,
-              fullName: String(data.get("fullName") ?? "").trim(),
-              email: String(data.get("email") ?? "").trim(),
-              invoiceNumber: String(data.get("invoiceNumber") ?? "").trim(),
-              note: String(data.get("note") ?? "").trim(),
-              totalPunches: total,
-              remainingPunches: remaining,
-              theme: data.get("theme") === "age2" ? "age2" : "age12",
+            start(async () => {
+              const result = await issuePunchCard({
+                slug,
+                phone,
+                fullName: String(data.get("fullName") ?? "").trim(),
+                email: String(data.get("email") ?? "").trim(),
+                invoiceNumber: String(data.get("invoiceNumber") ?? "").trim(),
+                note: String(data.get("note") ?? "").trim(),
+                totalPunches: total,
+                remainingPunches: remaining,
+                theme: data.get("theme") === "age2" ? "age2" : "age12",
+              })
+              if (result.ok) {
+                form.reset()
+                setTheme("age12")
+                setTotal("10")
+                setRemaining("")
+                onIssued(phone)
+              } else {
+                toast(t("issueError"), "error")
+              }
             })
-            if (result.ok) {
-              form.reset()
-              onIssued(phone)
-            } else {
-              toast(t("issueError"), "error")
-            }
-          })
-        }}
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        <AdminField label={t("phone")}>
-          <AdminInput name="phone" required inputMode="tel" dir="ltr" />
-        </AdminField>
-        <AdminField label={t("fullName")}>
-          <AdminInput name="fullName" />
-        </AdminField>
-        <AdminField label={t("email")}>
-          <AdminInput name="email" type="email" dir="ltr" />
-        </AdminField>
-        <AdminField label={t("invoiceNumber")} tooltip={t("invoiceNumberTip")}>
-          <AdminInput name="invoiceNumber" dir="ltr" />
-        </AdminField>
-        <AdminField label={t("note")} tooltip={t("noteTip")}>
-          <AdminInput name="note" />
-        </AdminField>
-        <AdminField label={t("cardType")} tooltip={t("cardTypeTip")}>
-          <AdminSelect name="theme" defaultValue="age12">
-            <option value="age12">{t("cardTypeAge12")}</option>
-            <option value="age2">{t("cardTypeAge2")}</option>
-          </AdminSelect>
-        </AdminField>
-        <AdminField label={t("total")} tooltip={t("totalTip")}>
-          <AdminInput
-            name="total"
-            type="number"
-            min={1}
-            max={100}
-            defaultValue={10}
-            required
-          />
-        </AdminField>
-        <AdminField label={t("remaining")} tooltip={t("remainingTip")}>
-          <AdminInput
-            name="remaining"
-            type="number"
-            min={0}
-            placeholder={t("remainingPlaceholder")}
-          />
-        </AdminField>
+          }}
+          className="grid flex-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          <AdminField label={t("phone")}>
+            <AdminInput name="phone" required inputMode="tel" dir="ltr" />
+          </AdminField>
+          <AdminField label={t("fullName")}>
+            <AdminInput name="fullName" />
+          </AdminField>
+          <AdminField label={t("email")}>
+            <AdminInput name="email" type="email" dir="ltr" />
+          </AdminField>
+          <AdminField
+            label={t("invoiceNumber")}
+            tooltip={t("invoiceNumberTip")}
+          >
+            <AdminInput name="invoiceNumber" dir="ltr" />
+          </AdminField>
+          <AdminField label={t("note")} tooltip={t("noteTip")}>
+            <AdminInput name="note" />
+          </AdminField>
+          <AdminField label={t("cardType")} tooltip={t("cardTypeTip")}>
+            <AdminSelect
+              name="theme"
+              value={theme}
+              onChange={(event) =>
+                setTheme(event.target.value as PunchCardTheme)
+              }
+            >
+              <option value="age12">{t("cardTypeAge12")}</option>
+              <option value="age2">{t("cardTypeAge2")}</option>
+            </AdminSelect>
+          </AdminField>
+          <AdminField label={t("total")} tooltip={t("totalTip")}>
+            <AdminInput
+              name="total"
+              type="number"
+              min={1}
+              max={100}
+              value={total}
+              onChange={(event) => setTotal(event.target.value)}
+              required
+            />
+          </AdminField>
+          <AdminField label={t("remaining")} tooltip={t("remainingTip")}>
+            <AdminInput
+              name="remaining"
+              type="number"
+              min={0}
+              value={remaining}
+              onChange={(event) => setRemaining(event.target.value)}
+              placeholder={t("remainingPlaceholder")}
+            />
+          </AdminField>
 
-        <div className="flex items-center gap-3 sm:col-span-2 lg:col-span-3">
-          <PillButton type="submit" size="sm" disabled={pending}>
-            {t("issueButton")}
-          </PillButton>
-        </div>
-      </form>
+          <div className="flex items-center gap-3 sm:col-span-2 lg:col-span-3">
+            <PillButton type="submit" size="sm" disabled={pending}>
+              {t("issueButton")}
+            </PillButton>
+          </div>
+        </form>
+        <PunchCardPreview
+          theme={theme}
+          total={previewTotal}
+          used={previewUsed}
+        />
+      </div>
     </AdminCard>
   )
 }

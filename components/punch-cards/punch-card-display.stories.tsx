@@ -6,10 +6,10 @@ const meta = {
   title: "PunchCards/PunchCardDisplay",
   component: PunchCardDisplay,
   args: { total: 10, used: 4 },
-  parameters: { backgrounds: { value: "lavender" } },
+  parameters: { layout: "padded", backgrounds: { value: "lavender" } },
   decorators: [
     (Story) => (
-      <div className="mx-auto max-w-xl">
+      <div className="mx-auto w-full max-w-xl">
         <Story />
       </div>
     ),
@@ -47,3 +47,15 @@ export const UnderTwo: Story = {
 export const AlmostFull: Story = { args: { used: 9 } }
 
 export const Completed: Story = { args: { used: 10 } }
+
+export const OnePunch: Story = { args: { total: 1, used: 0 } }
+
+export const ThreePunches: Story = { args: { total: 3, used: 1 } }
+
+export const FivePunches: Story = { args: { total: 5, used: 2 } }
+
+export const SevenPunches: Story = {
+  args: { theme: "age2", total: 7, used: 4 },
+}
+
+export const TwentyPunches: Story = { args: { total: 20, used: 12 } }
