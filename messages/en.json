@@ -321,6 +321,7 @@
       "signoff": "See you soon, the Baloona team 💛",
       "subject": "Your birthday invitation 🎉",
       "subjectNamed": "Invitation to {name}'s birthday 🎉",
+      "phone": "Phone: {phone}",
       "weekdays": [
         "Sunday",
         "Monday",
