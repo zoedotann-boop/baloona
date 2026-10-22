@@ -211,16 +211,22 @@ log in to the admin panel. See `.env.example`.
 
 - **Resend** — emails each new lead to the branch's `leadRecipientEmail`. Failures are
   recorded on the lead, never surfaced to the visitor. A birthday submission also sends the
-  visitor a courtesy email (`lib/email/birthday-invitation.ts`) with the Baloona invitation
+  visitor a courtesy email (`lib/email/birthday-invitation.tsx`) with the Baloona invitation
   attached as a PDF (`public/birthday-invitation.pdf`). The sender fetches the asset's bytes
   from its public URL (built via `siteOrigin()`) and attaches them inline — Resend refuses to
   download an attachment from `localhost`, so handing it the URL would only work once deployed.
-  Before attaching, `lib/email/fill-birthday-invitation.ts` overlays the submitted celebrant
-  name, the Hebrew day-of-week (derived from `eventDate` via the `emails.birthdayInvitation.weekdays`
-  array) and the date onto the PDF's blank lines with `pdf-lib` (embedding
-  `public/fonts/Assistant-SemiBold.ttf`, since the PDF's own fonts are subset; Hebrew runs are
-  reversed for RTL, the "בשעה"/time line is left blank). Personalizing is best-effort — any
-  failure falls back to the unfilled PDF. The whole email is best-effort too: a missing key,
+  **The template is branch-neutral:** it carries no address or phone, so one file serves every
+  branch. Before attaching, `lib/email/fill-birthday-invitation.ts` draws onto it with `pdf-lib`
+  (embedding `public/fonts/Fredoka-Medium.ttf`, since the PDF's own Ping HL fonts are subset):
+  the celebrant name, the Hebrew day-of-week (from `eventDate` via the
+  `emails.birthdayInvitation.weekdays` array), the date and the event hour on their blank lines;
+  the branch's `location_contact.address` (falling back to its city) in the white "ב - Baloona"
+  box, balanced over up to two lines and shrunk only if it still overflows; and a footer of the
+  branch phone (`emails.birthdayInvitation.phone`, omitted when empty) plus the website.
+  `lib/email/invitation-text.ts` lays out mixed Hebrew/Latin/number text with the Unicode bidi
+  algorithm (`bidi-js`), so `37`, parentheses and URLs keep their direction. If the PDF cannot
+  be filled the invitation email is skipped rather than sending a template with the wrong
+  branch details. The whole email is best-effort too: a missing key,
   empty recipient or send error is logged, never allowed to fail the stored booking. Punch
   cards email the customer too (only when the customer has an email on file, best-effort):
   `lib/email/punch-card-confirmation.tsx` when a card is issued, and
@@ -274,9 +280,10 @@ log in to the admin panel. See `.env.example`.
 
 - Research relevant best practices for the implemented changes (including external sources when beneficial) and look for opportunities to simplify the implementation. The primary objective is to keep the codebase clean, maintainable, scalable, and easy to understand.
 - Where appropriate, evaluate whether the database schema can be simplified or improved to better align with best practices. Proactively suggest schema enhancements that would make the system clearer, more scalable, or easier to maintain.
-- Ensure comprehensive test coverage for all newly introduced functionality, including both happy paths and relevant edge cases. There is no unit-test runner here: coverage means a `*.stories.tsx` for every new brand primitive, home section and admin primitive, with the a11y addon clean.
+- Ensure comprehensive test coverage for all newly introduced functionality, including both happy paths and relevant edge cases. UI coverage means a `*.stories.tsx` for every new brand primitive, home section and admin primitive, with the a11y addon clean. Pure server logic gets a colocated `*.test.ts` run by `bun test` (`bun run test`, which adds `--conditions=react-server` so `server-only` modules load).
 - Before review, all of these must pass: `bun run lint`, `bun run typecheck`,
-  `bun run format:check`, `bun run knip`, `bun run comments`, `bun run build-storybook`.
+  `bun run format:check`, `bun run knip`, `bun run comments`, `bun run test`,
+  `bun run build-storybook`.
 - No comments in `.ts`/`.tsx` sources. `bun run comments` (commentless) enforces this in
   CI: code should read on its own, and anything a comment would explain belongs in a name,
   a type, or a story. Only functional directives survive (`eslint-disable*`,

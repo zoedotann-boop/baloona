@@ -223,6 +223,10 @@ export async function submitBirthdayLead(
       celebrantName: answers.celebrantNames || undefined,
       eventDate: answers.eventDate || undefined,
       eventTime: answers.eventHour || undefined,
+      address:
+        pickLocale(location.contact?.address, defaultLocale) ||
+        pickLocale(location.contact?.city, defaultLocale),
+      phone: location.contact?.phone,
     })
     if (!result.sent) console.error("birthday invitation email:", result.error)
   }

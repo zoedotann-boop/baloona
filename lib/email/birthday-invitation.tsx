@@ -15,10 +15,13 @@ export interface BirthdayInvitation {
   celebrantName?: string
   eventDate?: string
   eventTime?: string
+  address?: string
+  phone?: string
 }
 
 const ATTACHMENT_FILENAME = "baloona-birthday-invitation.pdf"
 const FONT_PATH = "/fonts/Fredoka-Medium.ttf"
+const WEBSITE = "www.baloona.co.il"
 
 export async function sendBirthdayInvitation(
   invitation: BirthdayInvitation
@@ -26,16 +29,6 @@ export async function sendBirthdayInvitation(
   const config = resendConfig()
   if (!config) return { sent: false, error: "RESEND_API_KEY is not configured" }
   if (!invitation.to) return { sent: false, error: "No recipient configured" }
-
-  let content: Buffer
-  try {
-    const response = await fetch(invitation.pdfUrl)
-    if (!response.ok)
-      return { sent: false, error: `Invitation PDF ${response.status}` }
-    content = Buffer.from(await response.arrayBuffer())
-  } catch (error) {
-    return { sent: false, error: (error as Error).message }
-  }
 
   const t = await getTranslations({
     locale: defaultLocale,
@@ -49,8 +42,21 @@ export async function sendBirthdayInvitation(
     ? t("birthdayInvitation.subjectNamed", { name })
     : t("birthdayInvitation.subject")
 
-  const weekdays = t.raw("birthdayInvitation.weekdays") as string[]
-  content = await personalize(content, invitation, name, weekdays)
+  let content: Buffer
+  try {
+    content = await invitationPdf(invitation, {
+      weekdays: t.raw("birthdayInvitation.weekdays") as string[],
+      footer: [
+        invitation.phone &&
+          t("birthdayInvitation.phone", { phone: invitation.phone }),
+        WEBSITE,
+      ]
+        .filter(Boolean)
+        .join(" | "),
+    })
+  } catch (error) {
+    return { sent: false, error: (error as Error).message }
+  }
 
   const email = (
     <BirthdayInvitationEmail
@@ -85,28 +91,30 @@ export async function sendBirthdayInvitation(
   }
 }
 
-async function personalize(
-  original: Buffer,
+async function invitationPdf(
   invitation: BirthdayInvitation,
-  name: string | undefined,
-  weekdays: string[]
+  copy: { weekdays: string[]; footer: string }
 ): Promise<Buffer> {
+  const [pdfBytes, fontBytes] = await Promise.all([
+    fetchBytes(invitation.pdfUrl),
+    fetchBytes(new URL(FONT_PATH, invitation.pdfUrl)),
+  ])
   const eventDate = parseEventDate(invitation.eventDate)
-  if (!name && !eventDate && !invitation.eventTime) return original
-  try {
-    const response = await fetch(new URL(FONT_PATH, invitation.pdfUrl))
-    if (!response.ok) return original
-    const fontBytes = new Uint8Array(await response.arrayBuffer())
-    const filled = await fillBirthdayInvitation(original, fontBytes, {
-      name,
-      day: eventDate ? weekdays[eventDate.getDay()] : undefined,
-      date: eventDate ? formatEventDate(eventDate) : undefined,
-      time: invitation.eventTime || undefined,
-    })
-    return Buffer.from(filled)
-  } catch {
-    return original
-  }
+  const filled = await fillBirthdayInvitation(pdfBytes, fontBytes, {
+    name: invitation.celebrantName,
+    day: eventDate ? copy.weekdays[eventDate.getDay()] : undefined,
+    date: eventDate ? formatEventDate(eventDate) : undefined,
+    time: invitation.eventTime || undefined,
+    address: invitation.address,
+    footer: copy.footer,
+  })
+  return Buffer.from(filled)
+}
+
+async function fetchBytes(url: string | URL): Promise<Uint8Array> {
+  const response = await fetch(url)
+  if (!response.ok) throw new Error(`${url} ${response.status}`)
+  return new Uint8Array(await response.arrayBuffer())
 }
 
 function parseEventDate(value: string | undefined): Date | null {
