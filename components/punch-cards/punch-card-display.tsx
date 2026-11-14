@@ -22,6 +22,7 @@ interface PunchCardDisplayProps {
   customerName?: string
   branchName?: string | null
   note?: string | null
+  cancelled?: boolean
   className?: string
 }
 
@@ -33,6 +34,7 @@ function PunchCardDisplay({
   customerName,
   branchName,
   note,
+  cancelled = false,
   className,
 }: PunchCardDisplayProps) {
   const t = useTranslations("punchCard")
@@ -59,7 +61,11 @@ function PunchCardDisplay({
         </p>
 
         <div className="mt-4 rounded-[20px] bg-brand-pink-soft px-5 py-4">
-          {isComplete ? (
+          {cancelled ? (
+            <p className="font-heading text-[18px] font-black text-brand-plum">
+              {t("cancelled")}
+            </p>
+          ) : isComplete ? (
             <p className="animate-baloona-float font-heading text-[18px] font-black text-brand-plum">
               {t("completed")}
             </p>

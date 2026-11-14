@@ -12,7 +12,7 @@ import { Reviews } from "@/components/home/reviews"
 import { ShopSection } from "@/components/home/shop-section"
 import { VisionPanel } from "@/components/home/vision-panel"
 import { getHomePage, listActiveProducts } from "@/lib/db/queries/site"
-import { PUNCH_CARD_SHOP_ENABLED } from "@/lib/features"
+import { isShopOpen } from "@/lib/shop/availability"
 import {
   formatPerEntry,
   formatPrice,
@@ -39,7 +39,7 @@ export default async function Page({ params }: PageProps<"/[location]">) {
     loadSiteChrome(slug),
     getHomePage(slug),
     getFormatter(),
-    PUNCH_CARD_SHOP_ENABLED ? listActiveProducts() : Promise.resolve([]),
+    isShopOpen() ? listActiveProducts() : Promise.resolve([]),
     getTranslations("shop"),
   ])
 
@@ -104,7 +104,7 @@ export default async function Page({ params }: PageProps<"/[location]">) {
         note={pickLocale(pricing.note, locale)}
       />
 
-      {PUNCH_CARD_SHOP_ENABLED && (
+      {isShopOpen() && (
         <ShopSection
           title={shopT("title")}
           subtitle={shopT("subtitle")}

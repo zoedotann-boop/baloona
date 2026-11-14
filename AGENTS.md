@@ -94,16 +94,31 @@ This version has breaking changes — APIs, conventions, and file structure may 
   (`/card/<token>`) and `/checkout` are the brand-global routes under `app/(standalone)/`
   (`card`/`checkout` are reserved slugs). Each product's "buy" links to
   `/checkout?product=<id>&from=<slug>`, which collects details + a mandatory Terms consent,
-  then calls `startPunchCardCheckout` (`lib/actions/shop.ts`): with PayMe configured it opens a
-  pending `punch_card_order` and redirects to PayMe, and the card is issued only once payment
-  is **confirmed** (`fulfilOrder`, reached from the PayMe callback and `/checkout/success`);
-  without a key it falls back to issuing immediately (see the PayMe integration below).
-  `/[location]/terms` renders a per-branch Terms & Cancellation policy (editable body, falling
-  back to a `sections` block in `messages/*.json`). **Buying is gated by
-  `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts` and is currently `false`:** the home
-  `ShopSection`, the footer link, the `/checkout` route and `startPunchCardCheckout` are all
-  off, so customers cannot buy cards online while the admin keeps managing products and
-  issuing cards. Flip the flag to re-open the storefront.
+  then calls `startPunchCardCheckout` (`lib/actions/shop.ts`): it opens a pending
+  `punch_card_order`, redirects to PayMe, and the card is issued only once payment is
+  **confirmed** (see the PayMe integration below). `/[location]/terms` renders a per-branch
+  Terms & Cancellation policy (editable body, falling back to a `sections` block in
+  `messages/*.json`). **Buying is gated by `isShopOpen()` (`lib/shop/availability.ts`):**
+  `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts` must be on **and** `PAYME_SELLER_ID` set.
+  Otherwise the home `ShopSection`, the footer link, `/checkout` and
+  `startPunchCardCheckout` are all off. There is deliberately no pay-later fallback — a
+  missing key must never turn into free cards.
+- **Online orders are settled in one place.** `settleOrder` (`lib/shop/orders.ts`) re-queries
+  the sale with PayMe and applies the step chosen by the pure `nextOrderStep`
+  (`lib/shop/order-lifecycle.ts`): issue the card, mirror a refund, or expire the order 25h
+  after creation (the PayMe link itself expires at 24h). Four callers share it — the PayMe
+  callback, `/checkout/success`, the queue consumer and the admin's re-check button — and it
+  is safe to run any number of times: the card is issued in one `db.batch` (a transaction)
+  and **its id is the order's id**, so a second run hits the primary key and does nothing.
+  Public checkout **never edits an existing customer** (matched by phone): anyone can type a
+  phone number, so overwriting the email on file would hand them that customer's card links.
+  The confirmation goes to the email typed on the order; the admin flags a mismatch.
+- **Refunds cancel the card.** `/admin/<branch>/orders` (the `payments` capability: owner and
+  manager) lists every online order brand-wide. Refund is full-only and allowed while the card
+  has no punches (`refundBlocker`); it calls PayMe's `refund-sale`, marks the order `refunded`
+  and the card `cancelled`. A cancelled card keeps its history but can't be punched, and
+  `/card/<token>` says so. Partial refunds stay manual in the Paid dashboard; a full refund
+  made there is mirrored on the next settle.
 - **One public shell for every page.** All public pages wear the same frame from
   `components/layout/`: `PublicShell` (header + `<main>` + footer) filled by either
   `SiteChrome` — the full per-branch chrome (header nav, contact block, footer, announcement,
@@ -269,12 +284,21 @@ log in to the admin panel. See `.env.example`.
   `HOME_REVIEWS_LIMIT` (`lib/db/queries/site.ts`) — otherwise the masonry would gain a
   few cards every night, forever. Ordering is `sortOrder` then newest, so an editor can
   still pin a favourite above the synced ones.
-- **PayMe (PayMeService)** — online payments via the `generate-sale` API (`lib/payme/`).
-  The punch-card checkout pays first: it creates a hosted sale and redirects the buyer, and
-  PayMe then POSTs to `app/api/payme` (`sale_callback_url`), which **re-queries the sale** to
-  confirm it is paid before issuing the card — the callback body alone is never trusted.
-  `PAYME_SELLER_ID` is the only key (in the body, no header/secret); `PAYME_SANDBOX=true`
-  targets preprod. Unset, the checkout keeps its no-payment behaviour.
+- **PayMe (Paid)** — online payments via `generate-sale`, `get-sales` and `refund-sale`
+  (`lib/payme/`, hosts `live.payme.io` / `sandbox.payme.io`). The sale uses
+  `sale_payment_method: "multi"`, so PayMe's hosted page offers every method enabled on the
+  account (card, Bit, Apple Pay, Google Pay), and expires after 24h. PayMe POSTs to
+  `app/api/payme` (`sale_callback_url`); the route answers at once and settles in `after()`,
+  **re-querying the sale** — the callback body is never trusted (direct sellers can't verify
+  its signature). Receipts come from Paid's Automatic Invoices app, not from us.
+  `PAYME_SELLER_ID` (the MPL) is the only key; set it on Vercel **Production only**, with
+  `PAYME_SANDBOX=true` + a sandbox key for previews if needed.
+- **Vercel Queues** — the safety net for a callback that never arrives. Checkout sends one
+  delayed message to the `payme-order` topic (`lib/shop/order-queue.ts`, 15 min delay,
+  idempotency key = order id); the consumer `app/api/queues/payme-order` (trigger in
+  `vercel.json`) runs `settleOrder` and throws while the order is still pending, so the queue
+  re-delivers every 30 min until it is paid or expired. No credentials on Vercel (OIDC); a
+  failed send is logged and never blocks checkout. Queues are in public beta.
 
 ## Code quality
 

@@ -5,7 +5,7 @@ import { BrandShell } from "@/components/layout/brand-shell"
 import { Section } from "@/components/layout/section"
 import { SiteChrome } from "@/components/layout/site-chrome"
 import { CheckoutResultCard } from "@/components/shop/checkout-result-card"
-import { fulfilOrder } from "@/lib/shop/orders"
+import { settleOrder } from "@/lib/shop/orders"
 import { listPublishedLocations } from "@/lib/db/queries/site"
 
 const UUID_RE =
@@ -31,7 +31,8 @@ export default async function CheckoutSuccessPage({
   const hasBranch = from !== "" && published.some((l) => l.slug === from)
 
   const orderId = typeof order === "string" && UUID_RE.test(order) ? order : ""
-  const token = orderId ? await fulfilOrder(orderId) : null
+  const settled = orderId ? await settleOrder(orderId) : null
+  const token = settled?.status === "paid" ? settled.cardToken : null
 
   const content = (
     <Section spacing="md" className="relative isolate overflow-hidden">

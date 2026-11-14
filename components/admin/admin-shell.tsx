@@ -14,6 +14,7 @@ import {
   Menu,
   PanelRightClose,
   PanelRightOpen,
+  Receipt,
   ScrollText,
   Settings,
   ShoppingBag,
@@ -149,6 +150,15 @@ function AdminShell({ user, locations, children }: AdminShellProps) {
             label: t("punchCards"),
             icon: Ticket,
           },
+          ...(can(user.role, "payments")
+            ? [
+                {
+                  href: `/admin/${active.slug}/orders`,
+                  label: t("orders"),
+                  icon: Receipt,
+                },
+              ]
+            : []),
         ]
       : []
 

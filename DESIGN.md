@@ -123,20 +123,21 @@ input classes per form**:
 
 These pages must feel like one branded flow, not a bare form:
 
-- **The public shop is currently off.** `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts`
-  (`false`) hides the home `ShopSection` and the footer link, makes `/checkout` return
-  `notFound()`, and makes `startPunchCardCheckout` refuse — customers can no longer buy
-  cards online, but the admin still manages products (`/admin/<branch>/shop`) and issues
-  cards (`/admin/<branch>/punch-cards`). Flip the flag to `true` to bring the storefront
-  back. The flow below describes it when enabled.
+- **The public shop is open only when `isShopOpen()` (`lib/shop/availability.ts`) is
+  true:** `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts` is on **and** PayMe is configured
+  (`PAYME_SELLER_ID`). Otherwise the home `ShopSection` and the footer link are hidden,
+  `/checkout` returns `notFound()` and `startPunchCardCheckout` refuses — there is no
+  pay-later fallback, so a missing key can never hand out free cards. The admin still
+  manages products (`/admin/<branch>/shop`) and issues cards (`/admin/<branch>/punch-cards`)
+  either way. The flow below describes it when open.
 - Each wears the site's soft sky: a `relative isolate overflow-hidden` wrapper
   with `<SkyBackdrop />`, laid out with `Section`.
 - The shop uses `ShopSection` (`components/home/shop-section.tsx`); the checkout
   card art matches the product (`theme` derived from the catalog position, see
   `app/(standalone)/checkout/page.tsx`).
 - The closing confirmation panel is the shared `CheckoutResultCard`
-  (`components/shop/checkout-result-card.tsx`) — used by both the inline checkout
-  success state and the PayMe return page.
+  (`components/shop/checkout-result-card.tsx`), shown on the PayMe return page
+  (`/checkout/success`) — the checkout form itself always redirects to PayMe.
 - The customer card page (`/card/[token]`) reuses `PunchCardArt` +
   `PunchCardDisplay` on the same sky.
 - `PunchCardArt` draws its slots from `total` (`layoutSlots`), never a fixed grid:

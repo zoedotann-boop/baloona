@@ -15,6 +15,7 @@ import { timestamps } from "./_shared"
 export const punchCardStatus = pgEnum("punch_card_status", [
   "active",
   "completed",
+  "cancelled",
 ])
 
 export type PunchCardStatus = (typeof punchCardStatus.enumValues)[number]

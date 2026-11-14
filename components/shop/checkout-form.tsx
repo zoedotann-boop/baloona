@@ -13,7 +13,6 @@ import { HONEYPOT_FIELD } from "@/lib/forms/honeypot"
 import { checkoutSchema } from "@/lib/forms/schemas"
 import { cn } from "@/lib/utils"
 
-import { CheckoutResultCard } from "./checkout-result-card"
 import { PunchCardArt } from "./punch-card-art"
 
 interface CheckoutFormProps {
@@ -41,11 +40,8 @@ function CheckoutForm({
   const tShop = useTranslations("shop")
   const tErrors = useTranslations("forms")
   const [agreed, setAgreed] = useState(false)
-  const [status, setStatus] = useState<"idle" | "consent" | "error" | "done">(
-    "idle"
-  )
+  const [status, setStatus] = useState<"idle" | "consent" | "error">("idle")
   const [errors, setErrors] = useState<FieldErrors>({})
-  const [token, setToken] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -73,27 +69,9 @@ function CheckoutForm({
     }
     startTransition(async () => {
       const result = await startPunchCardCheckout(parsed.data)
-      if (!result.ok) {
-        setStatus("error")
-      } else if ("redirect" in result) {
-        window.location.href = result.redirect
-      } else {
-        setToken(result.token)
-        setStatus("done")
-      }
+      if (result.ok) window.location.href = result.redirect
+      else setStatus("error")
     })
-  }
-
-  if (status === "done") {
-    return (
-      <CheckoutResultCard
-        title={t("successTitle")}
-        body={t("successBody")}
-        cta={
-          token ? { label: t("viewCard"), href: `/card/${token}` } : undefined
-        }
-      />
-    )
   }
 
   return (

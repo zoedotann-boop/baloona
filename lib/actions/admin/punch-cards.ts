@@ -21,6 +21,7 @@ import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
 import { sendPunchNotification } from "@/lib/email/punch-notification"
 import { formatDateTime, formatPrice, pickLocale } from "@/lib/localized"
 import {
+  nextCardStatus,
   PUNCH_CARDS_PAGE_SIZE,
   remainingPunches,
   type CustomerCardsView,
@@ -61,7 +62,7 @@ function toView(
       })),
       payment: card.order
         ? {
-            paid: card.order.status === "paid",
+            status: card.order.status,
             price: formatPrice(card.order.amount, locale),
           }
         : null,
@@ -199,6 +200,7 @@ export async function punchCard(
     with: { customer: true },
   })
   if (!card) return { ok: false, error: "notFound" }
+  if (card.status === "cancelled") return { ok: false, error: "cancelled" }
   if (card.usedPunches >= card.totalPunches) {
     return { ok: false, error: "full" }
   }
@@ -250,7 +252,7 @@ export async function undoLastPunch(
   const card = await db.query.punchCards.findFirst({
     where: eq(punchCards.id, parsed.data.cardId),
   })
-  if (!card || card.usedPunches <= 0) {
+  if (!card || card.usedPunches <= 0 || card.status === "cancelled") {
     return { ok: false, error: "nothingToUndo" }
   }
 
@@ -331,7 +333,7 @@ export async function updateCardDetails(
     .set({
       totalPunches,
       usedPunches,
-      status: usedPunches >= totalPunches ? "completed" : "active",
+      status: nextCardStatus(card.status, usedPunches, totalPunches),
       theme: parsed.data.theme,
       invoiceNumber: parsed.data.invoiceNumber || null,
       note: parsed.data.note || null,

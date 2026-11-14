@@ -9,13 +9,15 @@ with a Hebrew-first admin panel that owns every piece of content.
   (no login — the token is the credential; the `card` slug is reserved).
 - **Store**: the digital punch-card packages are sold in a **section on each branch home
   page** (anchored `#shop`, linked from the header and footer). `/checkout` collects details
-  with a mandatory Terms consent (payment is a placeholder until PayMe is connected — see
-  `lib/shop/payment.ts`), and `/terms` is the Terms & Cancellation policy page. `checkout`
-  and `terms` are reserved slugs.
+  with a mandatory Terms consent and hands the buyer to PayMe's hosted payment page (card,
+  Bit, Apple Pay, Google Pay); the card is issued once PayMe confirms the payment. `/terms`
+  is the Terms & Cancellation policy page. `checkout` and `terms` are reserved slugs. The
+  store only opens when `PUNCH_CARD_SHOP_ENABLED` is on **and** `PAYME_SELLER_ID` is set.
 - **Admin**: `/admin` — contact details, opening hours, the pop-up, SEO, home
   page copy, pricing, menu, birthdays, media, reviews, the **shop** catalog and the
   enquiries inbox, all per branch, plus a brand-global **punch cards** console (issue,
-  punch, undo and migrate physical cards).
+  punch, undo and migrate physical cards) and **online orders** (every PayMe purchase,
+  with re-check and refund).
 
 Stack: Next.js 16 (App Router) · Neon Postgres + Drizzle · Better Auth ·
 next-intl (he/en) · Tailwind v4 · Storybook.

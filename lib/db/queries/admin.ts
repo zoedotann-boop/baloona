@@ -7,6 +7,7 @@ import {
   leads,
   locations,
   products,
+  punchCardOrders,
   siteContents,
   users,
 } from "@/lib/db/schema"
@@ -156,6 +157,20 @@ export async function searchCustomerCards(
             with: { location: { columns: { name: true } } },
           },
         },
+      },
+    },
+  })
+}
+
+export async function listPunchCardOrders() {
+  return db.query.punchCardOrders.findMany({
+    orderBy: [desc(punchCardOrders.createdAt)],
+    with: {
+      product: { columns: { name: true } },
+      fromLocation: { columns: { name: true } },
+      card: {
+        columns: { token: true, usedPunches: true, status: true },
+        with: { customer: { columns: { email: true } } },
       },
     },
   })

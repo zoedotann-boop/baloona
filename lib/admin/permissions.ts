@@ -1,10 +1,11 @@
 import type { UserRole } from "@/lib/db/schema"
 
-export type AdminCapability = "content" | "settings" | "leads" | "operations"
+export type AdminCapability =
+  "content" | "settings" | "leads" | "payments" | "operations"
 
 const ROLE_CAPABILITIES: Record<UserRole, readonly AdminCapability[]> = {
-  owner: ["content", "settings", "leads", "operations"],
-  manager: ["settings", "leads", "operations"],
+  owner: ["content", "settings", "leads", "payments", "operations"],
+  manager: ["settings", "leads", "payments", "operations"],
   staff: ["operations"],
 }
 

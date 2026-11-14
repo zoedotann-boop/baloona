@@ -44,6 +44,7 @@ export default async function PunchCardPage({
                 : null
             }
             note={card.note}
+            cancelled={card.status === "cancelled"}
           />
           <p className="text-center text-[13px] text-muted-foreground">
             {t("footerNote")}

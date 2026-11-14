@@ -59,3 +59,5 @@ export const SevenPunches: Story = {
 }
 
 export const TwentyPunches: Story = { args: { total: 20, used: 12 } }
+
+export const Cancelled: Story = { args: { used: 0, cancelled: true } }
