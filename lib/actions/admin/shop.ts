@@ -5,7 +5,12 @@ import { z } from "zod"
 
 import { requireLocationAccess } from "@/lib/admin/access"
 import { db } from "@/lib/db"
-import { products } from "@/lib/db/schema"
+import {
+  products,
+  punchCardTheme,
+  SHOP_SETTINGS_ID,
+  shopSettings,
+} from "@/lib/db/schema"
 
 import {
   localizedSchema,
@@ -15,26 +20,28 @@ import {
   type ActionResult,
 } from "./shared"
 
-const productsSchema = z.object({
+const shopSchema = z.object({
   slug: z.string().min(1),
+  isOpen: z.boolean(),
   products: z.array(
     z.object({
       id: rowIdSchema,
       name: localizedSchema,
       entries: z.number().int().min(1),
       price: z.number().int().min(0),
+      theme: z.enum(punchCardTheme.enumValues),
       isActive: z.boolean(),
       isFeatured: z.boolean(),
     })
   ),
 })
 
-export async function saveProducts(
-  input: z.input<typeof productsSchema>
+export async function saveShop(
+  input: z.input<typeof shopSchema>
 ): Promise<ActionResult> {
   await requireLocationAccess(input.slug, "content")
 
-  const parsed = productsSchema.safeParse(input)
+  const parsed = shopSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
 
   const existing = await db.query.products.findMany({ columns: { id: true } })
@@ -50,6 +57,14 @@ export async function saveProducts(
       db.update(products).set(row).where(eq(products.id, row.id)),
     remove: (ids) => db.delete(products).where(inArray(products.id, ids)),
   })
+
+  await db
+    .insert(shopSettings)
+    .values({ id: SHOP_SETTINGS_ID, isOpen: parsed.data.isOpen })
+    .onConflictDoUpdate({
+      target: shopSettings.id,
+      set: { isOpen: parsed.data.isOpen },
+    })
 
   return OK
 }

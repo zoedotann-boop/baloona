@@ -5,6 +5,7 @@ import { SkyBackdrop } from "@/components/brand/sky-backdrop"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { ProductCard } from "@/components/shop/product-card"
+import { type PunchCardTheme } from "@/components/shop/punch-card-art"
 
 interface ShopProduct {
   id: string
@@ -13,6 +14,7 @@ interface ShopProduct {
   entries: number
   price: string
   featured: boolean
+  theme: PunchCardTheme
   href: string
 }
 
@@ -68,29 +70,26 @@ function ShopSection({
         </Reveal>
 
         <div className="mt-12 flex flex-wrap items-stretch justify-center gap-6">
-          {products.map((product, index) => {
-            const theme = index % 2 === 0 ? "age12" : "age2"
-            return (
-              <Reveal
-                key={product.id}
-                delay={index * 80}
-                className="w-full max-w-[360px]"
-              >
-                <ProductCard
-                  name={product.name}
-                  perEntryLabel={product.perEntryLabel}
-                  price={product.price}
-                  featured={product.featured}
-                  popularLabel={popularLabel}
-                  buyLabel={buyLabel}
-                  theme={theme}
-                  cardCaption={cardCaptions[theme]}
-                  entries={product.entries}
-                  href={product.href}
-                />
-              </Reveal>
-            )
-          })}
+          {products.map((product, index) => (
+            <Reveal
+              key={product.id}
+              delay={index * 80}
+              className="w-full max-w-[360px]"
+            >
+              <ProductCard
+                name={product.name}
+                perEntryLabel={product.perEntryLabel}
+                price={product.price}
+                featured={product.featured}
+                popularLabel={popularLabel}
+                buyLabel={buyLabel}
+                theme={product.theme}
+                cardCaption={cardCaptions[product.theme]}
+                entries={product.entries}
+                href={product.href}
+              />
+            </Reveal>
+          ))}
         </div>
 
         <Reveal>

@@ -148,6 +148,13 @@
       "when": 1794677607067,
       "tag": "0020_payme_refunds",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1794680641022,
+      "tag": "0021_shop_switch_and_card_theme",
+      "breakpoints": true
     }
   ]
 }

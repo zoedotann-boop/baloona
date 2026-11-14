@@ -22,7 +22,12 @@ export async function SiteChrome({
   const [
     { chrome, locale, paths, contact, hours, statusLabel, isOpen },
     published,
-  ] = await Promise.all([loadSiteChrome(slug), listPublishedLocations()])
+    shopOpen,
+  ] = await Promise.all([
+    loadSiteChrome(slug),
+    listPublishedLocations(),
+    isShopOpen(),
+  ])
 
   const announcement = chrome.announcement
   const settings = chrome.settings
@@ -51,7 +56,7 @@ export async function SiteChrome({
               contact={contact}
               hours={hours}
               showBranchSwitch={published.length > 1}
-              showShop={isShopOpen()}
+              showShop={shopOpen}
               year={new Date().getFullYear()}
             />
           </>

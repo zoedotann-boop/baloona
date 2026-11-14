@@ -39,7 +39,7 @@ export default async function Page({ params }: PageProps<"/[location]">) {
     loadSiteChrome(slug),
     getHomePage(slug),
     getFormatter(),
-    isShopOpen() ? listActiveProducts() : Promise.resolve([]),
+    isShopOpen().then((open) => (open ? listActiveProducts() : [])),
     getTranslations("shop"),
   ])
 
@@ -104,32 +104,31 @@ export default async function Page({ params }: PageProps<"/[location]">) {
         note={pickLocale(pricing.note, locale)}
       />
 
-      {isShopOpen() && (
-        <ShopSection
-          title={shopT("title")}
-          subtitle={shopT("subtitle")}
-          note={shopT("validAllBranches")}
-          paymentNote={shopT("paymentNote")}
-          benefits={shopT.raw("benefits") as string[]}
-          popularLabel={shopT("popularBadge")}
-          buyLabel={shopT("buy")}
-          cardCaptions={{
-            age12: shopT("cardCaptions.age12"),
-            age2: shopT("cardCaptions.age2"),
-          }}
-          products={products.map((product) => ({
-            id: product.id,
-            name: pickLocale(product.name, locale),
-            perEntryLabel: shopT("perEntry", {
-              amount: formatPerEntry(product.price, product.entries, locale),
-            }),
-            entries: product.entries,
-            price: formatPrice(product.price, locale),
-            featured: product.isFeatured,
-            href: `/checkout?product=${product.id}&from=${slug}`,
-          }))}
-        />
-      )}
+      <ShopSection
+        title={shopT("title")}
+        subtitle={shopT("subtitle")}
+        note={shopT("validAllBranches")}
+        paymentNote={shopT("paymentNote")}
+        benefits={shopT.raw("benefits") as string[]}
+        popularLabel={shopT("popularBadge")}
+        buyLabel={shopT("buy")}
+        cardCaptions={{
+          age12: shopT("cardCaptions.age12"),
+          age2: shopT("cardCaptions.age2"),
+        }}
+        products={products.map((product) => ({
+          id: product.id,
+          name: pickLocale(product.name, locale),
+          perEntryLabel: shopT("perEntry", {
+            amount: formatPerEntry(product.price, product.entries, locale),
+          }),
+          entries: product.entries,
+          price: formatPrice(product.price, locale),
+          featured: product.isFeatured,
+          theme: product.theme,
+          href: `/checkout?product=${product.id}&from=${slug}`,
+        }))}
+      />
 
       <MenuTeaser
         title={pickLocale(home.menuTeaserTitle, locale)}

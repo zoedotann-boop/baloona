@@ -21,7 +21,7 @@ type CheckoutResult =
 export async function startPunchCardCheckout(
   input: z.input<typeof checkoutSchema>
 ): Promise<CheckoutResult> {
-  if (!isShopOpen()) return { ok: false, error: "invalid" }
+  if (!(await isShopOpen())) return { ok: false, error: "invalid" }
   const parsed = checkoutSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   if (isHoneypotFilled(parsed.data.honeypot))
@@ -49,6 +49,7 @@ export async function startPunchCardCheckout(
       email,
       fromLocationId: branch?.id ?? null,
       entries: product.entries,
+      theme: product.theme,
       amount: product.price,
     })
     .returning({ id: punchCardOrders.id })

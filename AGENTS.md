@@ -99,10 +99,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   **confirmed** (see the PayMe integration below). `/[location]/terms` renders a per-branch
   Terms & Cancellation policy (editable body, falling back to a `sections` block in
   `messages/*.json`). **Buying is gated by `isShopOpen()` (`lib/shop/availability.ts`):**
-  `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts` must be on **and** `PAYME_SELLER_ID` set.
-  Otherwise the home `ShopSection`, the footer link, `/checkout` and
-  `startPunchCardCheckout` are all off. There is deliberately no pay-later fallback — a
-  missing key must never turn into free cards.
+  the "shop open" switch on `/admin/<branch>/shop` (the single-row `shop_setting` table,
+  saved with the catalog) must be on **and** `PAYME_SELLER_ID` set. Otherwise the home
+  `ShopSection`, the footer link, `/checkout` and `startPunchCardCheckout` are all off.
+  There is deliberately no pay-later fallback — a missing key must never turn into free
+  cards. Each product stores its card design (`theme`: `age12` / `age2`), the order copies
+  it with entries and price, and the issued card uses it.
 - **Online orders are settled in one place.** `settleOrder` (`lib/shop/orders.ts`) re-queries
   the sale with PayMe and applies the step chosen by the pure `nextOrderStep`
   (`lib/shop/order-lifecycle.ts`): issue the card, mirror a refund, or expire the order 25h

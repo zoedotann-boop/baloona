@@ -1,8 +1,18 @@
 import "server-only"
 
-import { paymeConfig } from "@/lib/env"
-import { PUNCH_CARD_SHOP_ENABLED } from "@/lib/features"
+import { cache } from "react"
 
-export function isShopOpen(): boolean {
-  return PUNCH_CARD_SHOP_ENABLED && paymeConfig() !== null
+import { db } from "@/lib/db"
+import { paymeConfig } from "@/lib/env"
+
+export function isPaymentConfigured(): boolean {
+  return paymeConfig() !== null
 }
+
+export const isShopOpen = cache(async (): Promise<boolean> => {
+  if (!isPaymentConfigured()) return false
+  const settings = await db.query.shopSettings.findFirst({
+    columns: { isOpen: true },
+  })
+  return settings?.isOpen ?? false
+})

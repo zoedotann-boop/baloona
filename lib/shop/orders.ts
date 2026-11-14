@@ -78,6 +78,7 @@ async function issueCardForOrder(order: Order): Promise<void> {
         customerId: sql`(select ${customers.id} from ${customers} where ${customers.phone} = ${order.phone})`,
         totalPunches: order.entries,
         usedPunches: 0,
+        theme: order.theme,
         status: "active",
         issuedByLocationId: order.fromLocationId,
       })
