@@ -209,6 +209,15 @@ All optional — a missing key disables one feature instead of breaking the buil
 except Resend, which also delivers the admin sign-in codes, so without it nobody can
 log in to the admin panel. See `.env.example`.
 
+- **envpass** — the source of every environment variable; there is no `.env` to copy
+  or share. `.envpass.json` (slugs only, committed) points at `barad`/`baloona`/
+  `development`, and the runtime scripts (`dev`, `start`, `db:migrate`, `db:studio`,
+  `db:seed`) wrap their command in `envpass run --` (the pinned `envpass-cli` dev
+  dependency) so values are injected, never written to disk. `.env.example` lists key
+  names only. `build` and `test` stay unwrapped: CI runs them with placeholders and
+  Vercel injects its own env. Never print values: no `pull -o -`, `run --no-mask` or
+  `printenv`.
+
 - **Resend** — emails each new lead to the branch's `leadRecipientEmail`. Failures are
   recorded on the lead, never surfaced to the visitor. A birthday submission also sends the
   visitor a courtesy email (`lib/email/birthday-invitation.tsx`) with the Baloona invitation

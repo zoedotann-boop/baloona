@@ -22,16 +22,24 @@ next-intl (he/en) · Tailwind v4 · Storybook.
 
 ## Getting started
 
+Environment variables live in [envpass](https://envpass.dev), not in a local
+`.env`. The committed `.envpass.json` points at the `barad` workspace, `baloona`
+project and `development` environment, and the runtime scripts (`dev`, `start`,
+`db:migrate`, `db:studio`, `db:seed`) inject the values with `envpass run`, so
+nothing is ever written to disk.
+
 ```bash
 bun install
-cp .env.example .env    # fill in DATABASE_URL and BETTER_AUTH_SECRET
+bunx envpass-cli login  # once per machine — approve in the browser
 bun run db:migrate      # create the schema
 bun run db:seed         # owner account + the two starter branches
 bun run dev
 ```
 
-Generate the secret with `openssl rand -base64 32`. `.env` is gitignored — no
-credentials are ever committed.
+`.env.example` lists every key the app reads (names only). To add or change a
+value, edit it in the envpass web app (Project → `development`) — never in a
+file. A tool that can only read a file can use `bunx envpass-cli pull`, which
+writes a `.env` readable only by you; `.env*` stays gitignored.
 
 Sign in at `/admin/login`: enter your email and Better Auth emails you a one-time
 code (via Resend — so `RESEND_API_KEY` / `RESEND_FROM_EMAIL` are required to log in).
@@ -43,15 +51,9 @@ disabled; further accounts are created by an owner in **ניהול צוות**.
 `.conductor/settings.toml` wires up the parallel-workspace workflow: `setup`
 runs `bun install`, the Run button offers the dev server, Storybook and Drizzle
 Studio (each on the workspace's own `$CONDUCTOR_PORT`), and `archive` deletes
-`node_modules`/`.next`/`storybook-static` when a workspace is retired.
-
-Secrets are copied, not committed: put a filled-in `.env` in the **repository
-root directory** once, and `file_include_globs = [".env*"]` hands every new
-workspace its own copy.
-
-```bash
-cp .env.example "$CONDUCTOR_ROOT_PATH/.env"   # then fill it in
-```
+`node_modules`/`.next`/`storybook-static` when a workspace is retired. No secrets
+are copied between workspaces: every workspace reads the same envpass
+environment through the committed `.envpass.json`.
 
 ### Optional integrations
 

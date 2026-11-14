@@ -4,24 +4,19 @@
 [scripts]
 run_mode = "concurrent" # every workspace runs on its own $CONDUCTOR_PORT
 
-# On workspace create: install deps, then copy the gitignored root .env
-# ($CONDUCTOR_ROOT_PATH/.env) so the workspace is runnable — Neon is a hard
-# requirement (see lib/env.ts). Create the root file once from the template in
-# .env.example (it never enters git).
-setup = '''
-bun install
-cp "$CONDUCTOR_ROOT_PATH/.env" .env
-'''
+# On workspace create: install deps. No .env is copied — secrets come from
+# envpass at runtime (the committed .envpass.json names the environment), so a
+# workspace is runnable as soon as `bunx envpass-cli login` has been done once.
+setup = "bun install"
 
 # On archive: reclaim the ~1GB of build artefacts each worktree accumulates.
 # Nothing here touches the shared Neon database.
 archive = "rm -rf node_modules .next storybook-static"
 
 [scripts.run.dev]
-# Next.js dev server. BETTER_AUTH_URL is overridden per workspace because the
-# .env value points at :3000 while each workspace gets its own port, and Better
-# Auth derives cookie/redirect origins from it. A var set on the command line
-# wins over .env — Next.js never overwrites an already-set process.env key.
+# Next.js dev server. BETTER_AUTH_URL is pinned per workspace because each
+# workspace gets its own port, and Better Auth derives cookie/redirect origins
+# from it.
 command = "BETTER_AUTH_URL=http://localhost:$CONDUCTOR_PORT bun run dev --port $CONDUCTOR_PORT"
 available_in = [ "local" ] # $CONDUCTOR_PORT is unset in cloud workspaces
 default = true
@@ -33,12 +28,12 @@ available_in = [ "local" ]
 icon = "book"
 
 [scripts.run.db-studio]
-command = "bunx drizzle-kit studio --port $CONDUCTOR_PORT" # browse Neon
+command = "bun run db:studio --port $CONDUCTOR_PORT" # browse Neon
 available_in = [ "local" ]
 icon = "database"
 
 [scripts.run.db-seed]
-command = "bun run db:seed" # create the owner account from the .env ADMIN_* vars
+command = "bun run db:seed" # create the owner account from the ADMIN_* vars in envpass
 available_in = [ "local" ]
 icon = "user-plus"
 

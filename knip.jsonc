@@ -5,5 +5,8 @@
   // the top of node_modules is the one `ajv-formats` (via @rjsf/validator-ajv8)
   // resolves; when that was ajv@6 the production build failed to resolve
   // `ajv/dist/compile/codegen`.
-  "ignoreDependencies": ["ajv"]
+  "ignoreDependencies": ["ajv"],
+  // `db:seed` runs through `envpass run --`, which knip's script parser cannot see
+  // past, so the seed script is declared as an entry by hand.
+  "entry": ["lib/db/seed.ts"]
 }
