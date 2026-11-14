@@ -1,4 +1,8 @@
-import { type PunchCardTheme } from "@/lib/db/schema/punch-cards"
+import {
+  type PunchCardStatus,
+  type PunchCardTheme,
+} from "@/lib/db/schema/punch-cards"
+import { type ShopOrderStatus } from "@/lib/db/schema/shop"
 
 interface PunchView {
   id: string
@@ -11,14 +15,14 @@ interface CardView {
   token: string
   totalPunches: number
   usedPunches: number
-  status: "active" | "completed"
+  status: PunchCardStatus
   theme: PunchCardTheme
   issuedByLocationName: string | null
   invoiceNumber: string | null
   note: string | null
   createdAt: string
   punches: PunchView[]
-  payment: { paid: boolean; price: string } | null
+  payment: { status: ShopOrderStatus; price: string } | null
 }
 
 export interface CustomerCardsView {
@@ -38,4 +42,13 @@ export interface PunchCardsPage {
 
 export function remainingPunches(total: number, used: number): number {
   return Math.max(0, total - used)
+}
+
+export function nextCardStatus(
+  current: PunchCardStatus,
+  used: number,
+  total: number
+): PunchCardStatus {
+  if (current === "cancelled") return "cancelled"
+  return used >= total ? "completed" : "active"
 }

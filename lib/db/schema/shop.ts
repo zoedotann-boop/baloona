@@ -27,6 +27,8 @@ export const shopOrderStatus = pgEnum("shop_order_status", [
   "pending",
   "paid",
   "failed",
+  "expired",
+  "refunded",
 ])
 
 export type ShopOrderStatus = (typeof shopOrderStatus.enumValues)[number]
@@ -46,5 +48,6 @@ export const punchCardOrders = pgTable("punch_card_order", {
   paymeSaleId: text(),
   cardId: uuid().references(() => punchCards.id, { onDelete: "set null" }),
   paidAt: timestamp({ withTimezone: true }),
+  refundedAt: timestamp({ withTimezone: true }),
   ...timestamps,
 })

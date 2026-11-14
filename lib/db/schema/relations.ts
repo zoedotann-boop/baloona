@@ -32,7 +32,7 @@ import {
 } from "./locations"
 import { menuCategories, menuContents, menuItems } from "./menu"
 import { customers, punchCards, punchEvents } from "./punch-cards"
-import { punchCardOrders } from "./shop"
+import { products, punchCardOrders } from "./shop"
 
 export const locationsRelations = relations(locations, ({ one, many }) => ({
   contact: one(locationContacts),
@@ -292,6 +292,14 @@ export const punchCardOrdersRelations = relations(
     card: one(punchCards, {
       fields: [punchCardOrders.cardId],
       references: [punchCards.id],
+    }),
+    product: one(products, {
+      fields: [punchCardOrders.productId],
+      references: [products.id],
+    }),
+    fromLocation: one(locations, {
+      fields: [punchCardOrders.fromLocationId],
+      references: [locations.id],
     }),
   })
 )

@@ -14,6 +14,7 @@ import {
   Plus,
   Search,
   Trash2,
+  Undo2,
   Wallet,
 } from "lucide-react"
 import { useCallback, useEffect, useRef, useState, useTransition } from "react"
@@ -298,6 +299,7 @@ function CardRowView({
   })
 
   const remaining = remainingPunches(card.totalPunches, card.usedPunches)
+  const cancelled = card.status === "cancelled"
   const cardPath = `/card/${card.token}`
 
   const copyLink = async () => {
@@ -386,10 +388,16 @@ function CardRowView({
             <span className="font-bold text-brand-plum">
               {t("cardSummary", { remaining, total: card.totalPunches })}
             </span>
-            {remaining === 0 && (
-              <span className="rounded-full bg-brand-lavender-soft px-2 py-0.5 text-[12px] font-bold text-brand-plum">
-                {t("completedBadge")}
+            {cancelled ? (
+              <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[12px] font-bold text-destructive">
+                {t("cancelledBadge")}
               </span>
+            ) : (
+              remaining === 0 && (
+                <span className="rounded-full bg-brand-lavender-soft px-2 py-0.5 text-[12px] font-bold text-brand-plum">
+                  {t("completedBadge")}
+                </span>
+              )
             )}
             {card.issuedByLocationName && (
               <span className="text-[13px] text-muted-foreground">
@@ -404,8 +412,14 @@ function CardRowView({
                 ? t("purchasedOn", { date: card.createdAt })
                 : t("issuedOn", { date: card.createdAt })}
             </span>
-            {card.payment &&
-              (card.payment.paid ? (
+            {card.payment?.status === "refunded" ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[12px] font-bold text-brand-plum">
+                <Undo2 className="size-3.5" aria-hidden />
+                {t("refundedBadge", { price: card.payment.price })}
+              </span>
+            ) : (
+              card.payment &&
+              (card.payment.status === "paid" ? (
                 <span className="inline-flex items-center gap-1 rounded-full bg-brand-mint px-2 py-0.5 text-[12px] font-bold text-brand-plum">
                   <BadgeCheck className="size-3.5" aria-hidden />
                   {t("paidBadge")}
@@ -415,7 +429,8 @@ function CardRowView({
                   <Wallet className="size-3.5" aria-hidden />
                   {t("unpaidBadge", { price: card.payment.price })}
                 </span>
-              ))}
+              ))
+            )}
           </div>
           {card.invoiceNumber && (
             <p className="mt-1.5 text-[13px] text-muted-foreground">
@@ -435,7 +450,7 @@ function CardRowView({
         <PillButton
           type="button"
           size="md"
-          disabled={pending || remaining === 0}
+          disabled={pending || remaining === 0 || cancelled}
           title={t("punchTip")}
           onClick={() =>
             start(async () => {
@@ -445,7 +460,11 @@ function CardRowView({
           }
           className="h-9 px-5 text-[14px]"
         >
-          {remaining === 0 ? t("cardFull") : t("punch")}
+          {cancelled
+            ? t("cancelledBadge")
+            : remaining === 0
+              ? t("cardFull")
+              : t("punch")}
         </PillButton>
         <ActionChip
           icon={<Minus className="size-4" />}
@@ -457,9 +476,9 @@ function CardRowView({
               onChanged()
             })
           }
-          disabled={pending || card.usedPunches === 0}
+          disabled={pending || card.usedPunches === 0 || cancelled}
         />
-        {card.payment && !card.payment.paid && (
+        {card.payment?.status === "pending" && (
           <ActionChip
             icon={<Wallet className="size-4" />}
             label={t("markPaid")}

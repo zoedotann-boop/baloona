@@ -5,5 +5,15 @@
       "path": "/api/cron/google-reviews",
       "schedule": "0 3 * * *"
     }
-  ]
+  ],
+  "functions": {
+    "app/api/queues/payme-order/route.ts": {
+      "experimentalTriggers": [
+        {
+          "type": "queue/v2beta",
+          "topic": "payme-order"
+        }
+      ]
+    }
+  }
 }

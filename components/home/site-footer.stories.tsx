@@ -14,6 +14,7 @@ const meta = {
     contact: storyContact,
     hours: storyHours,
     showBranchSwitch: true,
+    showShop: true,
     year: 2026,
   },
 } satisfies Meta<typeof SiteFooter>

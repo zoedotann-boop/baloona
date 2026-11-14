@@ -2,12 +2,16 @@ import "server-only"
 
 import { paymeConfig } from "@/lib/env"
 
-const PRODUCTION_BASE = "https://ng.paymeservice.com"
-const SANDBOX_BASE = "https://preprod.paymeservice.com"
+import {
+  parseSale,
+  refundOutcome,
+  SALE_TTL_SECONDS,
+  type RefundOutcome,
+  type SaleStatus,
+} from "./sale"
 
-function baseUrl(sandbox: boolean): string {
-  return sandbox ? SANDBOX_BASE : PRODUCTION_BASE
-}
+const PRODUCTION_BASE = "https://live.payme.io/api"
+const SANDBOX_BASE = "https://sandbox.payme.io/api"
 
 export interface GenerateSaleInput {
   amount: number
@@ -29,13 +33,15 @@ export async function generateSale(
   const config = paymeConfig()
   if (!config) return null
 
-  const body = {
+  const data = await postJson("generate-sale", {
     seller_payme_id: config.sellerId,
     sale_price: toAgorot(input.amount),
     currency: "ILS",
     product_name: input.productName,
     transaction_id: input.transactionId,
     installments: 1,
+    sale_payment_method: "multi",
+    sale_expiry_seconds: SALE_TTL_SECONDS,
     language: "he",
     sale_callback_url: input.callbackUrl,
     sale_return_url: input.returnUrl,
@@ -43,69 +49,66 @@ export async function generateSale(
     ...(input.buyer?.name ? { sale_name: input.buyer.name } : {}),
     ...(input.buyer?.email ? { sale_email: input.buyer.email } : {}),
     ...(input.buyer?.phone ? { sale_mobile: input.buyer.phone } : {}),
-  }
-
-  const data = await postJson(config.sandbox, "generate-sale", body)
+  })
   if (
     !data ||
     data.status_code !== 0 ||
     !data.sale_url ||
     !data.payme_sale_id
   ) {
-    console.error("PayMe generate-sale failed:", {
-      env: config.sandbox ? "sandbox" : "production",
-      status_code: data?.status_code,
-      status_error_code: data?.status_error_code,
-      status_error_details: data?.status_error_details,
-      status_additional_info: data?.status_additional_info,
-    })
+    logFailure("generate-sale", data)
     return null
   }
   return { saleUrl: String(data.sale_url), saleId: String(data.payme_sale_id) }
-}
-
-export interface SaleStatus {
-  status: string
-  amount: number
 }
 
 export async function getSale(saleId: string): Promise<SaleStatus | null> {
   const config = paymeConfig()
   if (!config) return null
 
-  const data = await postJson(config.sandbox, "get-sales", {
+  const data = await postJson("get-sales", {
     seller_payme_id: config.sellerId,
     sale_payme_id: saleId,
   })
-  if (!data || data.status_code !== 0) return null
+  if (!data || data.status_code !== 0) {
+    logFailure("get-sales", data)
+    return null
+  }
+  return parseSale(data.items, saleId)
+}
 
-  const rows: Record<string, unknown>[] = Array.isArray(data.items)
-    ? data.items
-    : Array.isArray(data.sales)
-      ? data.sales
-      : []
-  const sale = rows.find(
-    (row) => row.payme_sale_id === saleId || row.sale_payme_id === saleId
-  )
-  if (!sale) return null
+export async function refundSale(saleId: string): Promise<RefundOutcome> {
+  const config = paymeConfig()
+  if (!config) return "rejected"
 
-  const status = sale.sale_status
-  const price = sale.price
-  if (typeof status !== "string" || typeof price !== "number") return null
-  return { status, amount: Math.round(price / 100) }
+  const data = await postJson("refund-sale", {
+    seller_payme_id: config.sellerId,
+    payme_sale_id: saleId,
+  })
+  const outcome = refundOutcome(data)
+  if (outcome !== "refunded") logFailure("refund-sale", data)
+  return outcome
 }
 
 function toAgorot(shekels: number): number {
   return Math.round(shekels * 100)
 }
 
+function logFailure(path: string, data: Record<string, unknown> | null) {
+  console.error(`PayMe ${path} failed:`, {
+    status_code: data?.status_code,
+    status_error_code: data?.status_error_code,
+    status_error_details: data?.status_error_details,
+  })
+}
+
 async function postJson(
-  sandbox: boolean,
   path: string,
-  body: unknown
+  body: Record<string, unknown>
 ): Promise<Record<string, unknown> | null> {
+  const base = paymeConfig()?.sandbox ? SANDBOX_BASE : PRODUCTION_BASE
   try {
-    const response = await fetch(`${baseUrl(sandbox)}/api/${path}`, {
+    const response = await fetch(`${base}/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

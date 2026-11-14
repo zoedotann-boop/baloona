@@ -169,7 +169,8 @@
     "slotEmpty": "Punch available",
     "punchBranch": "at {branch}",
     "issuedBy": "Issued at {branch}",
-    "footerNote": "Keep this link — it's your digital punch card."
+    "footerNote": "Keep this link — it's your digital punch card.",
+    "cancelled": "This card was cancelled and refunded."
   },
   "standalone": {
     "backToSite": "Back to site"
@@ -369,7 +370,8 @@
       "viewSite": "View site",
       "sectionContent": "Site content",
       "sectionOperations": "Operations",
-      "sectionAccount": "Account"
+      "sectionAccount": "Account",
+      "orders": "Online orders"
     },
     "common": {
       "save": "Publish changes",
@@ -819,7 +821,9 @@
       "save": "Save",
       "cancel": "Cancel",
       "deleteCard": "Delete card",
-      "deleteConfirm": "Delete this card permanently?"
+      "deleteConfirm": "Delete this card permanently?",
+      "cancelledBadge": "Cancelled",
+      "refundedBadge": "Refunded · {price}"
     },
     "shop": {
       "title": "Website cards",
@@ -890,6 +894,49 @@
       "nameTip": "The team member's full name.",
       "emailTip": "The email the one-time sign-in code is sent to.",
       "roleTip": "Owners see all branches; a manager sees only the branches assigned to them."
+    },
+    "orders": {
+      "title": "Online orders",
+      "description": "Punch cards bought on the site through PayMe, across all branches.",
+      "empty": "No orders to show.",
+      "filterAll": "All",
+      "allBranches": "All branches",
+      "branchFilter": "Filter by branch",
+      "noBranch": "No branch",
+      "statusPending": "Awaiting payment",
+      "statusPaid": "Paid",
+      "statusExpired": "Expired",
+      "statusRefunded": "Refunded",
+      "statusFailed": "Failed",
+      "createdAt": "Date",
+      "paidAt": "Paid on",
+      "refundedAt": "Refunded on",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "package": "Package",
+      "packageTip": "The package bought and how many entries it includes.",
+      "entries": "{count, plural, one {1 entry} other {# entries}}",
+      "amount": "Amount",
+      "branch": "Branch",
+      "branchTip": "The branch the buyer came from. The card works at every branch.",
+      "status": "Status",
+      "statusTip": "Awaiting: the buyer hasn't finished paying. Paid: the card was issued and emailed. Expired: not paid within 24 hours. Refunded: money returned and card cancelled. Failed: no payment page was created.",
+      "saleId": "PayMe sale ID",
+      "view": "View order",
+      "openCard": "Open the card",
+      "emailMismatch": "The order email differs from the customer's saved email ({email}). Once confirmed with the customer, update it under punch cards.",
+      "recheck": "Re-check payment with PayMe",
+      "recheckPending": "PayMe hasn't received the payment yet.",
+      "recheckDone": "Order updated: {status}.",
+      "recheckError": "The check failed. Try again in a moment.",
+      "refund": "Refund",
+      "refundConfirm": "Refund {amount} to {name} and cancel the card? The refund runs in PayMe right away and can't be undone.",
+      "refundDone": "Refunded, and the card was cancelled.",
+      "refundCardUsed": "Can't refund here because the card already has punches. Partial refunds are done by hand in the Paid dashboard.",
+      "refundRejected": "PayMe refused the refund. Check the sale in the Paid dashboard.",
+      "refundUnknown": "It's unclear whether the refund went through. Re-check the payment before trying again.",
+      "refundNotRefundable": "This order can't be refunded."
     }
   }
 }

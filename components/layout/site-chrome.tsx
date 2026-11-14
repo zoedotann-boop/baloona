@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/home/site-header"
 import { StatusFloat } from "@/components/home/status-float"
 import { listPublishedLocations } from "@/lib/db/queries/site"
 import { pickLocale, pickLocaleList } from "@/lib/localized"
+import { isShopOpen } from "@/lib/shop/availability"
 import { loadSiteChrome } from "@/lib/site-view"
 
 import { PublicShell } from "./public-shell"
@@ -50,6 +51,7 @@ export async function SiteChrome({
               contact={contact}
               hours={hours}
               showBranchSwitch={published.length > 1}
+              showShop={isShopOpen()}
               year={new Date().getFullYear()}
             />
           </>

@@ -3,29 +3,25 @@
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
 
-import { sendPunchCardConfirmation } from "@/lib/email/punch-card-confirmation"
 import { defaultLocale } from "@/i18n/routing"
 import { db } from "@/lib/db"
 import { locations, products, punchCardOrders } from "@/lib/db/schema"
-import { paymeConfig } from "@/lib/env"
-import { PUNCH_CARD_SHOP_ENABLED } from "@/lib/features"
 import { isHoneypotFilled } from "@/lib/forms/honeypot"
 import { checkoutSchema } from "@/lib/forms/schemas"
 import { pickLocale } from "@/lib/localized"
 import { generateSale } from "@/lib/payme/client"
-import { issueCard } from "@/lib/shop/orders"
+import { isShopOpen } from "@/lib/shop/availability"
+import { scheduleOrderCheck } from "@/lib/shop/order-queue"
 import { siteOrigin } from "@/lib/site-url"
 
 type CheckoutResult =
-  | { ok: true; redirect: string }
-  | { ok: true; token: string }
-  | { ok: false; error: string }
+  { ok: true; redirect: string } | { ok: false; error: string }
 
 // react-doctor-disable-next-line react-doctor/server-auth-actions -- public checkout
 export async function startPunchCardCheckout(
   input: z.input<typeof checkoutSchema>
 ): Promise<CheckoutResult> {
-  if (!PUNCH_CARD_SHOP_ENABLED) return { ok: false, error: "invalid" }
+  if (!isShopOpen()) return { ok: false, error: "invalid" }
   const parsed = checkoutSchema.safeParse(input)
   if (!parsed.success) return { ok: false, error: "invalid" }
   if (isHoneypotFilled(parsed.data.honeypot))
@@ -43,37 +39,6 @@ export async function startPunchCardCheckout(
         columns: { id: true },
       })
     : null
-
-  if (!paymeConfig()) {
-    const { token, cardId } = await issueCard({
-      entries: product.entries,
-      fullName,
-      phone,
-      email,
-      fromLocationId: branch?.id ?? null,
-    })
-    await db.insert(punchCardOrders).values({
-      productId: product.id,
-      fullName,
-      phone,
-      email,
-      fromLocationId: branch?.id ?? null,
-      entries: product.entries,
-      amount: product.price,
-      status: "pending",
-      cardId,
-    })
-
-    const result = await sendPunchCardConfirmation({
-      to: email,
-      cardUrl: `${await siteOrigin()}/card/${token}`,
-      entries: product.entries,
-    })
-    if (!result.sent)
-      console.error("punch card confirmation email:", result.error)
-
-    return { ok: true, token }
-  }
 
   const [order] = await db
     .insert(punchCardOrders)
@@ -111,6 +76,7 @@ export async function startPunchCardCheckout(
     .update(punchCardOrders)
     .set({ paymeSaleId: sale.saleId })
     .where(eq(punchCardOrders.id, order.id))
+  await scheduleOrderCheck(order.id)
 
   return { ok: true, redirect: sale.saleUrl }
 }
