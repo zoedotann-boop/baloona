@@ -124,7 +124,7 @@ input classes per form**:
 These pages must feel like one branded flow, not a bare form:
 
 - **The public shop is open only when `isShopOpen()` (`lib/shop/availability.ts`) is
-  true:** `PUNCH_CARD_SHOP_ENABLED` in `lib/features.ts` is on **and** PayMe is configured
+  true:** the admin's "shop open" switch (`shop_setting`) is on **and** PayMe is configured
   (`PAYME_SELLER_ID`). Otherwise the home `ShopSection` and the footer link are hidden,
   `/checkout` returns `notFound()` and `startPunchCardCheckout` refuses — there is no
   pay-later fallback, so a missing key can never hand out free cards. The admin still
@@ -133,8 +133,7 @@ These pages must feel like one branded flow, not a bare form:
 - Each wears the site's soft sky: a `relative isolate overflow-hidden` wrapper
   with `<SkyBackdrop />`, laid out with `Section`.
 - The shop uses `ShopSection` (`components/home/shop-section.tsx`); the checkout
-  card art matches the product (`theme` derived from the catalog position, see
-  `app/(standalone)/checkout/page.tsx`).
+  card art matches the product (its stored `theme`, picked in the admin shop page).
 - The closing confirmation panel is the shared `CheckoutResultCard`
   (`components/shop/checkout-result-card.tsx`), shown on the PayMe return page
   (`/checkout/success`) — the checkout form itself always redirects to PayMe.

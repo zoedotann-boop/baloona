@@ -12,7 +12,8 @@ with a Hebrew-first admin panel that owns every piece of content.
   with a mandatory Terms consent and hands the buyer to PayMe's hosted payment page (card,
   Bit, Apple Pay, Google Pay); the card is issued once PayMe confirms the payment. `/terms`
   is the Terms & Cancellation policy page. `checkout` and `terms` are reserved slugs. The
-  store only opens when `PUNCH_CARD_SHOP_ENABLED` is on **and** `PAYME_SELLER_ID` is set.
+  store only opens when the "shop open" switch in the admin shop page is on **and**
+  `PAYME_SELLER_ID` is set.
 - **Admin**: `/admin` — contact details, opening hours, the pop-up, SEO, home
   page copy, pricing, menu, birthdays, media, reviews, the **shop** catalog and the
   enquiries inbox, all per branch, plus a brand-global **punch cards** console (issue,

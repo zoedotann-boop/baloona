@@ -120,6 +120,10 @@ export async function listProducts() {
   return db.query.products.findMany({ orderBy: [asc(products.sortOrder)] })
 }
 
+export async function getShopSettings() {
+  return db.query.shopSettings.findFirst({ columns: { isOpen: true } })
+}
+
 export async function getTermsEditor(locationId: string) {
   return db.query.siteContents.findFirst({
     where: eq(siteContents.locationId, locationId),

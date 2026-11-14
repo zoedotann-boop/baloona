@@ -10,11 +10,7 @@ import { Section } from "@/components/layout/section"
 import { SiteChrome } from "@/components/layout/site-chrome"
 import { CheckoutForm } from "@/components/shop/checkout-form"
 import { type Locale } from "@/i18n/routing"
-import {
-  getProductById,
-  listActiveProducts,
-  listPublishedLocations,
-} from "@/lib/db/queries/site"
+import { getProductById, listPublishedLocations } from "@/lib/db/queries/site"
 import { isShopOpen } from "@/lib/shop/availability"
 import { formatPrice, pickLocale } from "@/lib/localized"
 
@@ -30,14 +26,13 @@ export async function generateMetadata() {
 export default async function CheckoutPage({
   searchParams,
 }: PageProps<"/checkout">) {
-  if (!isShopOpen()) notFound()
+  if (!(await isShopOpen())) notFound()
 
   const { product: productParam, from: fromParam } = await searchParams
-  const [locale, t, published, activeProducts] = await Promise.all([
+  const [locale, t, published] = await Promise.all([
     getLocale() as Promise<Locale>,
     getTranslations("checkout"),
     listPublishedLocations(),
-    listActiveProducts(),
   ])
 
   const from =
@@ -47,11 +42,6 @@ export default async function CheckoutPage({
 
   const id = typeof productParam === "string" ? productParam : ""
   const product = UUID_RE.test(id) ? await getProductById(id) : undefined
-
-  const catalogIndex = product
-    ? activeProducts.findIndex((p) => p.id === product.id)
-    : -1
-  const cardTheme = catalogIndex % 2 === 1 ? "age2" : "age12"
 
   const content = (
     <Section spacing="md" className="relative isolate overflow-hidden">
@@ -88,7 +78,7 @@ export default async function CheckoutPage({
             entriesLabel={t("entries", { count: product.entries })}
             entries={product.entries}
             productPrice={formatPrice(product.price, locale)}
-            theme={cardTheme}
+            theme={product.theme}
             from={from}
             termsHref={from ? `/${from}/terms` : "/"}
           />

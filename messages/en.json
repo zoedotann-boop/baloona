@@ -839,7 +839,15 @@
       "active": "Shown on the website",
       "activeTip": "Only cards ticked here appear on the website for sale.",
       "featured": "Featured (popular choice)",
-      "featuredTip": "Highlights the card with a \"popular choice\" badge to draw the eye."
+      "featuredTip": "Highlights the card with a \"popular choice\" badge to draw the eye.",
+      "salesTitle": "Online sales",
+      "shopOpen": "Shop open for purchase",
+      "shopOpenTip": "When on, cards marked \"Shown on site\" appear on every branch home page and can be bought through PayMe. When off, the shop, the footer link and the checkout page are hidden.",
+      "paymentMissing": "The shop can't open: the PayMe key isn't configured on the server, so it stays closed even with this switch on.",
+      "theme": "Card design",
+      "themeTip": "Which design the customer gets – ages 2–12 or under 2. The card issued after payment uses it too.",
+      "themeAge12": "Ages 2–12",
+      "themeAge2": "Under 2"
     },
     "termsEditor": {
       "title": "Terms & Cancellation Policy",

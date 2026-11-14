@@ -10,18 +10,27 @@ import {
 
 import { localized, timestamps } from "./_shared"
 import { locations } from "./locations"
-import { punchCards } from "./punch-cards"
+import { punchCards, punchCardTheme } from "./punch-cards"
 
 export const products = pgTable("product", {
   id: uuid().primaryKey().defaultRandom(),
   name: localized().notNull(),
   entries: integer().notNull(),
   price: integer().notNull(),
+  theme: punchCardTheme().notNull().default("age12"),
   isActive: boolean().notNull().default(true),
   isFeatured: boolean().notNull().default(false),
   sortOrder: integer().notNull().default(0),
   ...timestamps,
 })
+
+export const shopSettings = pgTable("shop_setting", {
+  id: integer().primaryKey().default(1),
+  isOpen: boolean().notNull().default(false),
+  ...timestamps,
+})
+
+export const SHOP_SETTINGS_ID = 1
 
 export const shopOrderStatus = pgEnum("shop_order_status", [
   "pending",
@@ -43,6 +52,7 @@ export const punchCardOrders = pgTable("punch_card_order", {
     onDelete: "set null",
   }),
   entries: integer().notNull(),
+  theme: punchCardTheme().notNull().default("age12"),
   amount: integer().notNull(),
   status: shopOrderStatus().notNull().default("pending"),
   paymeSaleId: text(),
